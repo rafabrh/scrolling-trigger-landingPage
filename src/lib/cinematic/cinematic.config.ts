@@ -96,6 +96,7 @@ export const CINEMATIC = {
 
   assets: {
     finalCity: '/cinematic/final-city.webp',
+    finalCityMobile: '/cinematic/final-city-mobile.webp',
     poster: '/cinematic/poster.webp',
     manifest: '/cinematic/manifest.json',
   },
