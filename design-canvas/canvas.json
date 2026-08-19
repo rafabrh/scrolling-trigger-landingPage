@@ -1,0 +1,15 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html",     "title": "Cinematic / SharkNews", "x": 0,    "y": 0,    "w": 1440, "h": 900 },
+    { "file": "AiAgent.dc.html",  "title": "Cinematic / AI Agent",  "x": 1540, "y": 0,    "w": 1440, "h": 900 },
+    { "file": "Handoff.dc.html",  "title": "Handoff / City",        "x": 3080, "y": 0,    "w": 1440, "h": 900 },
+    { "file": "Intro.dc.html",    "title": "Site / Intro",          "x": 0,    "y": 1080, "w": 1440, "h": 1000 },
+    { "file": "Products.dc.html", "title": "Site / Products",       "x": 1540, "y": 1080, "w": 1440, "h": 1100 }
+  ],
+  "annotations": [
+    { "id": "row-cinematic", "x": 0, "y": -150, "w": 620, "text": "SCROLL CINEMATIC (500vh)\nO texto fica ancorado no mesmo canto enquanto o mundo muda atras dele. O olho nao salta entre uma cena e outra.\nTrilho a direita marca em qual das 4 cenas o scroll esta." },
+    { "id": "row-site", "x": 0, "y": 930, "w": 620, "text": "SITE INSTITUCIONAL sobre a cidade fixa\nMesma imagem do frame 239, agora position:fixed. Scrim e gradiente variam por secao, a cidade nunca some por tras de fundo opaco." },
+    { "id": "note-handoff", "x": 3080, "y": -150, "w": 620, "text": "HANDOFF\nO scrub encerra no frame 239 e o background e esse mesmo frame 239. O crossfade acontece entre duas imagens identicas: nao ha o que o olho detecte." }
+  ],
+  "launch": { "view": "canvas" }
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+  <style>
+    body { margin: 0; background: #050607; }
+    a { color: #F5F7F8; text-decoration: none; }
+    a:hover { color: #40C1E7; }
+  </style>
+</helmet>
+<div style="position: relative; width: 1440px; height: 1100px; overflow: hidden; background: #050607; font-family: Archivo, 'Helvetica Neue', Arial, sans-serif;">
+
+  <img src="city-final.jpg" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+  <div style="position: absolute; inset: 0; background: rgba(5,6,7,{{scrim}});"></div>
+  <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(5,6,7,0.5) 0%, rgba(5,6,7,0.1) 40%, rgba(5,6,7,0.62) 100%);"></div>
+  <div style="position: absolute; inset: 0; background: radial-gradient(120% 80% at 22% 45%, rgba(5,6,7,0.9) 0%, rgba(5,6,7,0.34) 62%, rgba(5,6,7,0.6) 100%);"></div>
+  <div style="position: absolute; inset: 0; opacity: 0.05; mix-blend-mode: overlay; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E&quot;);"></div>
+
+  <div style="position: absolute; left: 96px; right: 96px; top: 120px; display: flex; flex-direction: column; gap: 68px;">
+
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 60px;">
+      <div style="display: flex; flex-direction: column; gap: 24px; max-width: 620px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 30px; height: 1px; background: {{accent}};"></div>
+          <div style="font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: {{accent}};">Products</div>
+        </div>
+        <h2 style="margin: 0; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; font-weight: 600; font-size: 52px; line-height: 1.06; letter-spacing: -0.024em; color: #F5F7F8; text-wrap: pretty;">Two products. One operation.</h2>
+      </div>
+      <p style="margin: 0; max-width: 360px; font-size: 16px; line-height: 1.62; color: rgba(245,247,248,0.62);">One keeps you ahead of what is happening. The other keeps every channel answering at any hour.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px;">
+
+      <div style="display: flex; flex-direction: column; gap: 30px; padding: 48px 44px; background: rgba(5,8,12,0.58); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08);">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: {{accent}};">SharkNews</div>
+          <div style="font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0.18em; color: rgba(245,247,248,0.62);">07:07</div>
+        </div>
+        <h3 style="margin: 0; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; font-weight: 600; font-size: 34px; line-height: 1.12; letter-spacing: -0.02em; color: #F5F7F8; text-wrap: pretty;">The technology briefing that arrives before your day.</h3>
+        <p style="margin: 0; font-size: 16px; line-height: 1.62; color: rgba(245,247,248,0.58);">Curated technology, AI and innovation news. Five minutes of reading, delivered daily.</p>
+        <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.07);">
+          <div style="display: flex; align-items: center; gap: 12px; padding-top: 14px; font-size: 15px; color: rgba(245,247,248,0.72);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="{{accent}}" stroke-width="1.4"><path d="M2.5 7.5l3 3 6-7"/></svg>Free, forever</div>
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: rgba(245,247,248,0.72);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="{{accent}}" stroke-width="1.4"><path d="M2.5 7.5l3 3 6-7"/></svg>No spam</div>
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: rgba(245,247,248,0.72);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="{{accent}}" stroke-width="1.4"><path d="M2.5 7.5l3 3 6-7"/></svg>One click to leave</div>
+        </div>
+        <a href="#" style="display: inline-flex; align-items: center; gap: 12px; margin-top: 8px; padding: 15px 26px; align-self: flex-start; border: 1px solid {{accent}}; background: color-mix(in srgb, {{accent}} 7%, transparent); font-size: 13px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #F5F7F8;">
+          Get SharkNews
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+        </a>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 30px; padding: 48px 44px; background: rgba(5,8,12,0.58); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08);">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: {{accent}};">AI Agent</div>
+          <div style="font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: 0.18em; color: rgba(245,247,248,0.62);">48H ACTIVATION</div>
+        </div>
+        <h3 style="margin: 0; font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif; font-weight: 600; font-size: 34px; line-height: 1.12; letter-spacing: -0.02em; color: #F5F7F8; text-wrap: pretty;">Every channel answers, at any hour.</h3>
+        <p style="margin: 0; font-size: 16px; line-height: 1.62; color: rgba(245,247,248,0.58);">An agent on WhatsApp and Instagram that responds, qualifies leads and carries the conversation to the close.</p>
+        <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.07);">
+          <div style="display: flex; align-items: center; gap: 12px; padding-top: 14px; font-size: 15px; color: rgba(245,247,248,0.72);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="{{accent}}" stroke-width="1.4"><path d="M2.5 7.5l3 3 6-7"/></svg>Reads audio, images and comments</div>
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: rgba(245,247,248,0.72);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="{{accent}}" stroke-width="1.4"><path d="M2.5 7.5l3 3 6-7"/></svg>Payment links, Pix and scheduling</div>
+          <div style="display: flex; align-items: center; gap: 12px; font-size: 15px; color: rgba(245,247,248,0.72);"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="{{accent}}" stroke-width="1.4"><path d="M2.5 7.5l3 3 6-7"/></svg>Remembers every conversation</div>
+        </div>
+        <a href="#" style="display: inline-flex; align-items: center; gap: 12px; margin-top: 8px; padding: 15px 26px; align-self: flex-start; border: 1px solid {{accent}}; background: color-mix(in srgb, {{accent}} 7%, transparent); font-size: 13px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #F5F7F8;">
+          Explore AI Agent
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#40C1E7","options":["#40C1E7","#66A1B3","#7BE3C4","#F5F7F8"]},"scrim":{"editor":"range","default":0.66,"min":0.2,"max":0.92,"step":0.02,"section":"Overlay"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#40C1E7',
+      scrim: this.props.scrim ?? 0.66
+    };
+  }
+}
+</script>
+</body>
+</html>
