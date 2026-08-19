@@ -363,10 +363,24 @@ upscale. Um iPhone de 390 pt com dpr 3 pede 1170 px de largura física; o frame
 entrega 864 e o browser amplia 1,35 vez, contra as quase cinco vezes que o
 caminho anterior exigia.
 
-O canvas ocupa um palco sticky com queda em gradiente para o fundo abaixo, em vez
-de sangrar o viewport inteiro. A composição sobrevive ao corte e a moldura lê
-como enquadramento deliberado. Isso ainda precisa de validação visual em device
-real, mas agora por motivo de composição, não de resolução.
+O palco sangra o viewport inteiro no mobile, igual ao desktop. A spec chegou a
+prever um palco 4:5 com queda em gradiente para o fundo abaixo, e isso foi
+abandonado: o handoff só é imperceptível se o canvas e o fundo fixo tiverem
+exatamente o mesmo enquadramento. Um palco em faixa sobre um fundo sangrado
+mostra duas escalas diferentes da mesma cidade no instante da troca, que é
+justamente o defeito que este projeto existe para evitar.
+
+Consequência: `final-city.webp` deixa de ser um arquivo e passa a ser dois.
+`final-city.webp` em 1920x1080 para 16:9, `final-city-mobile.webp` em 864x1080
+para o recorte 4:5. O `PersistentCityBackground` usa `<picture>` com `media`, e
+o browser baixa só o que vai usar. A fronteira dos dois é 768 px, o mesmo número
+que escolhe o conjunto de frames, e ele vive em `cinematic.config.ts` para não
+existir escrito em dois lugares.
+
+O corte 4:5 mais o `cover` num aparelho alto descarta bastante largura. A
+composição aguenta porque tudo que importa na sequência está centralizado: o
+tubarão, o núcleo de IA e o ponto de fuga da cidade. Ainda assim precisa de
+validação em device real.
 
 Sequência mobile: 120 frames, 5 MB, altura de scroll 350vh.
 
@@ -404,7 +418,7 @@ Vitest sobre lógica pura, sem browser:
 | `drawCoverDimensions` | imagem mais larga que o canvas, mais alta, mesma proporção, ausência de distorção |
 | `buildLoadPriority` | ordem da prioridade, ausência de índice duplicado, cobertura de todos os frames |
 | `nearestLoadedFrame` | empate resolvido, cache vazio, alvo já carregado |
-| `evictDecodedFrames` | mantém a janela ao redor do playhead, despeja o mais distante primeiro, respeita o teto, nunca despeja o frame atual |
+| `framesToEvict` | mantém a janela ao redor do playhead, despeja o mais distante primeiro, respeita o teto, nunca despeja o frame atual |
 
 Sem teste escrito só para levantar cobertura.
 
@@ -495,7 +509,7 @@ transição virou uma troca de opacidade de três linhas dentro de
 - [ ] Mobile tem sequência própria e caminho de degradação
 - [ ] `?cinematicDebug=true` mostra progress, frame, cena e frames carregados
 - [ ] `gsap.context()` revertido, rAF cancelado, `ResizeObserver` desconectado no unmount
-- [ ] Cache decoded respeita o teto e fecha cada `ImageBitmap` no despejo
+- [ ] Cache decoded respeita o teto e fecha cada `ImageBitmap` no despejo (`framesToEvict`)
 - [ ] Memória do cinematic é devolvida após o handoff
 - [ ] `tsc --noEmit` limpo em strict, sem `any`
 - [ ] Testes da seção 13 passando
@@ -509,10 +523,12 @@ centralizadas, mas só há inglês).
 
 ## 17. Limitações conhecidas
 
-O enquadramento 4:5 no mobile precisa de validação em device real. O corte 4:5
-descarta 45% da largura do quadro, e a cena da cidade panorâmica é justamente a
-que mais depende de largura. Se ficar apertado, a alternativa é sangrar o
-viewport aceitando ampliação maior.
+O enquadramento no mobile precisa de validação em device real. O corte 4:5
+descarta 45% da largura do quadro, e o `cover` num aparelho alto tira mais um
+tanto. A cena da cidade panorâmica é a que mais depende de largura e é a que
+mais sofre. Se ficar apertado demais, o caminho é gerar um conjunto mobile com
+recorte próprio por cena, o que o pipeline aceita sem mudança de arquitetura,
+mas custa uma passada de arte que não está no escopo atual.
 
 A sequência desktop pesa 16 MB. Ninguém baixa os 16 MB para ver a página, porque
 o carregamento é por prioridade e o primeiro paint não espera nada, mas uma
