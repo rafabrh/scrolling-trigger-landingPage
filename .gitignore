@@ -15,3 +15,10 @@ public/cinematic/mobile/
 design-canvas/shk-group-site.html
 
 .idea/
+
+# Diretorio temporario do pipeline de frames. O build-frames.mjs apaga no fim,
+# mas ele fica no disco enquanto o script roda e nao pode vazar para o commit.
+.frames-tmp/
+
+# Cache incremental do tsc.
+*.tsbuildinfo
