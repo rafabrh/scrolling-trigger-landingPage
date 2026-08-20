@@ -2,6 +2,20 @@ export const WHATSAPP_URL = 'https://wa.me/5511912839594';
 export const INSTAGRAM_URL = 'https://instagram.com/shkgroup.ia';
 
 /**
+ * Link de WhatsApp com a posição de origem no `text`. O wa.me pré-preenche o
+ * rascunho da conversa com esse texto, e o WhatsApp o preserva até o usuário
+ * enviar — então a etiqueta `[via: posição]` chega na caixa de entrada e a
+ * conversão fica contável por ponto de saída, sem pixel, sem cookie e sem nada
+ * a declarar de LGPD. Dez âncoras que antes eram indistinguíveis passam a dizer
+ * de onde vieram. O usuário pode apagar a linha antes de enviar; o custo de
+ * errar para menos é só perder a contagem daquele clique.
+ */
+export function whatsappHref(position: string): string {
+  const text = `Hi SHK Group! I came from the site and I'd like to talk. [via: ${position}]`;
+  return `${WHATSAPP_URL}?text=${encodeURIComponent(text)}`;
+}
+
+/**
  * Toda copy visível do site vive aqui. Nenhuma string hardcodada em
  * componente: a revisão de texto acontece em um arquivo só, e trocar de
  * idioma depois não exige tocar em componente nenhum.
@@ -28,7 +42,7 @@ export const SITE_CONTENT = {
     { label: 'Contact', href: '#contact' },
   ],
 
-  cta: { label: 'Activate AI Agent', href: WHATSAPP_URL },
+  cta: { label: 'Activate AI Agent', href: whatsappHref('header') },
 
   cinematic: {
     sharknews: {
@@ -37,7 +51,7 @@ export const SITE_CONTENT = {
       support:
         'Technology, AI and innovation, curated daily at 07:07. Five minutes, free, one click to leave.',
       ctaLabel: 'Get SharkNews',
-      ctaHref: WHATSAPP_URL,
+      ctaHref: whatsappHref('cinematic-sharknews'),
       meta: 'DAILY 07:07',
     },
     aiAgent: {
@@ -46,7 +60,7 @@ export const SITE_CONTENT = {
       support:
         'AI that responds, qualifies, automates and advances every opportunity on WhatsApp and Instagram.',
       ctaLabel: 'Explore AI Agent',
-      ctaHref: WHATSAPP_URL,
+      ctaHref: whatsappHref('cinematic-aiagent'),
       meta: 'WHATSAPP + INSTAGRAM',
     },
   },
@@ -77,7 +91,7 @@ export const SITE_CONTENT = {
         body: 'Curated technology, AI and innovation news. Five minutes of reading, delivered daily.',
         points: ['Free, forever', 'No spam', 'One click to leave'],
         ctaLabel: 'Get SharkNews',
-        ctaHref: WHATSAPP_URL,
+        ctaHref: whatsappHref('product-sharknews'),
       },
       {
         id: 'ai-agent',
@@ -91,7 +105,7 @@ export const SITE_CONTENT = {
           'Remembers every conversation',
         ],
         ctaLabel: 'Explore AI Agent',
-        ctaHref: WHATSAPP_URL,
+        ctaHref: whatsappHref('product-ai-agent'),
       },
     ],
   },
@@ -146,7 +160,7 @@ export const SITE_CONTENT = {
     headline: 'Start the conversation on WhatsApp.',
     body: 'Tell us which channel you sell on and what the operation looks like today. We answer on WhatsApp.',
     ctaLabel: 'Talk on WhatsApp',
-    ctaHref: WHATSAPP_URL,
+    ctaHref: whatsappHref('contact'),
     instagramLabel: '@shkgroup.ia',
     instagramHref: INSTAGRAM_URL,
   },
@@ -155,7 +169,7 @@ export const SITE_CONTENT = {
     copyright: `© ${new Date().getFullYear()} SHK GROUP`,
     links: [
       { label: 'Instagram', href: INSTAGRAM_URL },
-      { label: 'WhatsApp', href: WHATSAPP_URL },
+      { label: 'WhatsApp', href: whatsappHref('footer') },
     ],
   },
 } as const;
