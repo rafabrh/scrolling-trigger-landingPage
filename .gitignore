@@ -1,0 +1,24 @@
+node_modules/
+.next/
+out/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Sequência de frames gerada por `pnpm frames`. Reprodutível a partir do
+# vídeo em context/video/, então fica fora do histórico.
+public/cinematic/desktop/
+public/cinematic/mobile/
+
+# Payload de 2 MB gerado pelo canvas de design. As fontes são os .dc.html.
+design-canvas/shk-group-site.html
+
+.idea/
+
+# Diretorio temporario do pipeline de frames. O build-frames.mjs apaga no fim,
+# mas ele fica no disco enquanto o script roda e nao pode vazar para o commit.
+.frames-tmp/
+
+# Cache incremental do tsc.
+*.tsbuildinfo

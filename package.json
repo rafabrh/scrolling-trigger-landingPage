@@ -1,0 +1,33 @@
+{
+  "name": "shk-group-site",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "frames": "node scripts/build-frames.mjs"
+  },
+  "dependencies": {
+    "gsap": "^3.13.0",
+    "next": "16.3.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^3"
+  },
+  "packageManager": "pnpm@9.15.9"
+}

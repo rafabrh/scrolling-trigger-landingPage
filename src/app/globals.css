@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --ink-900: #050607;
+  --ink-800: #090C0F;
+  --ink-700: #10151A;
+  --paper: #F5F7F8;
+  --paper-dim: rgba(245, 247, 248, 0.62);
+
+  --accent: #40C1E7;
+  --accent-dim: #1E6F8C;
+  --accent-glow: rgba(64, 193, 231, 0.14);
+
+  --surface: rgba(5, 8, 12, 0.58);
+  --surface-border: rgba(255, 255, 255, 0.08);
+}
+
+@theme inline {
+  --color-ink-900: var(--ink-900);
+  --color-ink-800: var(--ink-800);
+  --color-ink-700: var(--ink-700);
+  --color-paper: var(--paper);
+  --color-accent: var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --font-display: var(--font-space-grotesk);
+  --font-body: var(--font-archivo);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+/* `smooth` briga com o scrub do ScrollTrigger: o browser interpola a posicao
+   ao mesmo tempo que o GSAP le dela, e o frame oscila. */
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  background: var(--ink-900);
+  color: var(--paper);
+  font-family: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
