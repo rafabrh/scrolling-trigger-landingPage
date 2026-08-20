@@ -38,20 +38,25 @@ const OG_IMAGE = {
 } as const;
 
 /**
+ * Metadata BASE, herdada por todas as rotas. Deliberadamente SEM
+ * `alternates.canonical`, `robots` e `openGraph.url`: como o layout envolve
+ * TODAS as rotas (inclusive o not-found), qualquer canonical/robots aqui
+ * vazaria para o 404 — um 404 que se auto-canonicaliza para a home é sinal
+ * clássico de soft-404. Esses campos, por serem específicos de cada página,
+ * vivem no `metadata` de cada page.tsx (ver src/app/page.tsx), que faz merge
+ * sobre este. O `openGraph` base fica aqui para o card não degradar em
+ * qualquer rota; a home refina `openGraph.url` para o canonical dela.
+ *
  * Os canais de distribuicao declarados do produto sao WhatsApp e Instagram.
  * Sem openGraph, um link colado no WhatsApp vira o card mais pobre que a
- * plataforma produz, so titulo e descricao. O canonical existe porque
- * ?cinematicDebug=true e qualquer UTM viram documento indexavel separado.
+ * plataforma produz, so titulo e descricao.
  */
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: { default: 'SHK Group', template: '%s | SHK Group' },
   description: DESCRIPTION,
-  alternates: { canonical: '/' },
-  robots: { index: true, follow: true },
   openGraph: {
     type: 'website',
-    url: '/',
     siteName: 'SHK Group',
     title: 'SHK Group',
     description: DESCRIPTION,
