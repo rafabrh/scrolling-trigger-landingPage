@@ -12,6 +12,15 @@ export const INSTAGRAM_URL = 'https://instagram.com/shkgroup.ia';
 export const SITE_CONTENT = {
   brand: { name: 'SHK GROUP', logoAlt: '' },
 
+  /**
+   * O h1 da pagina. Fica visualmente oculto porque a abertura e uma cena
+   * cinematografica sem texto, por decisao de design, mas a pagina precisa
+   * declarar do que trata para leitor de tela e para indexacao. Sem ele o
+   * documento tem oito h2 e nenhum h1.
+   */
+  pageHeading:
+    'SHK Group: AI agents, software and digital products for companies that sell on WhatsApp and Instagram.',
+
   nav: [
     { label: 'Products', href: '#products' },
     { label: 'Technology', href: '#technology' },

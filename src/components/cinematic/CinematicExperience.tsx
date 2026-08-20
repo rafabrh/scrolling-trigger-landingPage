@@ -88,6 +88,8 @@ export function CinematicExperience() {
       className="relative z-10"
       style={{ height: `${heightVh}vh` }}
     >
+      <h1 className="sr-only">{SITE_CONTENT.pageHeading}</h1>
+
       <div ref={stageRef} className="sticky top-0 h-screen w-full overflow-hidden">
         {!ready && (
           // Poster do frame 0 enquanto o primeiro bitmap não chega. O canvas
@@ -156,6 +158,7 @@ function StaticCinematic() {
 
   return (
     <section aria-label="SHK Group introduction" className="relative z-10">
+      <h1 className="sr-only">{SITE_CONTENT.pageHeading}</h1>
       {scenes.map((scene) => (
         <div key={scene.eyebrow} className="flex min-h-screen items-center px-24 max-md:px-6">
           <StaticScene scene={scene} />
