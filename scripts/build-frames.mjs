@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdir, rm, readdir, writeFile, stat } from 'node:fs/promises';
+import { mkdir, rm, readdir, rename, writeFile, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';
@@ -54,6 +54,10 @@ async function probe() {
   };
 
   for (const key of Object.keys(EXPECTED)) {
+    // nb_frames e opcional no container. Quando falta, ffprobe devolve N/A e
+    // Number() da NaN, o que bloquearia o build de um video correto. Quem
+    // conta de verdade e o extractPngs, contando arquivos.
+    if (key === 'frameCount' && !Number.isFinite(actual.frameCount)) continue;
     if (actual[key] !== EXPECTED[key]) {
       throw new Error(
         `Vídeo divergiu da configuração: ${key} esperado ${EXPECTED[key]}, encontrado ${actual[key]}. ` +
@@ -83,7 +87,12 @@ async function extractPngs() {
 }
 
 async function buildSet(name, config, pngs, quality) {
-  const dir = path.join(OUT, config.dir);
+  // Encoda para uma area de staging dentro do TEMP e promove por rename no
+  // fim. Sem isto, um erro no frame 137 deixava o diretorio publicado com 137
+  // de 240 arquivos e o manifest jurando que sao 240: o site serve isso e o
+  // scrub congela no meio, sem nada distinguindo "ainda nao baixou" de "nao
+  // existe". TEMP e OUT vivem no mesmo filesystem, entao o rename e atomico.
+  const dir = path.join(TEMP, `staging-${config.dir}`);
   await rm(dir, { recursive: true, force: true });
   await mkdir(dir, { recursive: true });
 
@@ -104,7 +113,8 @@ async function buildSet(name, config, pngs, quality) {
     written += 1;
   }
 
-  return { name, dir: `/cinematic/${config.dir}`, width: config.width, height: config.height,
+  return { name, stagingDir: dir, finalDir: path.join(OUT, config.dir),
+           dir: `/cinematic/${config.dir}`, width: config.width, height: config.height,
            frameCount: written, frameStep: config.frameStep, quality, totalBytes };
 }
 
@@ -165,12 +175,23 @@ async function main() {
               width: SETS.desktop.width, height: SETS.desktop.height },
   };
 
+  // Tudo encodou. So agora os conjuntos publicados sao trocados.
+  for (const set of [desktop, mobile]) {
+    await rm(set.finalDir, { recursive: true, force: true });
+    await rename(set.stagingDir, set.finalDir);
+  }
+
   await writeFile(path.join(OUT, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
-  await rm(TEMP, { recursive: true, force: true });
   console.log('manifest.json gravado');
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+main()
+  .catch((error) => {
+    // Stack inteiro: a falha que mais precisa de diagnostico e a que acontece
+    // no meio do encode, e `error.message` sozinho nao diz nem qual frame.
+    console.error(error);
+    process.exitCode = 1;
+  })
+  // No finally: qualquer throw antes daqui deixava ~240 PNGs sem compressao no
+  // disco, justamente quando a causa provavel da falha e disco cheio.
+  .finally(() => rm(TEMP, { recursive: true, force: true }));

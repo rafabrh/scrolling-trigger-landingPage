@@ -10,6 +10,10 @@ import {
 export function clampFrame(frame: number, frameCount: number): number {
   if (frameCount <= 0) return 0;
   const rounded = Math.round(frame);
+  // NaN entra quando o progresso do scroll é indefinido (altura de seção zero,
+  // por exemplo). Sem esta guarda o NaN atravessa o cache inteiro em silêncio:
+  // `getNearest` devolve null, o canvas para de desenhar e nada é registrado.
+  if (Number.isNaN(rounded)) return 0;
   if (rounded < 0) return 0;
   const last = frameCount - 1;
   return rounded > last ? last : rounded;
@@ -88,7 +92,10 @@ export function buildSceneSegments(
     return {
       startFrame: scene.startFrame,
       endFrameExclusive: nextKey === undefined ? frameCount : scenes[nextKey].startFrame,
-      weight: scene.scrollWeight > 0 ? scene.scrollWeight : 1,
+      // `Infinity > 0` e verdadeiro: sem checar finitude, totalWeight vira
+      // Infinity, todo share vira NaN, e o mapeamento devolve o ultimo frame
+      // em qualquer posicao de scroll, sem erro nenhum.
+      weight: Number.isFinite(scene.scrollWeight) && scene.scrollWeight > 0 ? scene.scrollWeight : 1,
     };
   });
 }
@@ -107,23 +114,31 @@ export function frameFromWeightedProgress(
   segments: readonly SceneSegment[],
   frameCount: number,
 ): number {
-  if (frameCount <= 0) return 0;
+  if (!Number.isFinite(frameCount) || frameCount <= 0) return 0;
   if (segments.length === 0) return frameFromProgress(progress, frameCount);
 
-  const clamped = progress < 0 ? 0 : progress > 1 ? 1 : progress;
-  const totalWeight = segments.reduce((sum, segment) => sum + segment.weight, 0);
+  const clamped = Number.isNaN(progress) ? 0 : progress < 0 ? 0 : progress > 1 ? 1 : progress;
+
+  // A fatia de scroll e proporcional a `peso * frames`, nao so ao peso. Sem o
+  // span, cenas de tamanhos diferentes com o mesmo peso recebem a mesma
+  // rolagem e a velocidade de reproducao salta em cada fronteira: peso 1 em
+  // todas deixa de ser neutro. Com o span, peso 1 reproduz exatamente o
+  // mapeamento linear, e o peso passa a significar o que promete, quao rapido
+  // a cena toca.
+  const spans = segments.map((segment) => Math.max(0, segment.endFrameExclusive - segment.startFrame));
+  const totalWeight = segments.reduce((sum, segment, i) => sum + segment.weight * spans[i]!, 0);
   if (totalWeight <= 0) return frameFromProgress(clamped, frameCount);
 
   let consumed = 0;
 
   for (let i = 0; i < segments.length; i += 1) {
     const segment = segments[i]!;
-    const share = segment.weight / totalWeight;
+    const span = spans[i]!;
+    const share = (segment.weight * span) / totalWeight;
     const isLast = i === segments.length - 1;
 
     if (isLast || clamped <= consumed + share) {
       const local = share <= 0 ? 1 : (clamped - consumed) / share;
-      const span = segment.endFrameExclusive - segment.startFrame;
       return clampFrame(segment.startFrame + local * span, frameCount);
     }
 

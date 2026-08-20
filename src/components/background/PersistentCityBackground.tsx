@@ -19,7 +19,9 @@ export function PersistentCityBackground() {
     <div aria-hidden="true" className="fixed inset-0 z-0 overflow-hidden bg-[var(--ink-900)]">
       <picture>
         <source
-          media={`(max-width: ${MOBILE_BREAKPOINT_PX - 1}px)`}
+          // 0.02 e nao 1: entre 767.0 e 768.0 o media deixava de casar enquanto o
+          // JS ainda escolhia o conjunto mobile, e a costura aparecia nessa faixa.
+          media={`(max-width: ${MOBILE_BREAKPOINT_PX - 0.02}px)`}
           srcSet={CINEMATIC.assets.finalCityMobile}
         />
         <img

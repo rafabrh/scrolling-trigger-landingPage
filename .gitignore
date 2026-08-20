@@ -22,3 +22,7 @@ design-canvas/shk-group-site.html
 
 # Cache incremental do tsc.
 *.tsbuildinfo
+
+# Gerados pelo `next dev`. Desligados via agentRules no next.config.ts.
+AGENTS.md
+CLAUDE.md

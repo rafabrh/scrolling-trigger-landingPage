@@ -40,7 +40,35 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="max-md:hidden">
+        {/*
+          Abaixo de lg a navegacao some, e sem isto o celular ficava sem
+          nenhuma forma de alcancar as secoes: nao ha menu, e o unico caminho
+          era rolar 500vh de cinematic na mao. `details` resolve sem uma linha
+          de JavaScript, operavel por teclado por padrao, e mantem o header
+          como Server Component.
+        */}
+        <details className="relative hidden max-lg:block">
+          <summary className="cursor-pointer list-none px-2 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--paper-dim)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]">
+            Menu
+          </summary>
+          <nav
+            aria-label="Main"
+            className="absolute right-0 top-full mt-3 flex min-w-[220px] flex-col gap-5 border border-[var(--surface-border)] bg-[rgba(5,8,12,0.94)] p-6 backdrop-blur-md"
+          >
+            {SITE_CONTENT.nav.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="text-sm text-[var(--paper-dim)] transition-colors hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+              >
+                {item.label}
+              </a>
+            ))}
+            <CtaLink href={SITE_CONTENT.cta.href}>{SITE_CONTENT.cta.label}</CtaLink>
+          </nav>
+        </details>
+
+        <div className="max-lg:hidden">
           <CtaLink href={SITE_CONTENT.cta.href}>{SITE_CONTENT.cta.label}</CtaLink>
         </div>
       </div>

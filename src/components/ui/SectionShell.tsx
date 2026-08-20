@@ -28,8 +28,16 @@ export function SectionShell({
               {headline}
             </h2>
           </div>
+
+          {/*
+            O justify-between empurra este parágrafo para o lado direito do
+            viewport, que é justamente onde o scrim horizontal deixa a cidade
+            em 49% de luz. Ali o texto media 2,47:1. Aumentar o alfa não
+            resolve: em 1.0 ainda dá 3,83:1. Só escurecer o fundo sob ele
+            funciona, e um scrim local preserva a cidade em volta.
+          */}
           {support ? (
-            <p className="max-w-[360px] text-base leading-[1.62] text-[var(--paper-dim)]">
+            <p className="max-w-[360px] border-l border-[var(--surface-border)] bg-[rgba(5,8,12,0.62)] px-6 py-5 text-base leading-[1.62] text-[var(--paper-dim)] backdrop-blur-sm">
               {support}
             </p>
           ) : null}
