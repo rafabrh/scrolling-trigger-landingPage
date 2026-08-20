@@ -9,7 +9,7 @@ export function CtaLink({ href, children }: { href: string; children: React.Reac
     <a
       href={href}
       {...(external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
-      className="inline-flex items-center gap-3 border border-[var(--accent)] bg-[var(--accent-glow)] px-7 py-[15px] text-[13px] font-medium uppercase tracking-[0.1em] text-[var(--paper)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--ink-900)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+      className="inline-flex items-center gap-3 border border-[var(--accent)] bg-[var(--accent-glow)] px-7 py-[15px] text-[13px] font-medium uppercase tracking-[var(--tracking-snug)] text-[var(--paper)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--ink-900)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
     >
       {children}
       <svg

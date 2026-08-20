@@ -48,7 +48,7 @@ export const SceneRail = forwardRef<SceneHandle, SceneRailProps>(function SceneR
       aria-hidden="true"
       className={`absolute right-[60px] top-1/2 flex -translate-y-1/2 flex-col items-end gap-[18px] max-md:right-5 ${className ?? ''}`}
     >
-      <span ref={labelRef} className="font-mono text-[10px] tracking-[0.24em] text-[var(--paper-dim)]">
+      <span ref={labelRef} className="font-mono text-[10px] tracking-[var(--tracking-wide)] text-[var(--paper-dim)]">
         01 / 04
       </span>
       <div className="flex flex-col gap-[9px]">

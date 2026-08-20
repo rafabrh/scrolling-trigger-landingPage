@@ -10,7 +10,7 @@ export function TechnologySection() {
         {capabilities.map((capability) => (
           <li
             key={capability}
-            className="flex items-start gap-4 border-b border-white/[0.07] py-5 text-[15px] leading-[1.5] text-[var(--paper-dim)]"
+            className="flex items-start gap-4 border-b border-white/[0.07] py-5 text-[var(--text-body-base)] leading-[1.5] text-[var(--paper-dim)]"
           >
             <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 bg-[var(--accent)]" />
             {capability}

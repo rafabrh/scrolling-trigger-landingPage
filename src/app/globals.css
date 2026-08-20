@@ -13,6 +13,29 @@
 
   --surface: rgba(5, 8, 12, 0.58);
   --surface-border: rgba(255, 255, 255, 0.08);
+
+  /* Type scale. Antes havia 4 tamanhos de display (52/56/58/64) e 4 de corpo
+     (15/16/17/18) afinados a mao, mais 8 trackings soltos — assinatura de
+     template. Consolidamos em degraus: os valores proximos colapsam no degrau
+     mais perto (delta <=2px e' imperceptivel na renderizacao). */
+
+  /* Display: 3 degraus. lg=64 (hero/overlay), md=56 (heros de secao: 52/56/58
+     viram 56), sm=34 (cards de produto). */
+  --text-display-lg: 64px;
+  --text-display-md: 56px;
+  --text-display-sm: 34px;
+
+  /* Corpo: 2 degraus. base=16 (15/16 viram 16), lg=17 (17/18 viram 17 — o par
+     mais frequente no hero cinematico define o degrau). */
+  --text-body-base: 16px;
+  --text-body-lg: 17px;
+
+  /* Tracking: 3 papeis. tight p/ display (os -0.02/-0.024/-0.026 colapsam),
+     wide p/ eyebrows e labels mono uppercase (0.18..0.3 -> 0.22), snug p/ mono
+     inline/CTA que precisa respirar menos (0.1/0.16 -> 0.14). */
+  --tracking-tight: -0.024em;
+  --tracking-wide: 0.22em;
+  --tracking-snug: 0.14em;
 }
 
 @theme inline {

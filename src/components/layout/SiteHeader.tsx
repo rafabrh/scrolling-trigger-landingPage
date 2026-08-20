@@ -22,7 +22,7 @@ export function SiteHeader() {
             só falharia na primeira requisição do logo.
           */}
           <Image src={logo} alt="" width={46} height={26} priority className="h-[26px] w-auto" />
-          <span className="font-display text-[15px] font-bold tracking-[0.2em]">
+          <span className="font-display text-[15px] font-bold tracking-[var(--tracking-wide)]">
             {SITE_CONTENT.brand.name}
           </span>
           <span className="sr-only">Back to top</span>
@@ -48,7 +48,7 @@ export function SiteHeader() {
           como Server Component.
         */}
         <details className="relative hidden max-lg:block">
-          <summary className="cursor-pointer list-none px-2 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--paper-dim)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]">
+          <summary className="cursor-pointer list-none px-2 py-1 font-mono text-[11px] uppercase tracking-[var(--tracking-wide)] text-[var(--paper-dim)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]">
             Menu
           </summary>
           <nav

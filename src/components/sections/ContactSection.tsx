@@ -14,7 +14,7 @@ export function ContactSection() {
           href={instagramHref}
           target="_blank"
           rel="noreferrer noopener"
-          className="font-mono text-[13px] tracking-[0.16em] text-[var(--paper-dim)] transition-colors hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+          className="font-mono text-[13px] tracking-[var(--tracking-snug)] text-[var(--paper-dim)] transition-colors hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
         >
           {instagramLabel}
         </a>
