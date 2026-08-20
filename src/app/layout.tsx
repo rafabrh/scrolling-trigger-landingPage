@@ -28,6 +28,15 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shkgroup.com.br';
 const DESCRIPTION =
   'AI agents, software and digital products for companies whose sales operation runs slower than their demand.';
 
+// Frame final da cidade, já commitado e antes sem uso. É o mesmo quadro em que
+// o cinematic entrega, então o card do link e a primeira tela batem.
+const OG_IMAGE = {
+  url: '/cinematic/final-city.webp',
+  width: 1920,
+  height: 1080,
+  alt: 'SHK Group',
+} as const;
+
 /**
  * Os canais de distribuicao declarados do produto sao WhatsApp e Instagram.
  * Sem openGraph, um link colado no WhatsApp vira o card mais pobre que a
@@ -46,8 +55,16 @@ export const metadata: Metadata = {
     siteName: 'SHK Group',
     title: 'SHK Group',
     description: DESCRIPTION,
+    images: [OG_IMAGE],
   },
-  twitter: { card: 'summary_large_image', title: 'SHK Group', description: DESCRIPTION },
+  // O twitter não herda images do openGraph no Next: sem esta linha o card
+  // summary_large_image degrada para summary por falta de imagem.
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SHK Group',
+    description: DESCRIPTION,
+    images: [OG_IMAGE.url],
+  },
 };
 
 export const viewport: Viewport = { themeColor: '#050607' };
