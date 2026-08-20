@@ -6,10 +6,10 @@ out/
 .env*
 !.env.example
 
-# Sequência de frames gerada por `pnpm frames`. Reprodutível a partir do
-# vídeo em context/video/, então fica fora do histórico.
-public/cinematic/desktop/
-public/cinematic/mobile/
+# A sequencia de frames E versionada, de proposito. Gera-la no container de
+# build custaria 616 MB de disco temporario e 360 encodes do sharp a cada
+# deploy, para produzir exatamente os mesmos 23 MB. O `pnpm frames` continua
+# sendo a ferramenta de regeneracao quando o video mudar.
 
 # Payload de 2 MB gerado pelo canvas de design. As fontes são os .dc.html.
 design-canvas/shk-group-site.html
