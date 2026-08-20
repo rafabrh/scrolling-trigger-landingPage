@@ -6,13 +6,22 @@ import { sceneAtFrame } from '@/lib/cinematic/frame-math';
 import type { SceneHandle } from './CinematicOverlay';
 
 /**
+ * Record<string, never> parece o jeito de dizer "sem props", mas ele tipa
+ * toda chave como never, e `ref` e uma delas: o componente fica impossivel
+ * de referenciar. Uma prop opcional real resolve.
+ */
+export interface SceneRailProps {
+  readonly className?: string;
+}
+
+/**
  * Único elemento de HUD do cinematic. Uma seção de 500vh sem referência de
  * posição deixa o usuário sem saber quanto falta; o trilho resolve isso.
  *
  * Como o overlay, não guarda estado: `apply` escreve `background` e
  * `textContent` direto nos nós, porque quem chama é o tick da timeline.
  */
-export const SceneRail = forwardRef<SceneHandle, Record<string, never>>(function SceneRail(_props, ref) {
+export const SceneRail = forwardRef<SceneHandle, SceneRailProps>(function SceneRail({ className }, ref) {
   const segmentRefs = useRef<Array<HTMLDivElement | null>>([]);
   const labelRef = useRef<HTMLSpanElement | null>(null);
 
@@ -37,7 +46,7 @@ export const SceneRail = forwardRef<SceneHandle, Record<string, never>>(function
   return (
     <div
       aria-hidden="true"
-      className="absolute right-[60px] top-1/2 flex -translate-y-1/2 flex-col items-end gap-[18px] max-md:right-5"
+      className={`absolute right-[60px] top-1/2 flex -translate-y-1/2 flex-col items-end gap-[18px] max-md:right-5 ${className ?? ''}`}
     >
       <span ref={labelRef} className="font-mono text-[10px] tracking-[0.24em] text-[var(--paper-dim)]">
         01 / 04

@@ -14,6 +14,17 @@ export interface FrameCacheOptions {
 const HEAD_COUNT = 30;
 
 /**
+ * Quantas vezes um frame pode falhar antes de sair da fila para sempre. Sem
+ * teto, um diretório ausente em produção vira tempestade de 404 no ritmo do
+ * pump: a fila reoferece o mesmo frame indefinidamente porque ele nunca entra
+ * em `encoded`. Com teto, o buraco fica coberto por `getNearest` e a rede
+ * silencia.
+ */
+const MAX_ATTEMPTS_PER_FRAME = 3;
+
+const EMPTY_SET: ReadonlySet<number> = new Set();
+
+/**
  * Guarda a sequência em dois níveis. O nível encoded segura o Blob de todo
  * frame já baixado, cerca de 70 KB cada. O nível decoded segura ImageBitmap
  * prontos numa janela ao redor do playhead, cerca de 5,8 MB cada, e fecha o
@@ -24,6 +35,8 @@ export class FrameCache {
   private readonly encoded = new Map<number, Blob>();
   private readonly decoded = new Map<number, ImageBitmap>();
   private readonly inFlight = new Set<number>();
+  private readonly failures = new Map<number, number>();
+  private readonly abandoned = new Set<number>();
   private readonly firstFrameCallbacks: Array<() => void> = [];
 
   private playhead = 0;
@@ -60,17 +73,28 @@ export class FrameCache {
     this.schedulePump();
   }
 
+  /**
+   * Índice do arquivo que serve um frame. No conjunto mobile o passo é 2, então
+   * dois frames de vídeo compartilham o mesmo `.webp`. Chavear os dois níveis
+   * do cache por arquivo, e não por frame, evita baixar e decodificar a mesma
+   * imagem duas vezes.
+   */
+  private fileFor(frame: number): number {
+    return fileIndexForFrame(frame, this.options.frameStep);
+  }
+
   /** Bitmap exato do frame, ou null se ele ainda não está decodificado. */
   get(frame: number): ImageBitmap | null {
-    return this.decoded.get(frame) ?? null;
+    return this.decoded.get(this.fileFor(frame)) ?? null;
   }
 
   /** Bitmap do frame, ou o mais próximo disponível. Evita canvas vazio. */
   getNearest(frame: number): ImageBitmap | null {
-    const exact = this.decoded.get(frame);
+    const file = this.fileFor(frame);
+    const exact = this.decoded.get(file);
     if (exact) return exact;
 
-    const nearest = nearestLoadedFrame(frame, [...this.decoded.keys()]);
+    const nearest = nearestLoadedFrame(file, [...this.decoded.keys()]);
     return nearest === null ? null : (this.decoded.get(nearest) ?? null);
   }
 
@@ -82,12 +106,13 @@ export class FrameCache {
     this.encoded.clear();
     this.inFlight.clear();
     this.encodedBytes = 0;
+    this.failures.clear();
+    this.abandoned.clear();
     this.firstFrameCallbacks.length = 0;
   }
 
   private urlFor(frame: number): string {
-    const index = fileIndexForFrame(frame, this.options.frameStep);
-    return `${this.options.dir}/frame-${String(index).padStart(4, '0')}.webp`;
+    return `${this.options.dir}/frame-${String(this.fileFor(frame)).padStart(4, '0')}.webp`;
   }
 
   private schedulePump(): void {
@@ -105,22 +130,39 @@ export class FrameCache {
     const slots = this.options.concurrency - this.inFlight.size;
     if (slots <= 0) return;
 
-    const known = new Set([...this.encoded.keys(), ...this.inFlight]);
-    const queue = buildLoadPriority(this.playhead, known, {
+    // A fila raciocina em espaço de frame de vídeo; os dois níveis do cache
+    // são chaveados por arquivo. No mobile um arquivo serve dois frames, então
+    // o filtro precisa acontecer aqui, depois do mapeamento, e não dentro do
+    // buildLoadPriority. Passar um conjunto vazio de carregados e filtrar na
+    // saída é o que mantém os dois espaços coerentes.
+    const queue = buildLoadPriority(this.playhead, EMPTY_SET, {
       frameCount: this.options.frameCount,
       finalFrame: this.options.finalFrame,
       headCount: HEAD_COUNT,
       lookAround: this.options.lookAround,
     });
 
-    for (const frame of queue.slice(0, slots)) {
+    const claimed = new Set<number>();
+    let started = 0;
+
+    for (const frame of queue) {
+      if (started >= slots) break;
+
+      const file = this.fileFor(frame);
+      if (claimed.has(file)) continue;
+      if (this.encoded.has(file) || this.inFlight.has(file) || this.abandoned.has(file)) continue;
+
+      claimed.add(file);
+      started += 1;
       void this.load(frame);
     }
   }
 
   private async load(frame: number): Promise<void> {
-    if (this.inFlight.has(frame) || this.encoded.has(frame) || this.disposed) return;
-    this.inFlight.add(frame);
+    const file = this.fileFor(frame);
+    if (this.inFlight.has(file) || this.encoded.has(file) || this.disposed) return;
+    if (this.abandoned.has(file)) return;
+    this.inFlight.add(file);
 
     try {
       const response = await fetch(this.urlFor(frame));
@@ -129,21 +171,24 @@ export class FrameCache {
       const blob = await response.blob();
       if (this.disposed) return;
 
-      this.encoded.set(frame, blob);
+      this.encoded.set(file, blob);
       this.encodedBytes += blob.size;
 
-      await this.decode(frame, blob);
+      await this.decode(file, blob);
     } catch {
       // Um frame que falhou não trava a sequência: getNearest cobre o buraco.
-      // Ele volta para a fila na próxima passada do pump.
+      // Ele volta para a fila até esgotar as tentativas, e aí é abandonado.
+      const attempts = (this.failures.get(file) ?? 0) + 1;
+      this.failures.set(file, attempts);
+      if (attempts >= MAX_ATTEMPTS_PER_FRAME) this.abandoned.add(file);
     } finally {
-      this.inFlight.delete(frame);
+      this.inFlight.delete(file);
       if (!this.disposed) this.schedulePump();
     }
   }
 
-  private async decode(frame: number, blob: Blob): Promise<void> {
-    if (this.decoded.has(frame) || this.disposed) return;
+  private async decode(file: number, blob: Blob): Promise<void> {
+    if (this.decoded.has(file) || this.disposed) return;
 
     const bitmap = await createImageBitmap(blob);
     if (this.disposed) {
@@ -151,7 +196,7 @@ export class FrameCache {
       return;
     }
 
-    this.decoded.set(frame, bitmap);
+    this.decoded.set(file, bitmap);
     this.evict();
 
     if (!this.firstFrameDelivered) {
@@ -162,10 +207,14 @@ export class FrameCache {
   }
 
   private evict(): void {
-    const doomed = framesToEvict(this.playhead, [...this.decoded.keys()], this.options.maxDecoded);
-    for (const frame of doomed) {
-      this.decoded.get(frame)?.close();
-      this.decoded.delete(frame);
+    const doomed = framesToEvict(
+      this.fileFor(this.playhead),
+      [...this.decoded.keys()],
+      this.options.maxDecoded,
+    );
+    for (const file of doomed) {
+      this.decoded.get(file)?.close();
+      this.decoded.delete(file);
     }
   }
 }
