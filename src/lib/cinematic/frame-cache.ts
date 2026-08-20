@@ -111,8 +111,8 @@ export class FrameCache {
     this.firstFrameCallbacks.length = 0;
   }
 
-  private urlFor(frame: number): string {
-    return `${this.options.dir}/frame-${String(this.fileFor(frame)).padStart(4, '0')}.webp`;
+  private urlForFile(file: number): string {
+    return `${this.options.dir}/frame-${String(file).padStart(4, '0')}.webp`;
   }
 
   private schedulePump(): void {
@@ -130,11 +130,10 @@ export class FrameCache {
     const slots = this.options.concurrency - this.inFlight.size;
     if (slots <= 0) return;
 
-    // A fila raciocina em espaço de frame de vídeo; os dois níveis do cache
-    // são chaveados por arquivo. No mobile um arquivo serve dois frames, então
-    // o filtro precisa acontecer aqui, depois do mapeamento, e não dentro do
-    // buildLoadPriority. Passar um conjunto vazio de carregados e filtrar na
-    // saída é o que mantém os dois espaços coerentes.
+    // A fila raciocina em espaço de frame de vídeo; os dois níveis do cache são
+    // chaveados por arquivo. No mobile um arquivo serve dois frames, então o
+    // filtro acontece aqui, depois do mapeamento, e não dentro do
+    // buildLoadPriority.
     const queue = buildLoadPriority(this.playhead, EMPTY_SET, {
       frameCount: this.options.frameCount,
       finalFrame: this.options.finalFrame,
@@ -142,6 +141,8 @@ export class FrameCache {
       lookAround: this.options.lookAround,
     });
 
+    const playFile = this.fileFor(this.playhead);
+    const halfWindow = Math.floor(this.options.maxDecoded / 2);
     const claimed = new Set<number>();
     let started = 0;
 
@@ -149,34 +150,49 @@ export class FrameCache {
       if (started >= slots) break;
 
       const file = this.fileFor(frame);
-      if (claimed.has(file)) continue;
-      if (this.encoded.has(file) || this.inFlight.has(file) || this.abandoned.has(file)) continue;
+      if (claimed.has(file) || this.inFlight.has(file) || this.abandoned.has(file)) continue;
+
+      // Duas espécies de trabalho, e o segundo é o que faltava. Baixar é
+      // finito: cada arquivo entra em `encoded` uma vez e acabou. Decodificar
+      // não é: o despejo fecha bitmaps o tempo todo, e um arquivo que já está
+      // em `encoded` continua precisando de bitmap quando o playhead volta
+      // para perto dele.
+      const needsFetch = !this.encoded.has(file);
+      const needsDecode = !this.decoded.has(file) && Math.abs(file - playFile) <= halfWindow;
+      if (!needsFetch && !needsDecode) continue;
 
       claimed.add(file);
       started += 1;
-      void this.load(frame);
+      void this.ensure(file);
     }
   }
 
-  private async load(frame: number): Promise<void> {
-    const file = this.fileFor(frame);
-    if (this.inFlight.has(file) || this.encoded.has(file) || this.disposed) return;
-    if (this.abandoned.has(file)) return;
+  /**
+   * Garante que o arquivo tenha blob e, quando estiver dentro da janela,
+   * bitmap. Reaproveita o blob residente: redecodificar custa milissegundos
+   * de CPU e zero de rede.
+   */
+  private async ensure(file: number): Promise<void> {
+    if (this.inFlight.has(file) || this.abandoned.has(file) || this.disposed) return;
     this.inFlight.add(file);
 
     try {
-      const response = await fetch(this.urlFor(frame));
-      if (!response.ok) throw new Error(`frame ${frame}: HTTP ${response.status}`);
+      let blob = this.encoded.get(file);
 
-      const blob = await response.blob();
-      if (this.disposed) return;
+      if (blob === undefined) {
+        const response = await fetch(this.urlForFile(file));
+        if (!response.ok) throw new Error(`frame file ${file}: HTTP ${response.status}`);
 
-      this.encoded.set(file, blob);
-      this.encodedBytes += blob.size;
+        blob = await response.blob();
+        if (this.disposed) return;
+
+        this.encoded.set(file, blob);
+        this.encodedBytes += blob.size;
+      }
 
       await this.decode(file, blob);
     } catch {
-      // Um frame que falhou não trava a sequência: getNearest cobre o buraco.
+      // Um arquivo que falhou não trava a sequência: getNearest cobre o buraco.
       // Ele volta para a fila até esgotar as tentativas, e aí é abandonado.
       const attempts = (this.failures.get(file) ?? 0) + 1;
       this.failures.set(file, attempts);

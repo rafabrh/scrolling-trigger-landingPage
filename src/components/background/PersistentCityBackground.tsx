@@ -31,9 +31,22 @@ export function PersistentCityBackground() {
         />
       </picture>
 
-      <div className="absolute inset-0 bg-[rgba(5,6,7,0.62)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(5,6,7,0.5)_0%,rgba(5,6,7,0.1)_40%,rgba(5,6,7,0.62)_100%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_22%_45%,rgba(5,6,7,0.9)_0%,rgba(5,6,7,0.34)_62%,rgba(5,6,7,0.6)_100%)]" />
+      {/*
+        Quatro camadas calibradas no navegador, sobre a imagem real, nao no
+        escuro. O empilhamento anterior somava scrim 0.62 mais gradiente mais
+        vinheta e deixava 23% de luz: uma cidade noturna a 23% le como preto.
+
+        Agora cada camada tem um trabalho so. O scrim plano da a base. O
+        vertical protege header e rodape. O horizontal escurece a coluna
+        esquerda, onde o texto vive, e solta o lado direito. A vinheta fecha
+        as bordas.
+
+        Resultado medido: 24% de luz sob o texto, 49% no lado direito.
+      */}
+      <div className="absolute inset-0 bg-[rgba(5,6,7,0.42)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(5,6,7,0.62)_0%,rgba(5,6,7,0)_24%,rgba(5,6,7,0)_62%,rgba(5,6,7,0.66)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(5,6,7,0.58)_0%,rgba(5,6,7,0.18)_46%,rgba(5,6,7,0)_72%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(130%_90%_at_50%_45%,rgba(5,6,7,0)_40%,rgba(5,6,7,0.42)_100%)]" />
       <GrainOverlay />
     </div>
   );
