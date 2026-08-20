@@ -22,7 +22,10 @@ export function buildLoadPriority(
   const queued = new Set<number>();
 
   const push = (frame: number): void => {
-    if (frame < 0 || frame >= frameCount) return;
+    // Escrito como afirmação de faixa, e não como negação, porque `NaN < 0` e
+    // `NaN >= frameCount` são ambos falsos: a forma negada deixava o NaN passar
+    // e a fila pedia `frame-0NaN.webp` à rede.
+    if (!(frame >= 0 && frame < frameCount)) return;
     if (queued.has(frame) || loaded.has(frame)) return;
     queued.add(frame);
     order.push(frame);
@@ -60,6 +63,18 @@ export function nearestLoadedFrame(target: number, loaded: ReadonlyArray<number>
   }
 
   return best;
+}
+
+/**
+ * Raio da janela de decode ao redor do playhead, em arquivos, que ainda cabe
+ * sob o teto de despejo. A janela tem `2 * raio + 1` arquivos contando o do
+ * playhead, então `maxDecoded / 2` produz um arquivo a mais do que o teto
+ * aceita: o pump decodifica a borda, o despejo fecha a borda, e o par se
+ * repete para sempre queimando CPU com a página parada.
+ */
+export function decodeWindowRadius(maxDecoded: number): number {
+  if (maxDecoded <= 1) return 0;
+  return Math.floor((maxDecoded - 1) / 2);
 }
 
 /**

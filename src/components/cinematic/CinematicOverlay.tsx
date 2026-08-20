@@ -46,16 +46,24 @@ export const CinematicOverlay = forwardRef<SceneHandle, CinematicOverlayProps>(
         if (!node) return;
 
         const opacity = getOverlayOpacity(frame, overlayWindow);
+        const hidden = opacity <= 0.9;
+
         node.style.opacity = String(opacity);
         node.style.transform = `translate3d(0, ${((1 - opacity) * TRAVEL_PX).toFixed(2)}px, 0)`;
         node.style.filter = opacity >= 1 ? 'none' : `blur(${((1 - opacity) * BLUR_PX).toFixed(2)}px)`;
-        node.style.pointerEvents = opacity > 0.9 ? 'auto' : 'none';
+        node.style.pointerEvents = hidden ? 'none' : 'auto';
+        // `pointer-events: none` bloqueia o mouse e nao tira do tab order. Sem
+        // `inert`, quem navega por teclado cai em dois CTAs invisiveis cujo
+        // proprio anel de foco tambem esta em opacidade zero, e perde o foco
+        // de vista sem saber onde ele foi parar.
+        node.toggleAttribute('inert', hidden);
       },
     }));
 
     return (
       <div
         ref={rootRef}
+        inert
         style={{ opacity: 0, pointerEvents: 'none' }}
         className="absolute bottom-[132px] left-[96px] flex max-w-[660px] flex-col gap-[26px] will-change-[opacity,transform] max-md:bottom-16 max-md:left-6 max-md:right-6"
       >

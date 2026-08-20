@@ -1,4 +1,9 @@
-import { buildLoadPriority, framesToEvict, nearestLoadedFrame } from './load-policy';
+import {
+  buildLoadPriority,
+  decodeWindowRadius,
+  framesToEvict,
+  nearestLoadedFrame,
+} from './load-policy';
 import { fileIndexForFrame } from './frame-math';
 
 export interface FrameCacheOptions {
@@ -94,8 +99,25 @@ export class FrameCache {
     const exact = this.decoded.get(file);
     if (exact) return exact;
 
-    const nearest = nearestLoadedFrame(file, [...this.decoded.keys()]);
-    return nearest === null ? null : (this.decoded.get(nearest) ?? null);
+    // Varredura no lugar. O spread das chaves alocava um array de ate 90
+    // posicoes a cada quadro em que o exato faltasse, ou seja, durante todo o
+    // carregamento inicial, que e justamente quando o decodificador ja esta
+    // disputando a main thread. Empate resolve pelo menor indice, igual ao
+    // nearestLoadedFrame que os testes cobrem.
+    let best: ImageBitmap | null = null;
+    let bestFile = Number.POSITIVE_INFINITY;
+    let bestDistance = Number.POSITIVE_INFINITY;
+
+    for (const [candidate, bitmap] of this.decoded) {
+      const distance = Math.abs(candidate - file);
+      if (distance < bestDistance || (distance === bestDistance && candidate < bestFile)) {
+        best = bitmap;
+        bestFile = candidate;
+        bestDistance = distance;
+      }
+    }
+
+    return best;
   }
 
   dispose(): void {
@@ -142,7 +164,7 @@ export class FrameCache {
     });
 
     const playFile = this.fileFor(this.playhead);
-    const halfWindow = Math.floor(this.options.maxDecoded / 2);
+    const halfWindow = decodeWindowRadius(this.options.maxDecoded);
     const claimed = new Set<number>();
     let started = 0;
 
@@ -190,7 +212,20 @@ export class FrameCache {
         this.encodedBytes += blob.size;
       }
 
-      await this.decode(file, blob);
+      // O pump inicia `ensure` tambem para arquivos que so precisam ser
+      // baixados, como a cabeca da sequencia e o frame final, que ficam bem
+      // fora da janela. Decodificar esses seria alocar um bitmap de varios
+      // megabytes para o despejo fechar na linha seguinte. A janela e relida
+      // aqui e nao antes do await, porque o playhead se move durante o fetch.
+      const radius = decodeWindowRadius(this.options.maxDecoded);
+      if (Math.abs(file - this.fileFor(this.playhead)) <= radius) {
+        await this.decode(file, blob);
+      }
+
+      // Sucesso zera o orcamento de tentativas. Sem isto o contador so sobe, e
+      // um arquivo que falhou num soluco de rede e depois funcionou seria
+      // abandonado para sempre na primeira falha seguinte.
+      this.failures.delete(file);
     } catch {
       // Um arquivo que falhou não trava a sequência: getNearest cobre o buraco.
       // Ele volta para a fila até esgotar as tentativas, e aí é abandonado.

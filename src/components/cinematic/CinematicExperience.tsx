@@ -20,10 +20,16 @@ import { SceneRail } from './SceneRail';
 import { CinematicDebugPanel } from './CinematicDebugPanel';
 
 /**
- * Fração final do scroll onde o palco some, revelando a cidade idêntica que
- * está montada atrás dele desde o primeiro paint.
+ * O palco some nos últimos frames, revelando a cidade idêntica que está
+ * montada atrás dele desde o primeiro paint.
+ *
+ * Ancorado em frame, não em progresso de scroll. Com peso por cena os dois
+ * deixaram de ser proporcionais, e o que o olho vê é o frame: amarrar o fade
+ * ao progresso deixaria o canvas ainda percorrendo quadros visivelmente
+ * diferentes enquanto faz crossfade contra um fundo estático, produzindo
+ * imagem fantasma no lugar da troca invisível.
  */
-const HANDOFF_START_PROGRESS = 0.985;
+const HANDOFF_FRAME_SPAN = 3;
 
 export function CinematicExperience() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -66,8 +72,15 @@ export function CinematicExperience() {
       // 239, no mesmo cover e no mesmo viewport, não há o que o olho detecte.
       const stage = stageRef.current;
       if (stage) {
-        const t = (tick.progress - HANDOFF_START_PROGRESS) / (1 - HANDOFF_START_PROGRESS);
-        stage.style.opacity = String(1 - Math.min(1, Math.max(0, t)));
+        const start = CINEMATIC.finalFrame - HANDOFF_FRAME_SPAN;
+        const t = (tick.frame - start) / HANDOFF_FRAME_SPAN;
+        const opacity = 1 - Math.min(1, Math.max(0, t));
+
+        stage.style.opacity = String(opacity);
+        // Opacidade zero não tira do fluxo: sem isto o usuário de teclado
+        // tabula para dentro de CTAs invisíveis e o clique morre no palco.
+        stage.style.pointerEvents = opacity === 0 ? 'none' : '';
+        stage.style.visibility = opacity === 0 ? 'hidden' : '';
       }
     },
   });

@@ -69,7 +69,10 @@ export const CINEMATIC = {
     // A intro é o mergulho entre os prédios, sem elemento gráfico. Com peso 1
     // ela come 18% do scroll antes de qualquer coisa acontecer, e a abertura
     // arrasta. Em 0.35 o tubarão começa a entrar por volta de 10% da rolagem.
-    intro: { startFrame: 0, endFrame: 42, scrollWeight: 0.35 },
+    // 0.5 com a fatia normalizada pelo span da ~9,8% da rolagem, que e onde a
+    // intro ja estava. Peso e multiplicador de velocidade: 0.5 toca a cena ao
+    // dobro da velocidade natural.
+    intro: { startFrame: 0, endFrame: 42, scrollWeight: 0.5 },
     sharknews: { startFrame: 43, endFrame: 110, peakFrame: 80, scrollWeight: 1 },
     aiAgent: { startFrame: 110, endFrame: 168, peakFrame: 140, scrollWeight: 1 },
     cityReveal: { startFrame: 168, endFrame: 239, scrollWeight: 1 },
