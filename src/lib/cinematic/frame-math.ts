@@ -27,6 +27,9 @@ export function frameFromProgress(progress: number, frameCount: number): number 
 
 /** Posição 0..1 de um frame dentro de uma cena. Preso fora dela. */
 export function getSceneProgress(frame: number, scene: FrameSpan): number {
+  // NaN não é preso por `raw < 0` nem `raw > 1` — ambos são falsos —, então
+  // sem esta guarda o NaN sai pela porta e vira opacidade/estilo NaN adiante.
+  if (Number.isNaN(frame)) return 0;
   const span = scene.endFrame - scene.startFrame;
   if (span <= 0) return 1;
   const raw = (frame - scene.startFrame) / span;
@@ -39,6 +42,9 @@ export function getSceneProgress(frame: number, scene: FrameSpan): number {
  * Zero fora da janela.
  */
 export function getOverlayOpacity(frame: number, window: OverlayWindow): number {
+  // Um NaN escapa de todas as comparações abaixo e cairia na rampa de saída
+  // devolvendo NaN. Fora da janela é o padrão correto para frame indefinido.
+  if (Number.isNaN(frame)) return 0;
   if (frame <= window.inStart || frame >= window.outEnd) return 0;
   if (frame < window.inEnd) {
     const span = window.inEnd - window.inStart;
@@ -63,6 +69,9 @@ export function sceneAtFrame(frame: number, scenes: Record<SceneKey, SceneRange>
 
 /** Índice do arquivo que corresponde a um frame do vídeo, dado o passo do conjunto. */
 export function fileIndexForFrame(frame: number, frameStep: number): number {
+  // Sem esta guarda um frame NaN vira o nome de arquivo `frame-0NaN.webp`, que
+  // a rede pede e o servidor devolve 404 em silêncio. Arquivo 0 é o fallback são.
+  if (Number.isNaN(frame)) return 0;
   if (frameStep <= 1) return frame;
   return Math.floor(frame / frameStep);
 }

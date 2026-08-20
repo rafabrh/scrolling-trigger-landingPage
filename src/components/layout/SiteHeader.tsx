@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import logo from '../../../public/brand/logo.png';
 import { SITE_CONTENT } from '@/lib/content/site-content';
 import { CtaLink } from '@/components/ui/CtaLink';
 
@@ -14,14 +15,13 @@ export function SiteHeader() {
           href="#top"
           className="flex items-center gap-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
         >
-          <Image
-            src="/brand/logo.png"
-            alt=""
-            width={46}
-            height={26}
-            priority
-            className="h-[26px] w-auto"
-          />
+          {/*
+            Import estático: o next/image resolve o logo em build e o serve de
+            /_next/static com header immutable. Some a rota dinâmica /_next/image,
+            que precisaria do sharp em runtime — um deploy com --prod subiria e
+            só falharia na primeira requisição do logo.
+          */}
+          <Image src={logo} alt="" width={46} height={26} priority className="h-[26px] w-auto" />
           <span className="font-display text-[15px] font-bold tracking-[0.2em]">
             {SITE_CONTENT.brand.name}
           </span>

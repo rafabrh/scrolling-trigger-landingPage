@@ -12,6 +12,11 @@ export interface FrameCacheOptions {
   readonly frameStep: number;
   readonly maxDecoded: number;
   readonly concurrency: number;
+  /**
+   * Teto de slots que a cauda pode ocupar por pump, uma vez liberada. Fica
+   * abaixo de `concurrency` para não roubar downlink da janela do playhead.
+   */
+  readonly tailConcurrency: number;
   readonly lookAround: number;
   readonly finalFrame: number;
 }
@@ -51,6 +56,12 @@ export class FrameCache {
   private firstFrameDelivered = false;
   private pumpScheduled = false;
 
+  /**
+   * Começa travada: `start()` pumpa em playhead 0 e baixa só o urgente. O
+   * primeiro scroll real dentro da seção libera a cauda (ver `setPlayhead`).
+   */
+  private tailUnlocked = false;
+
   constructor(private readonly options: FrameCacheOptions) {}
 
   get stats(): { decoded: number; encoded: number; bytes: number } {
@@ -73,6 +84,10 @@ export class FrameCache {
 
   setPlayhead(frame: number): void {
     if (this.playhead === frame) return;
+    // Playhead saindo do 0 é o sinal de scroll real dentro da seção: a partir
+    // daqui o usuário está de fato consumindo a sequência, então a cauda pode
+    // ser liberada. Uma vez destravada, fica destravada.
+    if (frame > 0) this.tailUnlocked = true;
     this.playhead = frame;
     this.evict();
     this.schedulePump();
@@ -161,18 +176,30 @@ export class FrameCache {
       finalFrame: this.options.finalFrame,
       headCount: HEAD_COUNT,
       lookAround: this.options.lookAround,
+      tailUnlocked: this.tailUnlocked,
     });
 
     const playFile = this.fileFor(this.playhead);
     const halfWindow = decodeWindowRadius(this.options.maxDecoded);
     const claimed = new Set<number>();
     let started = 0;
+    // Enquanto a cauda está travada a fila já vem só com urgentes e este contador
+    // fica ocioso. Liberada a cauda, a fila vem completa: contamos quantos frames
+    // de cauda (fora da janela urgente) já iniciamos e paramos de iniciar cauda
+    // ao bater `tailConcurrency`, sem bloquear os urgentes.
+    let tailStarted = 0;
 
     for (const frame of queue) {
       if (started >= slots) break;
 
       const file = this.fileFor(frame);
       if (claimed.has(file) || this.inFlight.has(file) || this.abandoned.has(file)) continue;
+
+      // A cauda não pode saturar o downlink: cada pump só inicia até
+      // `tailConcurrency` frames dela. Urgentes (âncora, cabeça, janela do
+      // playhead) seguem podendo usar a concorrência cheia.
+      const isTail = !this.isUrgent(frame, playFile);
+      if (isTail && tailStarted >= this.options.tailConcurrency) continue;
 
       // Duas espécies de trabalho, e o segundo é o que faltava. Baixar é
       // finito: cada arquivo entra em `encoded` uma vez e acabou. Decodificar
@@ -185,8 +212,22 @@ export class FrameCache {
 
       claimed.add(file);
       started += 1;
+      if (isTail) tailStarted += 1;
       void this.ensure(file);
     }
+  }
+
+  /**
+   * Um frame é urgente quando o usuário pode encostar nele já: os dois âncora
+   * (0 e finalFrame), a cabeça da sequência (1..HEAD_COUNT) e a janela ao redor
+   * do playhead. Comparado em espaço de arquivo porque é assim que os slots são
+   * contados; a janela usa `lookAround` para casar com a que o buildLoadPriority
+   * monta. O resto é cauda.
+   */
+  private isUrgent(frame: number, playFile: number): boolean {
+    if (frame === 0 || frame === this.options.finalFrame) return true;
+    if (frame >= 1 && frame <= HEAD_COUNT) return true;
+    return Math.abs(this.fileFor(frame) - playFile) <= this.options.lookAround;
   }
 
   /**
@@ -226,12 +267,19 @@ export class FrameCache {
       // um arquivo que falhou num soluco de rede e depois funcionou seria
       // abandonado para sempre na primeira falha seguinte.
       this.failures.delete(file);
-    } catch {
+    } catch (error) {
       // Um arquivo que falhou não trava a sequência: getNearest cobre o buraco.
       // Ele volta para a fila até esgotar as tentativas, e aí é abandonado.
       const attempts = (this.failures.get(file) ?? 0) + 1;
       this.failures.set(file, attempts);
-      if (attempts >= MAX_ATTEMPTS_PER_FRAME) this.abandoned.add(file);
+      if (attempts >= MAX_ATTEMPTS_PER_FRAME) {
+        this.abandoned.add(file);
+        // Uma linha por arquivo morto, e não uma por tentativa. O catch antes
+        // era mudo: combinado com um diretório ausente em produção, a sequência
+        // inteira dava 404 e nada aparecia em lugar nenhum. Warn, não error,
+        // porque getNearest mantém a tela preenchida — é degradação, não queda.
+        console.warn(`[cinematic] arquivo ${file} abandonado após ${attempts} tentativas:`, error);
+      }
     } finally {
       this.inFlight.delete(file);
       if (!this.disposed) this.schedulePump();

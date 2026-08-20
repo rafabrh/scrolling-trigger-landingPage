@@ -43,6 +43,29 @@ describe('buildLoadPriority', () => {
     const loaded = new Set(Array.from({ length: 240 }, (_, i) => i));
     expect(buildLoadPriority(0, loaded, OPTS)).toEqual([]);
   });
+
+  it('com a cauda travada, inclui só âncora, cabeça e a janela do playhead', () => {
+    const order = buildLoadPriority(0, new Set(), { ...OPTS, tailUnlocked: false });
+    // Urgentes presentes: os dois âncora, a cabeça e a janela ao redor do 0.
+    expect(order).toContain(0);
+    expect(order).toContain(239);
+    expect(order).toContain(15); // cabeça (1..30)
+    expect(order).toContain(24); // borda da janela (lookAround=24)
+    // Cauda distante ausente: em playhead 0, o 150 não pode aparecer.
+    expect(order).not.toContain(150);
+  });
+
+  it('com a cauda travada, é bem menor que 240 e sem repetição', () => {
+    const order = buildLoadPriority(0, new Set(), { ...OPTS, tailUnlocked: false });
+    expect(order.length).toBeLessThan(240);
+    expect(new Set(order).size).toBe(order.length);
+  });
+
+  it('omitir tailUnlocked mantém a cobertura de 240 (default liberado)', () => {
+    const order = buildLoadPriority(120, new Set(), OPTS);
+    expect(order).toHaveLength(240);
+    expect(buildLoadPriority(120, new Set(), { ...OPTS, tailUnlocked: true })).toHaveLength(240);
+  });
 });
 
 describe('nearestLoadedFrame', () => {

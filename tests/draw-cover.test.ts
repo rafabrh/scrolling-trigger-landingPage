@@ -50,4 +50,11 @@ describe('drawCoverDimensions', () => {
     expect(drawCoverDimensions(0, 900, 800, 450)).toEqual({ dx: 0, dy: 0, dw: 0, dh: 0 });
     expect(drawCoverDimensions(1600, 0, 800, 450)).toEqual({ dx: 0, dy: 0, dw: 0, dh: 0 });
   });
+
+  it('devolve um retângulo vazio quando qualquer lado é NaN', () => {
+    const empty = { dx: 0, dy: 0, dw: 0, dh: 0 };
+    expect(drawCoverDimensions(NaN, 900, 800, 450)).toEqual(empty);
+    expect(drawCoverDimensions(1600, 900, NaN, 450)).toEqual(empty);
+    expect(drawCoverDimensions(1600, 900, 800, NaN)).toEqual(empty);
+  });
 });
