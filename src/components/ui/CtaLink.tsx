@@ -9,7 +9,13 @@ export function CtaLink({ href, children }: { href: string; children: React.Reac
     <a
       href={href}
       {...(external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
-      className="inline-flex items-center gap-3 border border-[var(--accent)] bg-[var(--accent-glow)] px-7 py-[15px] text-[13px] font-medium uppercase tracking-[var(--tracking-snug)] text-[var(--paper)] transition-colors hover:bg-[var(--accent)] hover:text-[var(--ink-900)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+      /*
+        Estado :active é essencial em touch: hover nunca dispara no toque, então
+        sem :active o tap não dá nenhum retorno tátil. O scale-[0.98] e o
+        accent cheio simulam o "pressionar", e transition-all curta faz o
+        pressionar/soltar parecer físico tanto no mouse quanto no dedo.
+      */
+      className="inline-flex items-center gap-3 border border-[var(--accent)] bg-[var(--accent-glow)] px-7 py-[15px] text-[13px] font-medium uppercase tracking-[var(--tracking-snug)] text-[var(--paper)] transition-all duration-150 hover:bg-[var(--accent)] hover:text-[var(--ink-900)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] active:scale-[0.98] active:bg-[var(--accent)] active:text-[var(--ink-900)]"
     >
       {children}
       <svg
