@@ -9,7 +9,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "frames": "node scripts/build-frames.mjs"
+    "frames": "node scripts/build-frames.mjs",
+    "prebuild": "node scripts/verify-frames.mjs",
+    "verify:frames": "node scripts/verify-frames.mjs"
   },
   "dependencies": {
     "gsap": "^3.13.0",
