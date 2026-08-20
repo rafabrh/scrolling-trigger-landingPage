@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-08-19T21:27:26.251Z",
+  "source": {
+    "path": "context/video/rafa3.mp4",
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "frameCount": 240
+  },
+  "sets": {
+    "desktop": {
+      "dir": "/cinematic/desktop",
+      "width": 1600,
+      "height": 900,
+      "frameCount": 240,
+      "frameStep": 1,
+      "quality": 74,
+      "totalBytes": 17247880
+    },
+    "mobile": {
+      "dir": "/cinematic/mobile",
+      "width": 864,
+      "height": 1080,
+      "frameCount": 120,
+      "frameStep": 2,
+      "quality": 72,
+      "totalBytes": 6095006
+    }
+  },
+  "finalCity": {
+    "path": "/cinematic/final-city.webp",
+    "frame": 239,
+    "width": 1920,
+    "height": 1080
+  },
+  "finalCityMobile": {
+    "path": "/cinematic/final-city-mobile.webp",
+    "frame": 239,
+    "width": 864,
+    "height": 1080
+  },
+  "poster": {
+    "path": "/cinematic/poster.webp",
+    "frame": 0,
+    "width": 1600,
+    "height": 900
+  }
+}
