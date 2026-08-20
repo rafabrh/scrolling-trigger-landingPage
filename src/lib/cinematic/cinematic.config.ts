@@ -9,10 +9,21 @@ export type SceneKey = 'intro' | 'sharknews' | 'aiAgent' | 'cityReveal';
 
 export const SCENE_ORDER: readonly SceneKey[] = ['intro', 'sharknews', 'aiAgent', 'cityReveal'] as const;
 
-export interface SceneRange {
+/** O intervalo de frames de um trecho. É tudo que `getSceneProgress` precisa. */
+export interface FrameSpan {
   readonly startFrame: number;
   readonly endFrame: number;
+}
+
+export interface SceneRange extends FrameSpan {
   readonly peakFrame?: number;
+  /**
+   * Quanta distância de scroll esta cena recebe, em relação às outras. O
+   * padrão seria 1 para todas, o que faz o scroll andar na mesma velocidade
+   * do vídeo. Peso menor comprime a cena: ela consome os mesmos frames em
+   * menos rolagem, e passa mais rápido sem perder um quadro sequer.
+   */
+  readonly scrollWeight: number;
 }
 
 /**
@@ -55,10 +66,13 @@ export const CINEMATIC = {
    * `peakFrame`, o que quebra qualquer leitura genérica por `SceneKey`.
    */
   scenes: {
-    intro: { startFrame: 0, endFrame: 42 },
-    sharknews: { startFrame: 43, endFrame: 110, peakFrame: 80 },
-    aiAgent: { startFrame: 110, endFrame: 168, peakFrame: 140 },
-    cityReveal: { startFrame: 168, endFrame: 239 },
+    // A intro é o mergulho entre os prédios, sem elemento gráfico. Com peso 1
+    // ela come 18% do scroll antes de qualquer coisa acontecer, e a abertura
+    // arrasta. Em 0.35 o tubarão começa a entrar por volta de 10% da rolagem.
+    intro: { startFrame: 0, endFrame: 42, scrollWeight: 0.35 },
+    sharknews: { startFrame: 43, endFrame: 110, peakFrame: 80, scrollWeight: 1 },
+    aiAgent: { startFrame: 110, endFrame: 168, peakFrame: 140, scrollWeight: 1 },
+    cityReveal: { startFrame: 168, endFrame: 239, scrollWeight: 1 },
   } satisfies Record<SceneKey, SceneRange> as Record<SceneKey, SceneRange>,
 
   overlays: {

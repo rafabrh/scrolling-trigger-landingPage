@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { CINEMATIC, type SceneKey } from './cinematic.config';
-import { frameFromProgress, sceneAtFrame } from './frame-math';
+import { CINEMATIC, SCENE_ORDER, type SceneKey } from './cinematic.config';
+import { buildSceneSegments, frameFromWeightedProgress, sceneAtFrame } from './frame-math';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -38,6 +38,12 @@ export function useCinematicTimeline({
   const onTickRef = useRef(onTick);
   onTickRef.current = onTick;
 
+  // Os trechos não mudam em runtime: derivam do config, que é constante.
+  const segments = useMemo(
+    () => buildSceneSegments(CINEMATIC.scenes, SCENE_ORDER, CINEMATIC.frameCount),
+    [],
+  );
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!enabled || !section) return;
@@ -56,7 +62,7 @@ export function useCinematicTimeline({
           invalidateOnRefresh: true,
         },
         onUpdate: () => {
-          const frame = frameFromProgress(playhead.progress, CINEMATIC.frameCount);
+          const frame = frameFromWeightedProgress(playhead.progress, segments, CINEMATIC.frameCount);
           frameRef.current = frame;
           onTickRef.current({
             progress: playhead.progress,
@@ -72,5 +78,5 @@ export function useCinematicTimeline({
     onTickRef.current({ progress: 0, frame: 0, scene: 'intro' });
 
     return () => context.revert();
-  }, [sectionRef, frameRef, enabled]);
+  }, [sectionRef, frameRef, enabled, segments]);
 }
