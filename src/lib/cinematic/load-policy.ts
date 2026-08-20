@@ -5,6 +5,14 @@ export interface PriorityOptions {
   readonly headCount: number;
   /** Raio da janela ao redor do playhead. */
   readonly lookAround: number;
+  /**
+   * Se a cauda (o restante da sequência depois dos âncora, da cabeça e da
+   * janela do playhead) já pode ser baixada. Fica `false` até o usuário rolar
+   * dentro da seção: assim, com scrollY=0, quem só leu o header e saiu não paga
+   * o downlink dos ~236 frames que nunca vai ver. Ausente ou `true` mantém o
+   * comportamento antigo, o que preserva os testes que omitem o campo.
+   */
+  readonly tailUnlocked?: boolean;
 }
 
 /**
@@ -17,7 +25,7 @@ export function buildLoadPriority(
   loaded: ReadonlySet<number>,
   options: PriorityOptions,
 ): number[] {
-  const { frameCount, finalFrame, headCount, lookAround } = options;
+  const { frameCount, finalFrame, headCount, lookAround, tailUnlocked = true } = options;
   const order: number[] = [];
   const queued = new Set<number>();
 
@@ -44,7 +52,12 @@ export function buildLoadPriority(
     push(currentFrame - offset);
   }
 
-  for (let i = 0; i < frameCount; i += 1) push(i);
+  // A cauda só entra quando liberada. Com ela travada a fila para na janela do
+  // playhead: o pump baixa apenas o urgente e a rede silencia com a página
+  // parada em scrollY=0.
+  if (tailUnlocked) {
+    for (let i = 0; i < frameCount; i += 1) push(i);
+  }
 
   return order;
 }

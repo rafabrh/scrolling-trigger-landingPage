@@ -107,6 +107,12 @@ export const CINEMATIC = {
     maxDecoded: { desktop: 90, mobile: 40 },
     /** Requisições de rede simultâneas. */
     concurrency: 6,
+    /**
+     * Teto de requisições simultâneas dedicadas à cauda, uma vez liberada.
+     * Menor que `concurrency` de propósito: a cauda não pode saturar o downlink
+     * e disputar banda com a janela do playhead, que é o que o usuário vê agora.
+     */
+    tailConcurrency: 2,
     /** Raio da janela de pré-carga ao redor do playhead. */
     lookAround: 24,
   },

@@ -27,6 +27,7 @@ export function useFrameSequence(
       frameStep: set.frameStep,
       maxDecoded: CINEMATIC.cache.maxDecoded[setName],
       concurrency: CINEMATIC.cache.concurrency,
+      tailConcurrency: CINEMATIC.cache.tailConcurrency,
       lookAround: CINEMATIC.cache.lookAround,
       finalFrame: CINEMATIC.finalFrame,
     });
