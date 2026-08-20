@@ -267,12 +267,19 @@ export class FrameCache {
       // um arquivo que falhou num soluco de rede e depois funcionou seria
       // abandonado para sempre na primeira falha seguinte.
       this.failures.delete(file);
-    } catch {
+    } catch (error) {
       // Um arquivo que falhou não trava a sequência: getNearest cobre o buraco.
       // Ele volta para a fila até esgotar as tentativas, e aí é abandonado.
       const attempts = (this.failures.get(file) ?? 0) + 1;
       this.failures.set(file, attempts);
-      if (attempts >= MAX_ATTEMPTS_PER_FRAME) this.abandoned.add(file);
+      if (attempts >= MAX_ATTEMPTS_PER_FRAME) {
+        this.abandoned.add(file);
+        // Uma linha por arquivo morto, e não uma por tentativa. O catch antes
+        // era mudo: combinado com um diretório ausente em produção, a sequência
+        // inteira dava 404 e nada aparecia em lugar nenhum. Warn, não error,
+        // porque getNearest mantém a tela preenchida — é degradação, não queda.
+        console.warn(`[cinematic] arquivo ${file} abandonado após ${attempts} tentativas:`, error);
+      }
     } finally {
       this.inFlight.delete(file);
       if (!this.disposed) this.schedulePump();
