@@ -104,9 +104,21 @@ export function CinematicExperience() {
       <h1 className="sr-only">{SITE_CONTENT.pageHeading}</h1>
 
       <div ref={stageRef} className="sticky top-0 h-screen w-full overflow-hidden">
+        <CinematicCanvas
+          cache={cache}
+          frameRef={frameRef}
+          sourceWidth={set.width}
+          sourceHeight={set.height}
+          className="absolute inset-0 h-full w-full"
+        />
+
         {!ready && (
-          // Poster do frame 0 enquanto o primeiro bitmap não chega. O canvas
-          // nunca aparece vazio.
+          // Poster do frame 0 enquanto o primeiro bitmap não chega. Vem depois
+          // do canvas no JSX de propósito: sem z-index, quem pinta por último
+          // fica por cima, então o poster cobre o preto opaco do contexto 2D
+          // criado com alpha:false até o primeiro bitmap decodificar. Fica antes
+          // dos gradientes para ser escurecido igual ao canvas. O canvas nunca
+          // aparece vazio.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={CINEMATIC.assets.poster}
@@ -116,14 +128,6 @@ export function CinematicExperience() {
             className="absolute inset-0 h-full w-full object-cover"
           />
         )}
-
-        <CinematicCanvas
-          cache={cache}
-          frameRef={frameRef}
-          sourceWidth={set.width}
-          sourceHeight={set.height}
-          className="absolute inset-0 h-full w-full"
-        />
 
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,rgba(5,6,7,0.94)_0%,rgba(5,6,7,0.72)_34%,rgba(5,6,7,0.16)_68%,rgba(5,6,7,0.42)_100%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(5,6,7,0.86)_0%,rgba(5,6,7,0)_42%)]" />
