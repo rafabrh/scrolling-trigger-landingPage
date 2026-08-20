@@ -17,7 +17,12 @@ export function drawCoverDimensions(
   targetWidth: number,
   targetHeight: number,
 ): CoverRect {
-  if (sourceWidth <= 0 || sourceHeight <= 0 || targetWidth <= 0 || targetHeight <= 0) {
+  // Afirmação de finitude positiva em vez de negação: `NaN <= 0` é falso, então
+  // a forma negada deixava um NaN atravessar e produzir um retângulo NaN, que o
+  // drawImage aceita como no-op — o canvas para sem erro e sem log.
+  if (
+    !(sourceWidth > 0 && sourceHeight > 0 && targetWidth > 0 && targetHeight > 0)
+  ) {
     return EMPTY;
   }
 

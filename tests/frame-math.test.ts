@@ -68,6 +68,9 @@ describe('getSceneProgress', () => {
   it('devolve 1 quando a cena tem um frame só', () => {
     expect(getSceneProgress(43, { startFrame: 43, endFrame: 43 })).toBe(1);
   });
+  it('devolve 0 para frame NaN em vez de propagar NaN', () => {
+    expect(getSceneProgress(NaN, scene)).toBe(0);
+  });
 });
 
 describe('getOverlayOpacity', () => {
@@ -91,6 +94,9 @@ describe('getOverlayOpacity', () => {
   it('fica invisível depois da saída', () => {
     expect(getOverlayOpacity(106, w)).toBe(0);
     expect(getOverlayOpacity(239, w)).toBe(0);
+  });
+  it('devolve 0 para frame NaN em vez de propagar NaN', () => {
+    expect(getOverlayOpacity(NaN, w)).toBe(0);
   });
   it('nunca deixa os dois overlays visíveis ao mesmo tempo', () => {
     const { sharknews, aiAgent } = CINEMATIC.overlays;
@@ -127,5 +133,9 @@ describe('fileIndexForFrame', () => {
     expect(fileIndexForFrame(1, 2)).toBe(0);
     expect(fileIndexForFrame(2, 2)).toBe(1);
     expect(fileIndexForFrame(239, 2)).toBe(119);
+  });
+  it('devolve 0 para frame NaN em vez de montar frame-0NaN.webp', () => {
+    expect(fileIndexForFrame(NaN, 1)).toBe(0);
+    expect(fileIndexForFrame(NaN, 2)).toBe(0);
   });
 });
