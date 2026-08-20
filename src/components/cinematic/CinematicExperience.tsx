@@ -12,7 +12,7 @@ import {
   type CinematicMode,
   type FrameSetName,
 } from '@/lib/env/device';
-import { SITE_CONTENT } from '@/lib/content/site-content';
+import { CINEMATIC_COPY } from '@/lib/content/cinematic-copy';
 import { GrainOverlay } from '@/components/background/GrainOverlay';
 import { CtaLink } from '@/components/ui/CtaLink';
 import { CinematicCanvas } from './CinematicCanvas';
@@ -116,7 +116,7 @@ function CinematicStage() {
       className="relative z-10"
       style={{ height: `${heightVh}vh` }}
     >
-      <h1 className="sr-only">{SITE_CONTENT.pageHeading}</h1>
+      <h1 className="sr-only">{CINEMATIC_COPY.pageHeading}</h1>
 
       <div ref={stageRef} className="sticky top-0 h-screen w-full overflow-hidden">
         <CinematicCanvas
@@ -152,12 +152,12 @@ function CinematicStage() {
         <CinematicOverlay
           ref={sharkRef}
           window={CINEMATIC.overlays.sharknews}
-          {...SITE_CONTENT.cinematic.sharknews}
+          {...CINEMATIC_COPY.sharknews}
         />
         <CinematicOverlay
           ref={agentRef}
           window={CINEMATIC.overlays.aiAgent}
-          {...SITE_CONTENT.cinematic.aiAgent}
+          {...CINEMATIC_COPY.aiAgent}
         />
         <SceneRail ref={railRef} />
       </div>
@@ -184,13 +184,13 @@ interface SceneCopy {
 /** Caminho de reduced-motion, save-data e conexão lenta. */
 function StaticCinematic() {
   const scenes: readonly SceneCopy[] = [
-    SITE_CONTENT.cinematic.sharknews,
-    SITE_CONTENT.cinematic.aiAgent,
+    CINEMATIC_COPY.sharknews,
+    CINEMATIC_COPY.aiAgent,
   ];
 
   return (
     <section aria-label="SHK Group introduction" className="relative z-10">
-      <h1 className="sr-only">{SITE_CONTENT.pageHeading}</h1>
+      <h1 className="sr-only">{CINEMATIC_COPY.pageHeading}</h1>
       {scenes.map((scene) => (
         <div key={scene.eyebrow} className="flex min-h-screen items-center px-24 max-md:px-6">
           <StaticScene scene={scene} />

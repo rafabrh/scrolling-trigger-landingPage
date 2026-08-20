@@ -1,19 +1,18 @@
-export const WHATSAPP_URL = 'https://wa.me/5511912839594';
-export const INSTAGRAM_URL = 'https://instagram.com/shkgroup.ia';
+// Helpers de WhatsApp vivem em módulo próprio para a ilha cinematic (cliente)
+// poder importá-los sem arrastar este deck de copy inteiro. Reexportados aqui
+// para os consumidores de servidor que já os importam deste arquivo.
+export { WHATSAPP_URL, INSTAGRAM_URL, whatsappHref } from './whatsapp';
+
+import { INSTAGRAM_URL, whatsappHref } from './whatsapp';
+import { CINEMATIC_COPY } from './cinematic-copy';
 
 /**
- * Link de WhatsApp com a posição de origem no `text`. O wa.me pré-preenche o
- * rascunho da conversa com esse texto, e o WhatsApp o preserva até o usuário
- * enviar — então a etiqueta `[via: posição]` chega na caixa de entrada e a
- * conversão fica contável por ponto de saída, sem pixel, sem cookie e sem nada
- * a declarar de LGPD. Dez âncoras que antes eram indistinguíveis passam a dizer
- * de onde vieram. O usuário pode apagar a linha antes de enviar; o custo de
- * errar para menos é só perder a contagem daquele clique.
+ * Ano do rodapé fixado, e não `new Date().getFullYear()`. A página é
+ * pré-renderizada estática: `new Date()` gravava o ano da máquina de build no
+ * HTML, então dois builds em lados opostos do réveillon divergiam sem ninguém
+ * mudar nada. Constante é determinístico; sobe junto num release.
  */
-export function whatsappHref(position: string): string {
-  const text = `Hi SHK Group! I came from the site and I'd like to talk. [via: ${position}]`;
-  return `${WHATSAPP_URL}?text=${encodeURIComponent(text)}`;
-}
+const COPYRIGHT_YEAR = 2026;
 
 /**
  * Toda copy visível do site vive aqui. Nenhuma string hardcodada em
@@ -24,16 +23,11 @@ export function whatsappHref(position: string): string {
  * métricas e depoimentos ficam de fora até existir material verificável.
  */
 export const SITE_CONTENT = {
-  brand: { name: 'SHK GROUP', logoAlt: '' },
+  brand: { name: 'SHK GROUP' },
 
-  /**
-   * O h1 da pagina. Fica visualmente oculto porque a abertura e uma cena
-   * cinematografica sem texto, por decisao de design, mas a pagina precisa
-   * declarar do que trata para leitor de tela e para indexacao. Sem ele o
-   * documento tem oito h2 e nenhum h1.
-   */
-  pageHeading:
-    'SHK Group: AI agents, software and digital products for companies that sell on WhatsApp and Instagram.',
+  // Reexporta o h1 do slice do cinematic para manter uma fonte única: a ilha
+  // cliente e o servidor leem o mesmo texto.
+  pageHeading: CINEMATIC_COPY.pageHeading,
 
   nav: [
     { label: 'Products', href: '#products' },
@@ -44,26 +38,9 @@ export const SITE_CONTENT = {
 
   cta: { label: 'Activate AI Agent', href: whatsappHref('header') },
 
-  cinematic: {
-    sharknews: {
-      eyebrow: 'SharkNews',
-      headline: ['What matters in technology,', 'before your day begins.'],
-      support:
-        'Technology, AI and innovation, curated daily at 07:07. Five minutes, free, one click to leave.',
-      ctaLabel: 'Get SharkNews',
-      ctaHref: whatsappHref('cinematic-sharknews'),
-      meta: 'DAILY 07:07',
-    },
-    aiAgent: {
-      eyebrow: 'AI Agent',
-      headline: ['Conversations that move', 'toward conversion.'],
-      support:
-        'AI that responds, qualifies, automates and advances every opportunity on WhatsApp and Instagram.',
-      ctaLabel: 'Explore AI Agent',
-      ctaHref: whatsappHref('cinematic-aiagent'),
-      meta: 'WHATSAPP + INSTAGRAM',
-    },
-  },
+  // Mesmo objeto que a ilha cliente importa direto de `cinematic-copy`. Fica
+  // aqui reexportado para os consumidores de servidor e para os testes.
+  cinematic: CINEMATIC_COPY,
 
   intro: {
     eyebrow: 'Who we are',
@@ -166,7 +143,7 @@ export const SITE_CONTENT = {
   },
 
   footer: {
-    copyright: `© ${new Date().getFullYear()} SHK GROUP`,
+    copyright: `© ${COPYRIGHT_YEAR} SHK GROUP`,
     links: [
       { label: 'Instagram', href: INSTAGRAM_URL },
       { label: 'WhatsApp', href: whatsappHref('footer') },
