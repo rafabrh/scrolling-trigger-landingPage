@@ -18,6 +18,7 @@ import { CinematicCanvas } from './CinematicCanvas';
 import { CinematicOverlay, type SceneHandle } from './CinematicOverlay';
 import { SceneRail } from './SceneRail';
 import { CinematicDebugPanel } from './CinematicDebugPanel';
+import { CinematicErrorBoundary } from './CinematicErrorBoundary';
 
 /**
  * O palco some nos últimos frames, revelando a cidade idêntica que está
@@ -31,7 +32,20 @@ import { CinematicDebugPanel } from './CinematicDebugPanel';
  */
 const HANDOFF_FRAME_SPAN = 3;
 
+/**
+ * Ponto de entrada da ilha. Envolve o palco num error boundary com o caminho
+ * estático como fallback: uma falha de cliente no cinematic não pode derrubar
+ * as seis seções institucionais que estão logo abaixo.
+ */
 export function CinematicExperience() {
+  return (
+    <CinematicErrorBoundary fallback={<StaticCinematic />}>
+      <CinematicStage />
+    </CinematicErrorBoundary>
+  );
+}
+
+function CinematicStage() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const sharkRef = useRef<SceneHandle | null>(null);
