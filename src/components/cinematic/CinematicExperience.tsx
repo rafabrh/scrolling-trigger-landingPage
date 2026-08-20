@@ -14,6 +14,7 @@ import {
 } from '@/lib/env/device';
 import { SITE_CONTENT } from '@/lib/content/site-content';
 import { GrainOverlay } from '@/components/background/GrainOverlay';
+import { CtaLink } from '@/components/ui/CtaLink';
 import { CinematicCanvas } from './CinematicCanvas';
 import { CinematicOverlay, type SceneHandle } from './CinematicOverlay';
 import { SceneRail } from './SceneRail';
@@ -204,24 +205,24 @@ function StaticScene({ scene }: { scene: SceneCopy }) {
     <div className="flex max-w-[660px] flex-col gap-[26px]">
       <div className="flex items-center gap-3.5">
         <div className="h-px w-[30px] bg-[var(--accent)]" />
-        <span className="font-mono text-[11px] font-medium uppercase tracking-[0.3em] text-[var(--accent)]">
+        <span className="font-mono text-[11px] font-medium uppercase tracking-[var(--tracking-wide)] text-[var(--accent)]">
           {scene.eyebrow}
         </span>
       </div>
-      <h2 className="font-display text-[56px] font-semibold leading-[1.04] tracking-[-0.026em] text-pretty max-md:text-[32px]">
+      <h2 className="font-display text-[var(--text-display-md)] font-semibold leading-[1.04] tracking-[var(--tracking-tight)] text-pretty max-md:text-[32px]">
         {scene.headline.join(' ')}
       </h2>
-      <p className="max-w-[460px] text-[17px] leading-[1.62] text-[var(--paper-dim)]">
+      <p className="max-w-[460px] text-[var(--text-body-lg)] leading-[1.62] text-[var(--paper-dim)]">
         {scene.support}
       </p>
-      <a
-        href={scene.ctaHref}
-        target="_blank"
-        rel="noreferrer noopener"
-        className="inline-flex w-fit items-center gap-3 border border-[var(--accent)] bg-[var(--accent-glow)] px-7 py-[15px] text-[13px] font-medium uppercase tracking-[0.1em] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-      >
-        {scene.ctaLabel}
-      </a>
+      {/*
+        Mesmo CtaLink do caminho principal, em vez de um <a> escrito à mão. O
+        caminho estático era uma cópia dessincronizada: perdia o ícone de seta e
+        todo o feedback de hover, e quem cai aqui é justamente quem pediu menos
+        movimento ou está em conexão medida. Um componente só mantém os dois
+        caminhos em passo.
+      */}
+      <CtaLink href={scene.ctaHref}>{scene.ctaLabel}</CtaLink>
     </div>
   );
 }

@@ -9,11 +9,11 @@ export function InstitutionalIntro() {
       <div className="mx-auto flex max-w-[1248px] flex-col gap-9">
         <Eyebrow>{eyebrow}</Eyebrow>
 
-        <h2 className="max-w-[700px] font-display text-[58px] font-semibold leading-[1.06] tracking-[-0.024em] text-pretty max-md:text-[34px]">
+        <h2 className="max-w-[700px] font-display text-[var(--text-display-md)] font-semibold leading-[1.06] tracking-[var(--tracking-tight)] text-pretty max-md:text-[34px]">
           {headline}
         </h2>
 
-        <p className="max-w-[520px] text-lg leading-[1.62] text-[var(--paper-dim)]">{body}</p>
+        <p className="max-w-[520px] text-[var(--text-body-lg)] leading-[1.62] text-[var(--paper-dim)]">{body}</p>
 
         <ul className="mt-3.5 grid grid-cols-3 border-t border-white/[0.09] max-md:grid-cols-1">
           {pillars.map((pillar) => (
@@ -21,15 +21,15 @@ export function InstitutionalIntro() {
               key={pillar.index}
               className="border-r border-white/[0.09] py-7 pr-8 last:border-r-0 max-md:border-b max-md:border-r-0 max-md:pr-0"
             >
-              <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--accent)]">
+              <div className="mb-3 font-mono text-[10px] uppercase tracking-[var(--tracking-wide)] text-[var(--accent)]">
                 {pillar.index}
               </div>
-              <div className="font-display text-[17px] font-medium">{pillar.label}</div>
+              <div className="font-display text-[var(--text-body-lg)] font-medium">{pillar.label}</div>
             </li>
           ))}
         </ul>
 
-        <p className="self-end font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--paper-dim)] max-md:self-start">
+        <p className="self-end font-mono text-[11px] uppercase tracking-[var(--tracking-wide)] text-[var(--paper-dim)] max-md:self-start">
           {meta}
         </p>
       </div>

@@ -14,15 +14,17 @@ export function ProductsSection() {
             className="flex flex-col gap-[30px] border border-[var(--surface-border)] bg-[var(--surface)] p-12 backdrop-blur-lg max-md:p-7"
           >
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[11px] uppercase tracking-[0.28em] text-[var(--accent)]">
+              <span className="font-mono text-[11px] uppercase tracking-[var(--tracking-wide)] text-[var(--accent)]">
                 {item.eyebrow}
               </span>
-              <span className="font-mono text-[11px] tracking-[0.18em] text-[var(--paper-dim)]">
+              {/* Mesmo tracking do eyebrow ao lado: sao dois labels mono paralelos
+                  na mesma linha, nao ha motivo para divergirem (antes 0.28 vs 0.18). */}
+              <span className="font-mono text-[11px] tracking-[var(--tracking-wide)] text-[var(--paper-dim)]">
                 {item.badge}
               </span>
             </div>
 
-            <h3 className="font-display text-[34px] font-semibold leading-[1.12] tracking-[-0.02em] text-pretty max-md:text-[26px]">
+            <h3 className="font-display text-[var(--text-display-sm)] font-semibold leading-[1.12] tracking-[var(--tracking-tight)] text-pretty max-md:text-[26px]">
               {item.headline}
             </h3>
 
@@ -30,7 +32,7 @@ export function ProductsSection() {
 
             <ul className="flex flex-col gap-3.5 border-t border-white/[0.07] pt-6">
               {item.points.map((point) => (
-                <li key={point} className="flex items-center gap-3 text-[15px] text-[var(--paper-dim)]">
+                <li key={point} className="flex items-center gap-3 text-[var(--text-body-base)] text-[var(--paper-dim)]">
                   <svg
                     width="14"
                     height="14"

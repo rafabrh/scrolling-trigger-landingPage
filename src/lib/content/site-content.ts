@@ -170,6 +170,8 @@ export const SITE_CONTENT = {
     links: [
       { label: 'Instagram', href: INSTAGRAM_URL },
       { label: 'WhatsApp', href: whatsappHref('footer') },
+      // Rota interna: o SiteFooter abre este na mesma aba (sem target=_blank).
+      { label: 'Privacy', href: '/privacy' },
     ],
   },
 } as const;

@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # A versão do pnpm é decidida pelo campo "packageManager" do package.json
+      # (pnpm@9.15.9). Não fixamos aqui para evitar divergência.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # --frozen-lockfile garante que o lockfile não seja alterado no CI.
+      # NOTA: o install executa lifecycle scripts das dependências. ffmpeg-static
+      # (~78MB) só é necessário para `pnpm frames`, que o CI NÃO roda. O item 17
+      # do backlog (onlyBuiltDependencies no package.json) elimina esse download
+      # e deixa o install mais rápido.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      # O prebuild (scripts/verify-frames.mjs) exige os frames em
+      # public/cinematic/. Eles são versionados no repo (PR #6) e vêm no
+      # checkout, então o build funciona no CI sem gerar nada.
+      - name: Build
+        run: pnpm build
