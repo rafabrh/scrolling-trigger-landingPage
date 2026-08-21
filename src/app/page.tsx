@@ -8,6 +8,7 @@ import { TechnologySection } from '@/components/sections/TechnologySection';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { CasesSection } from '@/components/sections/CasesSection';
 import { ContactSection } from '@/components/sections/ContactSection';
+import { CinematicReadyProvider } from '@/lib/cinematic/cinematic-ready-context';
 import type { Metadata } from 'next';
 import { SITE_URL } from './layout';
 import { INSTAGRAM_URL, WHATSAPP_URL } from '@/lib/content/whatsapp';
@@ -50,7 +51,13 @@ const orgJsonLd = {
 
 export default function Home() {
   return (
-    <>
+    /*
+      CinematicReadyProvider liga o sinal de "handoff concluído" entre o
+      CinematicExperience (quem dispara) e o SiteHeader (quem anima).
+      É um client component leve sem render além de um context — não afeta
+      o SSR das seções institucionais.
+    */
+    <CinematicReadyProvider>
       {/*
         dangerouslySetInnerHTML aqui NÃO é sink de XSS: o conteúdo é um
         JSON.stringify de `orgJsonLd`, um objeto constante e estático, sem
@@ -75,6 +82,6 @@ export default function Home() {
       </main>
 
       <SiteFooter />
-    </>
+    </CinematicReadyProvider>
   );
 }

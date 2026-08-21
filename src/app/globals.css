@@ -1,18 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --ink-900: #050607;
-  --ink-800: #090C0F;
-  --ink-700: #10151A;
-  --paper: #F5F7F8;
-  --paper-dim: rgba(245, 247, 248, 0.62);
+  --ink-900: #040506;
+  --ink-800: #080B0E;
+  --ink-700: #0E1318;
+  --paper: #F0F4F8;
+  --paper-dim: rgba(240, 244, 248, 0.60);
 
-  --accent: #40C1E7;
-  --accent-dim: #1E6F8C;
-  --accent-glow: rgba(64, 193, 231, 0.14);
+  /* Ciano elétrico: mais saturado e brilhante que o original para o tema cyberpunk */
+  --accent: #00D4FF;
+  --accent-dim: #007A99;
+  --accent-glow: rgba(0, 212, 255, 0.16);
+  --accent-pulse: rgba(0, 212, 255, 0.08);
 
-  --surface: rgba(5, 8, 12, 0.58);
-  --surface-border: rgba(255, 255, 255, 0.08);
+  --surface: rgba(4, 8, 12, 0.58);
+  --surface-border: rgba(0, 212, 255, 0.10);
 
   /* Type scale. Antes havia 4 tamanhos de display (52/56/58/64) e 4 de corpo
      (15/16/17/18) afinados a mao, mais 8 trackings soltos — assinatura de
@@ -45,8 +47,8 @@
   --color-paper: var(--paper);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
-  --font-display: var(--font-space-grotesk);
-  --font-body: var(--font-archivo);
+  --font-display: var(--font-orbitron);
+  --font-body: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
 }
 
@@ -56,10 +58,22 @@ html {
   scroll-behavior: auto;
 }
 
+/*
+  Fallback sem JavaScript: os itens do header têm opacity:0 inline para o
+  boot-in animado. Se JS não carregar, o noscript remove essa ocultação.
+  Como o Next serve o HTML sem executar JS do cliente, o SSR já emite os
+  estilos inline; a tag noscript abaixo sobrescreve eles no CSS.
+*/
+@media (scripting: none) {
+  [data-boot-item] {
+    opacity: 1 !important;
+  }
+}
+
 body {
   margin: 0;
   background: var(--ink-900);
   color: var(--paper);
-  font-family: var(--font-body), "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }

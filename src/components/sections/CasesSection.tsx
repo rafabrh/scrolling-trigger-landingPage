@@ -24,7 +24,7 @@ export function CasesSection() {
           {/* Marcador pulsante discreto: reforça o "em breve" sem prometer data. */}
           <span
             aria-hidden="true"
-            className="inline-block size-1.5 rounded-full bg-[var(--accent)]"
+            className="inline-block size-1.5 animate-pulse rounded-full bg-[var(--accent)]"
           />
           <span className="font-mono text-[11px] font-medium uppercase tracking-[var(--tracking-wide)] text-[var(--accent)]">
             Reservado

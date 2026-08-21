@@ -151,9 +151,12 @@ async function main() {
     .webp({ quality: 88, effort: 6 })
     .toFile(path.join(OUT, 'final-city-mobile.webp'));
 
+  // Poster: frame 0 em qualidade alta — é a primeira imagem que o usuário vê
+  // enquanto os bitmaps chegam pela rede. Qualidade baixa aqui degrada o
+  // percebido no LCP.
   await sharp(pngs[0])
     .resize(SETS.desktop.width, SETS.desktop.height, { kernel: 'lanczos3' })
-    .webp({ quality: 70, effort: 6 })
+    .webp({ quality: 82, effort: 6 })
     .toFile(path.join(OUT, 'poster.webp'));
 
   const manifest = {

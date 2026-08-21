@@ -16,23 +16,23 @@ export const CINEMATIC_COPY = {
    * declarar do que trata para leitor de tela e para indexação.
    */
   pageHeading:
-    'SHK Group: AI agents, software and digital products for companies that sell on WhatsApp and Instagram.',
+    'SHK Group: agentes de IA, software e produtos digitais para empresas que vendem no WhatsApp e Instagram.',
 
   sharknews: {
     eyebrow: 'SharkNews',
-    headline: ['What matters in technology,', 'before your day begins.'],
+    headline: ['O que importa em tecnologia,', 'antes do seu dia começar.'],
     support:
-      'Technology, AI and innovation, curated daily at 07:07. Five minutes, free, one click to leave.',
-    ctaLabel: 'Get SharkNews',
+      'Tecnologia, IA e inovação, curadas diariamente às 07h07. Cinco minutos, grátis, um clique pra sair.',
+    ctaLabel: 'Receber SharkNews',
     ctaHref: whatsappHref('cinematic-sharknews'),
-    meta: 'DAILY 07:07',
+    meta: 'DIÁRIO 07:07',
   },
   aiAgent: {
     eyebrow: 'AI Agent',
-    headline: ['Conversations that move', 'toward conversion.'],
+    headline: ['Cada canal responde,', 'a qualquer hora.'],
     support:
-      'AI that responds, qualifies, automates and advances every opportunity on WhatsApp and Instagram.',
-    ctaLabel: 'Explore AI Agent',
+      'Agente de IA no WhatsApp e Instagram que responde, qualifica e conduz cada oportunidade até o fechamento.',
+    ctaLabel: 'Conhecer AI Agent',
     ctaHref: whatsappHref('cinematic-aiagent'),
     meta: 'WHATSAPP + INSTAGRAM',
   },

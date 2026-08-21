@@ -69,7 +69,7 @@ export const CinematicOverlay = forwardRef<SceneHandle, CinematicOverlayProps>(
       >
         <Eyebrow>{eyebrow}</Eyebrow>
 
-        <h2 className="font-display text-[var(--text-display-lg)] font-semibold leading-[1.02] tracking-[var(--tracking-tight)] text-[var(--paper)] text-pretty max-md:text-[34px]">
+        <h2 className="font-display text-[var(--text-display-lg)] font-semibold leading-[1.08] tracking-[var(--tracking-tight)] text-[var(--paper)] text-pretty max-md:text-[34px]">
           {headline.map((line) => (
             <span key={line} className="block">
               {line}
