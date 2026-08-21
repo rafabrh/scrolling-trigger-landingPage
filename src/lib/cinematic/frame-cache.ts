@@ -50,6 +50,14 @@ export class FrameCache {
   private readonly abandoned = new Set<number>();
   private readonly firstFrameCallbacks: Array<() => void> = [];
 
+  /**
+   * Aborta os fetches em voo quando a instância é descartada. O FrameCache é
+   * de uso único (o hook cria um novo a cada mount e chama dispose no
+   * cleanup), então um único controller criado na construção e abortado uma
+   * vez em dispose basta — sem controllers por fetch.
+   */
+  private readonly abortController = new AbortController();
+
   private playhead = 0;
   private encodedBytes = 0;
   private running = false;
@@ -150,6 +158,9 @@ export class FrameCache {
   dispose(): void {
     this.disposed = true;
     this.running = false;
+    // Aborta já: cancela qualquer fetch em voo antes de limpar o resto, para a
+    // rede parar de baixar bytes cujo resultado seria descartado.
+    this.abortController.abort();
     for (const bitmap of this.decoded.values()) bitmap.close();
     this.decoded.clear();
     this.encoded.clear();
@@ -274,7 +285,9 @@ export class FrameCache {
       let blob = this.encoded.get(file);
 
       if (blob === undefined) {
-        const response = await fetch(this.urlForFile(file));
+        const response = await fetch(this.urlForFile(file), {
+          signal: this.abortController.signal,
+        });
         if (!response.ok) throw new Error(`frame file ${file}: HTTP ${response.status}`);
 
         blob = await response.blob();
@@ -299,6 +312,10 @@ export class FrameCache {
       // abandonado para sempre na primeira falha seguinte.
       this.failures.delete(file);
     } catch (error) {
+      // Fetch abortado no dispose não é falha real: a instância está sendo
+      // descartada e o resultado seria jogado fora de qualquer jeito. Sai antes
+      // de mexer em failures/abandoned para não marcar o arquivo como morto.
+      if (this.disposed) return;
       // Um arquivo que falhou não trava a sequência: getNearest cobre o buraco.
       // Ele volta para a fila até esgotar as tentativas, e aí é abandonado.
       const attempts = (this.failures.get(file) ?? 0) + 1;
