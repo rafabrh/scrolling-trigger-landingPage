@@ -138,4 +138,17 @@ describe('fileIndexForFrame', () => {
     expect(fileIndexForFrame(NaN, 1)).toBe(0);
     expect(fileIndexForFrame(NaN, 2)).toBe(0);
   });
+  it('prende frame negativo em 0 em vez de montar nome inválido', () => {
+    expect(fileIndexForFrame(-1, 1)).toBe(0);
+    expect(fileIndexForFrame(-10, 2)).toBe(0);
+  });
+  it('pisa frame fracionário para não vazar no nome do arquivo', () => {
+    expect(fileIndexForFrame(12.7, 1)).toBe(12);
+    expect(fileIndexForFrame(5.9, 2)).toBe(2);
+  });
+  it('devolve 0 para Infinity e -Infinity', () => {
+    expect(fileIndexForFrame(Infinity, 1)).toBe(0);
+    expect(fileIndexForFrame(-Infinity, 1)).toBe(0);
+    expect(fileIndexForFrame(Infinity, 2)).toBe(0);
+  });
 });

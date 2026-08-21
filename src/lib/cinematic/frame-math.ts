@@ -69,11 +69,17 @@ export function sceneAtFrame(frame: number, scenes: Record<SceneKey, SceneRange>
 
 /** Índice do arquivo que corresponde a um frame do vídeo, dado o passo do conjunto. */
 export function fileIndexForFrame(frame: number, frameStep: number): number {
-  // Sem esta guarda um frame NaN vira o nome de arquivo `frame-0NaN.webp`, que
-  // a rede pede e o servidor devolve 404 em silêncio. Arquivo 0 é o fallback são.
-  if (Number.isNaN(frame)) return 0;
-  if (frameStep <= 1) return frame;
-  return Math.floor(frame / frameStep);
+  // Qualquer valor fora do domínio (não finito, negativo ou fracionário) vira
+  // um nome de arquivo inválido — `frame-0NaN.webp`, `frame--001.webp`,
+  // `frame-12.7.webp` — que a rede pede e o servidor devolve 404 em silêncio.
+  // Por isso normalizamos aqui para SEMPRE devolver um inteiro >= 0:
+  // - não finito (NaN, ±Infinity) -> 0 (fallback são);
+  // - negativo -> preso em 0 (frame abaixo da sequência mapeia no primeiro arquivo);
+  // - fracionário -> pisado, senão vaza para o padStart e monta nome quebrado.
+  if (!Number.isFinite(frame)) return 0;
+  const safe = frame < 0 ? 0 : Math.floor(frame);
+  if (frameStep <= 1) return safe;
+  return Math.floor(safe / frameStep);
 }
 
 /** Um trecho contíguo de frames com o peso de scroll que ele recebe. */
