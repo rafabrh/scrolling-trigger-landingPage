@@ -11,6 +11,7 @@ import { ContactSection } from '@/components/sections/ContactSection';
 import type { Metadata } from 'next';
 import { SITE_URL } from './layout';
 import { INSTAGRAM_URL, WHATSAPP_URL } from '@/lib/content/whatsapp';
+import { shouldIndex } from '@/lib/env/deploy';
 
 /**
  * Metadata ESPECÍFICA da home. Fica aqui, e não no layout, porque o layout
@@ -24,7 +25,9 @@ import { INSTAGRAM_URL, WHATSAPP_URL } from '@/lib/content/whatsapp';
  */
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
-  robots: { index: true, follow: true },
+  // Indexação condicionada ao sinal de deploy: um preview da Vercel vira
+  // noindex/nofollow; produção (e qualquer host não-Vercel) segue indexável.
+  robots: { index: shouldIndex(), follow: shouldIndex() },
   openGraph: { url: '/' },
 };
 
