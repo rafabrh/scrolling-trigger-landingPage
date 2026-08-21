@@ -1,3 +1,5 @@
+import framesConfig from './frames.config.json';
+
 export type SceneKey = 'intro' | 'sharknews' | 'aiAgent' | 'cityReveal';
 
 export const SCENE_ORDER: readonly SceneKey[] = ['intro', 'sharknews', 'aiAgent', 'cityReveal'] as const;
@@ -39,26 +41,25 @@ export interface FrameSet {
   readonly frameCount: number;
   /** 1 = todo frame do vídeo. 2 = um a cada dois. */
   readonly frameStep: number;
-  readonly quality: number;
 }
 
 /**
- * Fonte única do total de frames do vídeo. Todo o resto — `finalFrame`, a
- * contagem de cada conjunto — deriva daqui, para não haver dois números que
- * possam desencontrar num edit futuro.
+ * Fonte única, compartilhada com `scripts/build-frames.mjs` via
+ * `frames.config.json`. `quality` e `crop` são parâmetros de encoder sem
+ * significado em runtime, então ficam só no JSON e não entram no shape abaixo.
+ * Todo o resto — `finalFrame`, a contagem de cada conjunto — deriva daqui, para
+ * não haver dois números que possam desencontrar num edit futuro.
  */
-const FRAME_COUNT = 240;
-const DESKTOP_FRAME_STEP = 1;
-const MOBILE_FRAME_STEP = 2;
+const FRAME_COUNT = framesConfig.source.frameCount;
 
 export const CINEMATIC = {
   source: 'context/video/rafa3.mp4',
   frameCount: FRAME_COUNT,
-  fps: 24,
+  fps: framesConfig.source.fps,
   // Derivado: o último índice de um conjunto de FRAME_COUNT frames.
   finalFrame: FRAME_COUNT - 1,
-  sourceWidth: 1920,
-  sourceHeight: 1080,
+  sourceWidth: framesConfig.source.width,
+  sourceHeight: framesConfig.source.height,
 
   scrub: 0.3,
   scrollHeightVh: { desktop: 500, mobile: 350 },
@@ -96,22 +97,20 @@ export const CINEMATIC = {
 
   frameSets: {
     desktop: {
-      dir: '/cinematic/desktop',
-      width: 1600,
-      height: 900,
+      dir: `/cinematic/${framesConfig.sets.desktop.dir}`,
+      width: framesConfig.sets.desktop.width,
+      height: framesConfig.sets.desktop.height,
       // Derivado: passo 1 usa todos os frames.
-      frameCount: Math.ceil(FRAME_COUNT / DESKTOP_FRAME_STEP),
-      frameStep: DESKTOP_FRAME_STEP,
-      quality: 74,
+      frameCount: Math.ceil(FRAME_COUNT / framesConfig.sets.desktop.frameStep),
+      frameStep: framesConfig.sets.desktop.frameStep,
     },
     mobile: {
-      dir: '/cinematic/mobile',
-      width: 864,
-      height: 1080,
+      dir: `/cinematic/${framesConfig.sets.mobile.dir}`,
+      width: framesConfig.sets.mobile.width,
+      height: framesConfig.sets.mobile.height,
       // Derivado: passo 2 usa um a cada dois frames (240 / 2 = 120).
-      frameCount: Math.ceil(FRAME_COUNT / MOBILE_FRAME_STEP),
-      frameStep: MOBILE_FRAME_STEP,
-      quality: 72,
+      frameCount: Math.ceil(FRAME_COUNT / framesConfig.sets.mobile.frameStep),
+      frameStep: framesConfig.sets.mobile.frameStep,
     },
   } satisfies Record<'desktop' | 'mobile', FrameSet>,
 
