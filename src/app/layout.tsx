@@ -23,7 +23,9 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shkgroup.com.br';
+// Exportado para a home (page.tsx) montar o JSON-LD com URL absoluta sem
+// duplicar o fallback do env. Uma task futura consolida o handling de env.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shkgroup.com.br';
 
 const DESCRIPTION =
   'AI agents, software and digital products for companies whose sales operation runs slower than their demand.';

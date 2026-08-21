@@ -9,6 +9,8 @@ import { AboutSection } from '@/components/sections/AboutSection';
 import { CasesSection } from '@/components/sections/CasesSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 import type { Metadata } from 'next';
+import { SITE_URL } from './layout';
+import { INSTAGRAM_URL, WHATSAPP_URL } from '@/lib/content/whatsapp';
 
 /**
  * Metadata ESPECÍFICA da home. Fica aqui, e não no layout, porque o layout
@@ -30,9 +32,32 @@ export const metadata: Metadata = {
  * Server Component. Só o cinematic é cliente, e ele não segura nada: todo o
  * conteúdo institucional está no HTML da primeira resposta.
  */
+/**
+ * JSON-LD Organization: dado estruturado estático para os buscadores associarem
+ * marca, URL, logo e perfis sociais. Objeto tipado, sem input dinâmico/usuário.
+ */
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'SHK Group',
+  url: SITE_URL,
+  logo: `${SITE_URL}/icon.png`,
+  sameAs: [INSTAGRAM_URL, WHATSAPP_URL],
+} as const;
+
 export default function Home() {
   return (
     <>
+      {/*
+        dangerouslySetInnerHTML aqui NÃO é sink de XSS: o conteúdo é um
+        JSON.stringify de `orgJsonLd`, um objeto constante e estático, sem
+        nenhuma interpolação de input dinâmico/usuário. Renderiza server-side no
+        HTML pré-renderizado. É o idioma padrão e seguro de JSON-LD no Next.
+      */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
       <PersistentCityBackground />
       <SiteHeader />
 
