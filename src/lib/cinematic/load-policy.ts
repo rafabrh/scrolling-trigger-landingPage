@@ -62,6 +62,54 @@ export function buildLoadPriority(
   return order;
 }
 
+/** Só o `has` de Set/Map por chave numérica: aceita ambos sem alocar. */
+export interface HasNumber {
+  has(value: number): boolean;
+}
+
+/**
+ * Diz se o cache não tem mais nada a fazer para o playhead atual, ou seja, se o
+ * pump pode retornar cedo sem montar a fila. Puro e sem APIs de browser, então
+ * dá para testar sem fetch/createImageBitmap. Verdadeiro só quando VALEM AS
+ * DUAS condições:
+ *
+ * 1. Busca completa: todo arquivo (0..totalFiles-1) já está em `encodedFiles`
+ *    ou foi abandonado. Abandonado conta como concluído porque não volta à fila.
+ * 2. Decode satisfeito: todo arquivo dentro da janela
+ *    [playFile - radius, playFile + radius], preso a [0, totalFiles-1], que NÃO
+ *    esteja abandonado, já está em `decodedFiles`. Abandonado dentro da janela
+ *    não bloqueia, pois nunca vai decodificar.
+ *
+ * Quando o playhead se move a janela desliza e arquivos recém-entrados falham a
+ * condição 2; quando um decodificado é despejado e volta a ser preciso, também.
+ * Assim o early-out nunca engole trabalho real.
+ */
+export function isCacheSettled(
+  playFile: number,
+  radius: number,
+  totalFiles: number,
+  encodedFiles: HasNumber,
+  decodedFiles: HasNumber,
+  abandonedFiles: HasNumber,
+): boolean {
+  if (totalFiles <= 0) return true;
+
+  // Condição 1: nada mais a baixar.
+  for (let file = 0; file < totalFiles; file += 1) {
+    if (!encodedFiles.has(file) && !abandonedFiles.has(file)) return false;
+  }
+
+  // Condição 2: janela ao redor do playhead já decodificada.
+  const from = playFile - radius < 0 ? 0 : playFile - radius;
+  const to = playFile + radius > totalFiles - 1 ? totalFiles - 1 : playFile + radius;
+  for (let file = from; file <= to; file += 1) {
+    if (abandonedFiles.has(file)) continue;
+    if (!decodedFiles.has(file)) return false;
+  }
+
+  return true;
+}
+
 /** Frame carregado mais próximo do alvo. Empate vai para o menor índice. */
 export function nearestLoadedFrame(target: number, loaded: ReadonlyArray<number>): number | null {
   let best: number | null = null;
