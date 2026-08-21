@@ -1,10 +1,3 @@
-/**
- * Fronteira entre os conjuntos de frame. Vive aqui porque três lugares
- * precisam do mesmo número: a escolha do conjunto em TypeScript, o
- * `media` do fundo, e o `md` do Tailwind.
- */
-export const MOBILE_BREAKPOINT_PX = 768;
-
 export type SceneKey = 'intro' | 'sharknews' | 'aiAgent' | 'cityReveal';
 
 export const SCENE_ORDER: readonly SceneKey[] = ['intro', 'sharknews', 'aiAgent', 'cityReveal'] as const;
