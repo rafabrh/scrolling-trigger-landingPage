@@ -16,6 +16,6 @@ export const INSTAGRAM_URL = 'https://instagram.com/shkgroup.ia';
  * bundle do cliente.
  */
 export function whatsappHref(position: string): string {
-  const text = `Hi SHK Group! I came from the site and I'd like to talk. [via: ${position}]`;
+  const text = `Olá, SHK Group! Vim pelo site e quero conversar. [via: ${position}]`;
   return `${WHATSAPP_URL}?text=${encodeURIComponent(text)}`;
 }
