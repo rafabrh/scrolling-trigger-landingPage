@@ -17,7 +17,7 @@ import { whatsappHref } from '@/lib/content/site-content';
  * layout para page.tsx justamente para não vazar para cá.
  */
 export const metadata: Metadata = {
-  title: 'Page not found',
+  title: 'Página não encontrada',
   robots: { index: false, follow: false },
 };
 
@@ -31,14 +31,14 @@ export default function NotFound() {
         className="relative z-10 mx-auto flex min-h-[70vh] max-w-[1440px] flex-col justify-center px-24 py-32 max-md:px-6"
       >
         <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--paper-dim)]">
-          Error 404
+          Erro 404
         </p>
         <h1 className="mt-6 max-w-[18ch] font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.05] text-[var(--paper)]">
-          This page slipped off the map.
+          Esta página saiu do mapa.
         </h1>
         <p className="mt-6 max-w-[52ch] text-[var(--paper-dim)]">
-          The link is broken or the page moved. Everything the site has still
-          lives on the home page — or start a conversation with us directly.
+          O link está quebrado ou a página foi movida. Tudo que o site tem ainda
+          está na página inicial — ou inicie uma conversa direto com a gente.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-6">
@@ -46,9 +46,9 @@ export default function NotFound() {
             href="/"
             className="inline-flex items-center gap-3 border border-[var(--surface-border)] px-7 py-[15px] text-[13px] font-medium uppercase tracking-[var(--tracking-snug)] text-[var(--paper)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
           >
-            Back to home
+            Voltar ao início
           </a>
-          <CtaLink href={whatsappHref('not-found')}>Talk on WhatsApp</CtaLink>
+          <CtaLink href={whatsappHref('not-found')}>Falar no WhatsApp</CtaLink>
         </div>
       </main>
 
