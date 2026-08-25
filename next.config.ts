@@ -65,11 +65,10 @@ const nextConfig: NextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains',
           },
-          // CSP em modo Report-Only: nao bloqueia nada ainda, so reportaria
-          // violacoes. A ideia e subir assim por um deploy, observar, e so
-          // entao trocar a chave para Content-Security-Policy (enforcing).
+          // CSP em modo enforcing. Passou pelo ciclo de observacao (Report-Only)
+          // sem violacoes registradas; agora bloqueia de fato.
           {
-            key: 'Content-Security-Policy-Report-Only',
+            key: 'Content-Security-Policy',
             value: CONTENT_SECURITY_POLICY,
           },
         ],

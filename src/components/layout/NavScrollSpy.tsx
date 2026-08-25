@@ -24,7 +24,6 @@ export function NavScrollSpy() {
       if (anchors.length > 0) links.set(id, anchors);
     }
 
-    const ACTIVE_CLASS = 'text-[var(--accent)]';
     // Tailwind não purga classes dinâmicas — usamos a CSS custom property
     // diretamente via style para evitar o problema sem necessidade de safelist.
     const setActive = (id: string | null) => {
@@ -53,6 +52,8 @@ export function NavScrollSpy() {
         }
         if (topEntry) {
           setActive((topEntry.target as HTMLElement).id);
+        } else {
+          setActive(null);
         }
       },
       { threshold: 0.3 },

@@ -1,9 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { shouldIndex } from '@/lib/env/deploy';
-
-// Mesma fonte de verdade do metadataBase em layout.tsx. robots.txt precisa de
-// URL absoluta para o Sitemap, então repetimos o fallback aqui.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shkgroup.com.br';
+import { shouldIndex, SITE_URL } from '@/lib/env/deploy';
 
 /**
  * Serve /robots.txt para os crawlers. Indexação geral liberada (a home é

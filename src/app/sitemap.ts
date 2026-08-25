@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shkgroup.com.br';
+import { SITE_URL } from '@/lib/env/deploy';
 
 /**
  * `lastModified` como constante estável em vez de `new Date()`. Motivo: build

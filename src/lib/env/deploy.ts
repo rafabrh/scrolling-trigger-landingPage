@@ -1,4 +1,13 @@
 /**
+ * Origem absoluta do site. Fonte única para canonical, og:url, metadataBase,
+ * sitemap.xml, robots.txt e o JSON-LD Organization. Obrigatória em produção;
+ * cai no domínio real como fallback seguro (a indexação é controlada
+ * separadamente pelo sinal VERCEL_ENV, então um preview sem esta variável
+ * continua desindexado).
+ */
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shkgroup.com.br';
+
+/**
  * Detecção do tipo de deploy para decidir indexabilidade.
  *
  * Sinal: `VERCEL_ENV`, injetada automaticamente pela Vercel. Vale
