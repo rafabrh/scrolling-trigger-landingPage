@@ -1,27 +1,18 @@
 import type { Metadata, Viewport } from 'next';
-import { Orbitron, Inter, JetBrains_Mono } from 'next/font/google';
+import { Chakra_Petch, Rajdhani, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
-/**
- * Orbitron: display font com estética cyberpunk/sci-fi. Geométrico, angular,
- * legível em headlines grandes — exatamente o que a experiência cinematográfica
- * pede. Self-hosted via Next.js (zero requisição para fonts.google.com).
- */
-const orbitron = Orbitron({
+const chakraPetch = Chakra_Petch({
   subsets: ['latin'],
-  weight: ['500', '600', '700', '800'],
-  variable: '--font-orbitron',
+  variable: '--font-chakra-petch',
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
 });
 
-/**
- * Inter: corpo limpo, neutral, com excelente legibilidade em tamanhos pequenos.
- * Contrasta com a agressividade do Orbitron sem competir com ele.
- */
-const inter = Inter({
+const rajdhani = Rajdhani({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  variable: '--font-inter',
+  variable: '--font-rajdhani',
+  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 });
 
@@ -91,7 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="pt-BR"
-      className={`${orbitron.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${chakraPetch.variable} ${rajdhani.variable} ${jetbrainsMono.variable}`}
     >
       <body>
         {/*
