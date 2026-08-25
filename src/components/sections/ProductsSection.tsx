@@ -1,61 +1,46 @@
 import { SITE_CONTENT } from '@/lib/content/site-content';
-import { SectionShell } from '@/components/ui/SectionShell';
-import { CtaLink } from '@/components/ui/CtaLink';
+import { whatsappHref } from '@/lib/content/whatsapp';
 
 export function ProductsSection() {
-  const { eyebrow, headline, support, items } = SITE_CONTENT.products;
+  const { headline, support, items } = SITE_CONTENT.products;
 
   return (
-    <SectionShell id="products" eyebrow={eyebrow} headline={headline} support={support}>
-      <div className="grid grid-cols-2 gap-8 max-lg:grid-cols-1">
+    <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
+      {/* Esquerda: hero copy + CTA */}
+      <div className="flex flex-col justify-center gap-8">
+        <h2
+          className="font-display-upper headline-drift text-[var(--paper)]"
+          style={{ fontSize: 'clamp(2.25rem, 6vw, 5rem)', lineHeight: '0.92' }}
+        >
+          {headline}
+        </h2>
+        <p className="max-w-[42ch] text-base leading-relaxed text-[var(--paper-dim)]">
+          {support}
+        </p>
+        <a
+          href={whatsappHref('products')}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="inline-flex w-fit items-center gap-3 px-7 py-4 text-[13px] font-bold uppercase tracking-[0.14em] transition-opacity hover:opacity-90"
+          style={{ background: 'var(--accent)', color: 'var(--ink-900)' }}
+        >
+          Ativar AI Agent →
+        </a>
+      </div>
+
+      {/* Direita: 6 serviços */}
+      <div className="flex flex-col" style={{ borderTop: '1px solid var(--surface-border)' }}>
         {items.map((item) => (
-          <article
+          <div
             key={item.id}
-            className="flex flex-col gap-[30px] border border-[var(--surface-border)] bg-[var(--surface)] p-12 backdrop-blur-lg max-md:p-7"
+            className="flex flex-col gap-1 py-4"
+            style={{ borderBottom: '1px solid var(--surface-border)' }}
           >
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[11px] uppercase tracking-[var(--tracking-wide)] text-[var(--accent)]">
-                {item.eyebrow}
-              </span>
-              {/* Mesmo tracking do eyebrow ao lado: sao dois labels mono paralelos
-                  na mesma linha, nao ha motivo para divergirem (antes 0.28 vs 0.18). */}
-              <span className="font-mono text-[11px] tracking-[var(--tracking-wide)] text-[var(--paper-dim)]">
-                {item.badge}
-              </span>
-            </div>
-
-            <h3 className="font-display text-[var(--text-display-sm)] font-semibold leading-[1.12] tracking-[var(--tracking-tight)] text-pretty max-md:text-[26px]">
-              {item.headline}
-            </h3>
-
-            <p className="text-base leading-[1.62] text-[var(--paper-dim)]">{item.body}</p>
-
-            <ul className="flex flex-col gap-3.5 border-t border-white/[0.07] pt-6">
-              {item.points.map((point) => (
-                <li key={point} className="flex items-center gap-3 text-[var(--text-body-base)] text-[var(--paper-dim)]">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    stroke="var(--accent)"
-                    strokeWidth="1.4"
-                    aria-hidden="true"
-                    className="shrink-0"
-                  >
-                    <path d="M2.5 7.5l3 3 6-7" />
-                  </svg>
-                  {point}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-2 self-start">
-              <CtaLink href={item.ctaHref}>{item.ctaLabel}</CtaLink>
-            </div>
-          </article>
+            <span className="text-[15px] font-semibold text-[var(--paper)]">{item.name}</span>
+            <span className="text-sm text-[var(--paper-dim)]">{item.tagline}</span>
+          </div>
         ))}
       </div>
-    </SectionShell>
+    </div>
   );
 }

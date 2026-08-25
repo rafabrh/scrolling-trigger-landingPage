@@ -1,33 +1,44 @@
 import { SITE_CONTENT } from '@/lib/content/site-content';
-import { SectionShell } from '@/components/ui/SectionShell';
 
 export function TechnologySection() {
   const { eyebrow, headline, support, capabilities } = SITE_CONTENT.technology;
 
   return (
-    <SectionShell id="technology" eyebrow={eyebrow} headline={headline} support={support}>
-      <ul className="grid grid-cols-3 gap-x-10 max-lg:grid-cols-2 max-md:grid-cols-1">
-        {capabilities.map((capability) => (
-          <li
-            key={capability}
-            className="flex items-start gap-4 border-b border-white/[0.07] py-5 text-[var(--text-body-base)] leading-[1.5] text-[var(--paper-dim)]"
+    <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
+      {/* Esquerda: headline ancorada ao fundo */}
+      <div className="flex flex-col justify-end gap-6 pb-4">
+        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--accent)]">
+          {eyebrow}
+        </p>
+        <h2
+          className="font-display-upper headline-drift text-[var(--paper)]"
+          style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', lineHeight: '0.92' }}
+        >
+          {headline}
+        </h2>
+        <p className="max-w-[36ch] text-base leading-relaxed text-[var(--paper-dim)]">
+          {support}
+        </p>
+      </div>
+
+      {/* Direita: lista numerada estilo terminal */}
+      <div className="flex flex-col" style={{ borderTop: '1px solid var(--surface-border)' }}>
+        {capabilities.map((cap, i) => (
+          <div
+            key={cap}
+            className="flex items-center gap-4 py-[10px]"
+            style={{ borderBottom: '1px solid var(--surface-border)' }}
           >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              stroke="var(--accent)"
-              strokeWidth="1.4"
-              aria-hidden="true"
-              className="mt-0.5 shrink-0"
+            <span
+              className="w-7 shrink-0 font-mono text-[10px]"
+              style={{ color: 'var(--accent)', opacity: 0.6 }}
             >
-              <path d="M2.5 7.5l3 3 6-7" />
-            </svg>
-            {capability}
-          </li>
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span className="font-mono text-[13px] text-[var(--paper-dim)]">{cap}</span>
+          </div>
         ))}
-      </ul>
-    </SectionShell>
+      </div>
+    </div>
   );
 }
