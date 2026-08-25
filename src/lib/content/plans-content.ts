@@ -1,0 +1,57 @@
+import { whatsappHref } from './whatsapp';
+
+export const PLANS = [
+  {
+    id: 'start',
+    name: 'START',
+    price: 'R$99,90',
+    period: '/mês',
+    accent: 'var(--accent)',
+    tagline: 'A porta de entrada para automação inteligente.',
+    features: [
+      '1 canal (WhatsApp ou Instagram)',
+      '1 funil de atendimento estruturado',
+      '1 integração configurada',
+      'Comportamento humanizado + memória',
+    ],
+    cta: { label: 'Começar', href: whatsappHref('plans-start') },
+    activation: 'Ativação em 48h',
+  },
+  {
+    id: 'pro',
+    name: 'PRO',
+    price: 'R$197,90',
+    period: '/mês',
+    accent: 'var(--pro-accent)',
+    tagline: 'Para negócios que não podem perder nenhum lead.',
+    badge: 'MAIS ESCOLHIDO',
+    features: [
+      'Tudo do Start',
+      '2 canais simultâneos + 2 funis',
+      '3 integrações (CRM, Google Agenda, planilhas)',
+      'Reativação automática de leads frios',
+      'Suporte prioritário em 4h',
+    ],
+    cta: { label: 'Assinar Pro', href: whatsappHref('plans-pro') },
+    activation: 'Ativação em 48h',
+  },
+  {
+    id: 'obsidian',
+    name: 'OBSIDIAN',
+    price: 'R$547,90',
+    period: '/mês',
+    accent: 'var(--obsidian-accent)',
+    tagline: 'Para quem constrói um negócio que não para.',
+    badge: 'MEMBER',
+    vagas: 'VAGAS LIMITADAS',
+    features: [
+      'Tudo do Pro, sem teto',
+      'Canais e funis ilimitados',
+      'Integrações avançadas (ERP, APIs, webhooks)',
+      'IA treinada com a linguagem da sua marca',
+      'Reunião mensal de estratégia',
+    ],
+    cta: { label: 'Entrar', href: whatsappHref('plans-obsidian') },
+    activation: 'Exclusivo',
+  },
+] as const;

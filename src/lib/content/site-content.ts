@@ -33,6 +33,8 @@ export const SITE_CONTENT = {
     { label: 'Produtos', href: '#products' },
     { label: 'Tecnologia', href: '#technology' },
     { label: 'Sobre', href: '#about' },
+    { label: 'Cases', href: '#cases' },
+    { label: 'Planos', href: '#plans' },
     { label: 'Contato', href: '#contact' },
   ],
 
@@ -60,30 +62,12 @@ export const SITE_CONTENT = {
     support:
       'Um mantém você à frente do que está acontecendo. O outro mantém cada canal respondendo a qualquer hora.',
     items: [
-      {
-        id: 'sharknews',
-        eyebrow: 'SharkNews',
-        badge: '07:07',
-        headline: 'O briefing de tecnologia que chega antes do seu dia começar.',
-        body: 'Tecnologia, IA e inovação curadas e entregues diariamente. Cinco minutos de leitura, todo dia, sem custo.',
-        points: ['Gratuito, para sempre', 'Sem spam', 'Um clique pra sair'],
-        ctaLabel: 'Receber SharkNews',
-        ctaHref: whatsappHref('product-sharknews'),
-      },
-      {
-        id: 'ai-agent',
-        eyebrow: 'AI Agent',
-        badge: 'ATIVAÇÃO 48H',
-        headline: 'Cada canal respondendo, a qualquer hora.',
-        body: 'Agente de IA no WhatsApp e Instagram que responde, qualifica leads e conduz cada conversa até o fechamento — sem pausa, sem perda de contexto.',
-        points: [
-          'Lê áudios, imagens e comentários',
-          'Links de pagamento, Pix e agendamentos',
-          'Mantém o contexto de cada conversa',
-        ],
-        ctaLabel: 'Conhecer AI Agent',
-        ctaHref: whatsappHref('product-ai-agent'),
-      },
+      { id: 'sharknews', name: 'SharkNews', tagline: 'Notícias filtradas por IA para o seu nicho.' },
+      { id: 'ai-agent', name: 'AI Agent', tagline: 'Atendimento humanizado que fecha vendas.' },
+      { id: 'trafego', name: 'Tráfego', tagline: 'Campanhas otimizadas com dados reais.' },
+      { id: 'sites', name: 'Sites', tagline: 'Presença digital que converte.' },
+      { id: 'integracoes', name: 'Integrações', tagline: 'Seus sistemas conversando entre si.' },
+      { id: 'identidade', name: 'Identidade', tagline: 'Marca que comunica sem precisar explicar.' },
     ],
   },
 
@@ -121,21 +105,22 @@ export const SITE_CONTENT = {
         body: 'IA, software e marketing construídos pelo mesmo time — nada se perde entre fornecedores.',
       },
     ],
-    founder: {
-      name: 'Rafael Alvarenga',
-      role: 'Founder & CTO',
-      linkedin: 'https://www.linkedin.com/in/rafabrh/',
-      github: 'https://github.com/rafabrh',
-    },
+    founders: [
+      { name: 'Rafael Alvarenga', role: 'Founder & CTO' },
+      { name: 'Victor Alves', role: 'CEO, Campeão Best Seller Mercado Livre 2026' },
+    ],
   },
 
   cases: {
     eyebrow: 'Cases',
-    headline: 'Resultados, quando puderem ser mostrados.',
-    // Placeholder deliberado. Nenhum caso, cliente ou número entra aqui sem
-    // material verificável.
+    headline: 'Resultados reais de quem já usa.',
     placeholder:
       'Esta seção é reservada para trabalhos com resultados publicados e verificáveis. Nada está listado ainda.',
+  },
+
+  plans: {
+    eyebrow: 'Planos',
+    headline: 'Escolha o plano certo para a sua operação.',
   },
 
   contact: {
