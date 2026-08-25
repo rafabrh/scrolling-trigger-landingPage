@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --ink-900: #040506;
+  --ink-900: #050607;
   --ink-800: #080B0E;
   --ink-700: #0E1318;
-  --paper: #F0F4F8;
-  --paper-dim: rgba(240, 244, 248, 0.60);
-
-  /* Ciano elétrico: mais saturado e brilhante que o original para o tema cyberpunk */
-  --accent: #00D4FF;
-  --accent-dim: #007A99;
-  --accent-glow: rgba(0, 212, 255, 0.16);
-  --accent-pulse: rgba(0, 212, 255, 0.08);
-
+  --paper: #e0f0ea;
+  --paper-dim: rgba(224, 240, 234, 0.60);
+  --accent: #00d4aa;
+  --accent-dim: #009977;
+  --accent-glow: rgba(0, 212, 170, 0.16);
+  --accent-pulse: rgba(0, 212, 170, 0.08);
   --surface: rgba(4, 8, 12, 0.58);
-  --surface-border: rgba(0, 212, 255, 0.10);
+  --surface-border: rgba(0, 212, 170, 0.12);
+  --tab-inactive: #1a2a25;
+  --pro-accent: #a78bfa;
+  --obsidian-accent: #f59e0b;
 
   /* Type scale. Antes havia 4 tamanhos de display (52/56/58/64) e 4 de corpo
      (15/16/17/18) afinados a mao, mais 8 trackings soltos — assinatura de
@@ -47,8 +47,8 @@
   --color-paper: var(--paper);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
-  --font-display: var(--font-orbitron);
-  --font-body: var(--font-inter);
+  --font-display: var(--font-chakra-petch);
+  --font-body: var(--font-rajdhani);
   --font-mono: var(--font-jetbrains-mono);
 }
 
@@ -76,4 +76,11 @@ body {
   color: var(--paper);
   font-family: var(--font-body), system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+.font-display-upper {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
