@@ -21,10 +21,10 @@
 | Modify | `src/app/globals.css` | Update CSS variables: colors, typography scale, font-family refs |
 | Modify | `src/lib/content/site-content.ts` | New copy for all sections + add Planos section data |
 | Create | `src/lib/content/plans-content.ts` | Planos pricing data (Start, Pro, Obsidian) |
-| Modify | `src/components/ui/PersistentCityBackground.tsx` | Use frame-0239.webp as static bg with overlay |
+| Modify | `src/components/background/PersistentCityBackground.tsx` | Use frame-0239.webp as static bg with overlay (keep GrainOverlay) |
 | Create | `src/components/sections/FullscreenSections.tsx` | Wrapper: scroll hijacking, section state, GSAP transitions |
 | Create | `src/hooks/use-fullscreen-nav.ts` | Wheel/touch/keyboard event handler, debounce, section index state |
-| Create | `src/components/sections/SectionScreen.tsx` | Single screen wrapper (absolute, transition classes) |
+| Create | `src/components/sections/SectionScreen.tsx` | Single screen wrapper (absolute, enter stagger, headline drift) |
 | Modify | `src/components/sections/ProductsSection.tsx` | Rework to fullscreen editorial-left layout |
 | Modify | `src/components/sections/TechnologySection.tsx` | Rework to fullscreen terminal-list layout |
 | Modify | `src/components/sections/AboutSection.tsx` | Add Victor Alves, rework to fullscreen |
@@ -160,7 +160,8 @@ Replace the color variables block:
 --accent-glow: rgba(0, 212, 170, 0.16);
 --accent-pulse: rgba(0, 212, 170, 0.08);
 --surface: rgba(4, 8, 12, 0.58);
---surface-border: rgba(0, 212, 170, 0.10);
+--surface-border: rgba(0, 212, 170, 0.12);
+--tab-inactive: #1a2a25;
 --pro-accent: #a78bfa;
 --obsidian-accent: #f59e0b;
 ```
@@ -256,19 +257,84 @@ export const PLANS = [
 ] as const
 ```
 
-- [ ] **Step 2: Update site-content.ts with refined copy**
+- [ ] **Step 2: Add price accuracy test**
 
-Add imports and new sections. Update existing copy to match the approved headlines from the spec. Add `plans` key importing from `plans-content.ts`. Update `products.items` array to include all 6 services (SharkNews, AI Agent, Tráfego Pago, Criação de Sites, Integrações APIs, Identidade Visual). Add Victor Alves to `about.founders`.
+```tsx
+// src/lib/content/__tests__/plans-content.test.ts
+import { describe, it, expect } from 'vitest'
+import { PLANS } from '../plans-content'
 
-- [ ] **Step 3: Run typecheck**
+describe('plans-content', () => {
+  it('has correct prices', () => {
+    expect(PLANS[0].price).toBe('R$99,90')
+    expect(PLANS[1].price).toBe('R$197,90')
+    expect(PLANS[2].price).toBe('R$547,90')
+  })
+  it('has 3 plans', () => {
+    expect(PLANS).toHaveLength(3)
+  })
+})
+```
+
+- [ ] **Step 3: Run test, verify pass**
+
+Run: `pnpm test src/lib/content/__tests__/plans-content.test.ts`
+
+- [ ] **Step 4: Update site-content.ts with refined copy**
+
+Key changes:
+
+**Products — expand items to 6 services** (keep existing SharkNews/AI Agent shape, add 4 new with simpler shape):
+```tsx
+products: {
+  headline: 'Dois produtos. Uma operação.',
+  items: [
+    { id: 'sharknews', name: 'SharkNews', tagline: 'Notícias filtradas por IA para o seu nicho.' },
+    { id: 'ai-agent', name: 'AI Agent', tagline: 'Atendimento humanizado que fecha vendas.' },
+    { id: 'trafego', name: 'Tráfego Pago', tagline: 'Campanhas otimizadas com dados reais.' },
+    { id: 'sites', name: 'Criação de Sites', tagline: 'Presença digital que converte.' },
+    { id: 'integracoes', name: 'Integrações com APIs Oficiais', tagline: 'Seus sistemas conversando entre si.' },
+    { id: 'identidade', name: 'Identidade Visual', tagline: 'Marca que comunica sem precisar explicar.' },
+  ],
+}
+```
+
+**About — rename `founder` to `founders` (plural), add Victor Alves:**
+```tsx
+about: {
+  headline: 'Um parceiro dentro da operação.',
+  founders: [
+    { name: 'Rafael Alvarenga', role: 'Founder & CTO' },
+    { name: 'Victor Alves', role: 'CEO, Campeão Best Seller Mercado Livre 2026' },
+  ],
+}
+```
+
+Note: `AboutSection.tsx` destructures `founder` (singular) — will be updated in Task 7 Step 4 to use `founders`.
+
+**Nav — add Cases and Planos:**
+```tsx
+nav: [
+  { label: 'Produtos', href: '#products' },
+  { label: 'Tecnologia', href: '#technology' },
+  { label: 'Sobre', href: '#about' },
+  { label: 'Cases', href: '#cases' },
+  { label: 'Planos', href: '#plans' },
+  { label: 'Contato', href: '#contact' },
+],
+```
+
+All headlines stored in sentence case — CSS `text-transform: uppercase` handles the visual via `.font-display-upper`.
+
+- [ ] **Step 5: Run typecheck**
 
 Run: `pnpm tsc --noEmit`
 Expected: No errors
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
-git add src/lib/content/plans-content.ts src/lib/content/site-content.ts
+git add src/lib/content/plans-content.ts src/lib/content/site-content.ts src/lib/content/__tests__/plans-content.test.ts
 git commit -m "feat: new copy + plans pricing data"
 ```
 
@@ -277,15 +343,16 @@ git commit -m "feat: new copy + plans pricing data"
 ### Task 4: Background — Frame 0239 as Static BG
 
 **Files:**
-- Modify: `src/components/ui/PersistentCityBackground.tsx`
+- Modify: `src/components/background/PersistentCityBackground.tsx`
 
 - [ ] **Step 1: Read current PersistentCityBackground.tsx**
-- [ ] **Step 2: Replace with frame-0239.webp background**
+- [ ] **Step 2: Replace city image with frame-0239.webp background**
 
 The component should render:
 - `<div>` fixed inset-0 z-0
 - `<img>` of `/cinematic/desktop/frame-0239.webp`, object-cover, opacity-35
 - Overlay div with radial-gradient teal glow at bottom-center + darkening gradient
+- Keep `<GrainOverlay />` — it complements the new `ScanlineOverlay` (different layers)
 
 - [ ] **Step 3: Verify in browser**
 
@@ -294,7 +361,7 @@ Run: `pnpm dev` — check localhost:3000, city image visible behind content
 - [ ] **Step 4: Commit**
 
 ```bash
-git add src/components/ui/PersistentCityBackground.tsx
+git add src/components/background/PersistentCityBackground.tsx
 git commit -m "feat: use cinematic last frame as persistent background"
 ```
 
@@ -468,7 +535,43 @@ Component that exposes a `play()` method via ref. When called, runs a GSAP timel
 
 Uses `gsap.timeline()` with `onComplete` callback.
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 3: Add section enter stagger + headline drift CSS**
+
+In `globals.css`, add:
+
+```css
+/* Section enter stagger — children animate in sequence */
+.section-enter > * {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.section-enter.active > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Stagger: 0.08s per child */
+.section-enter.active > *:nth-child(1) { transition-delay: 0s; }
+.section-enter.active > *:nth-child(2) { transition-delay: 0.08s; }
+.section-enter.active > *:nth-child(3) { transition-delay: 0.16s; }
+.section-enter.active > *:nth-child(4) { transition-delay: 0.24s; }
+.section-enter.active > *:nth-child(5) { transition-delay: 0.32s; }
+.section-enter.active > *:nth-child(6) { transition-delay: 0.40s; }
+.section-enter.active > *:nth-child(n+7) { transition-delay: 0.48s; }
+
+/* Headline drift — headlines enter with extra translateX */
+.headline-drift {
+  transform: translateX(-8px);
+  transition: transform 0.5s ease;
+}
+.section-enter.active .headline-drift {
+  transform: translateX(0);
+}
+```
+
+`SectionScreen.tsx` (Task 7) will apply `section-enter` + `active` class. Headlines get `headline-drift`.
+
+- [ ] **Step 4: Commit**
 
 ```bash
 git add src/components/effects/ScanlineOverlay.tsx src/components/effects/TransitionFX.tsx src/app/globals.css
@@ -483,7 +586,7 @@ git commit -m "feat: cyberpunk transition effects (scanlines, flicker, scan swee
 
 - [ ] **Step 1: Create SectionScreen wrapper**
 
-Wrapper div: absolute inset-0, opacity 0 by default, opacity 1 + pointer-events when active. Accepts `active` prop.
+Wrapper div: absolute inset-0, opacity 0 by default, opacity 1 + pointer-events when active. Accepts `active` prop. Applies `section-enter` class, toggles `active` class based on prop. Headlines inside get `headline-drift` class.
 
 - [ ] **Step 2: Rework ProductsSection**
 
@@ -495,7 +598,7 @@ Headline bottom-left, numbered capability list right in terminal style.
 
 - [ ] **Step 4: Rework AboutSection**
 
-Add Victor Alves data alongside Rafael Alvarenga. Two founder cards on right.
+Update destructuring from `founder` (singular) to `founders` (plural) to match the new data shape from Task 3. Render two founder cards on right: Rafael Alvarenga + Victor Alves.
 
 - [ ] **Step 5: Rework CasesSection**
 
@@ -516,7 +619,7 @@ Run: `pnpm tsc --noEmit && pnpm build`
 - [ ] **Step 9: Commit**
 
 ```bash
-git add src/components/sections/ src/components/ui/SectionScreen.tsx
+git add src/components/sections/
 git commit -m "feat: fullscreen section components with cyberpunk layout"
 ```
 
@@ -529,6 +632,10 @@ git commit -m "feat: fullscreen section components with cyberpunk layout"
 - Create: `src/components/ui/SectionDots.tsx`
 - Modify: `src/app/page.tsx`
 - Modify: `src/components/layout/NavScrollSpy.tsx`
+
+- [ ] **Step 0: Verify useCinematicReady interface**
+
+Read `src/lib/cinematic/cinematic-ready-context.tsx` and confirm the hook exports `{ ready, markReady }`. The `FullscreenSections` component depends on `const { ready } = useCinematicReady()`. If the shape differs, adjust accordingly.
 
 - [ ] **Step 1: Create SectionDots**
 
@@ -577,26 +684,47 @@ export function FullscreenSections() {
 
 - [ ] **Step 3: Update page.tsx**
 
-Replace the individual section components with `<FullscreenSections />`. Keep `CinematicExperience` above. Remove `InstitutionalIntro` (content merged into Sobre).
+Replace the individual section components with `<FullscreenSections />`. Keep `CinematicExperience` above. Remove `InstitutionalIntro` (content merged into Sobre). Remove or hide `SiteFooter` — in fullscreen mode it's unreachable; integrate essential footer content (copyright) into ContactSection instead. Update skip-to-content `href="#intro"` in `layout.tsx` to `href="#products"`.
 
 - [ ] **Step 4: Update NavScrollSpy**
 
-Instead of scroll-position-based active link, use the section index from a shared context or prop.
+Instead of scroll-position-based active link, use the section index from a shared context or prop. Update `SECTION_IDS` to include all 6 sections: `['products', 'technology', 'about', 'cases', 'plans', 'contact']`.
 
-- [ ] **Step 5: Run full test suite**
+- [ ] **Step 5: Write FullscreenSections integration test**
+
+```tsx
+// src/components/sections/__tests__/FullscreenSections.test.tsx
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+
+vi.mock('@/lib/cinematic/cinematic-ready-context', () => ({
+  useCinematicReady: () => ({ ready: true }),
+}))
+
+describe('FullscreenSections', () => {
+  it('renders all 6 section labels', async () => {
+    const { FullscreenSections } = await import('../FullscreenSections')
+    render(<FullscreenSections />)
+    // First section (Products) should be visible
+    expect(screen.getByText(/produtos/i)).toBeDefined()
+  })
+})
+```
+
+- [ ] **Step 6: Run full test suite**
 
 Run: `pnpm test`
 Expected: All tests pass
 
-- [ ] **Step 6: Run build**
+- [ ] **Step 7: Run build**
 
 Run: `pnpm build`
 Expected: 7 static routes, no errors
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
-git add src/components/sections/FullscreenSections.tsx src/components/ui/SectionDots.tsx src/app/page.tsx src/components/layout/NavScrollSpy.tsx
+git add src/components/sections/FullscreenSections.tsx src/components/ui/SectionDots.tsx src/app/page.tsx src/app/layout.tsx src/components/layout/NavScrollSpy.tsx src/components/sections/__tests__/FullscreenSections.test.tsx
 git commit -m "feat: fullscreen sections with scroll hijacking and cyberpunk transitions"
 ```
 
@@ -630,8 +758,10 @@ git commit -m "polish: visual QA fixes and copy refinement"
 - [ ] **Step 1: Push branch and create PR**
 
 ```bash
-git push -u origin feat/fullscreen-sections
-gh pr create --title "Seções fullscreen com transições cyberpunk" --body "..."
+git push -u origin feat/cinematic-ptbr-rebuild
+gh pr create --base main --title "Seções fullscreen com transições cyberpunk" --body "..."
 ```
+
+Note: trabalho está na branch `feat/cinematic-ptbr-rebuild` (branch atual).
 
 **DO NOT merge.** PR is Rafa's validation channel.
