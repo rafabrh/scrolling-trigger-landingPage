@@ -19,7 +19,6 @@ import { CtaLink } from '@/components/ui/CtaLink';
 import { CinematicCanvas } from './CinematicCanvas';
 import { CinematicOverlay, type SceneHandle } from './CinematicOverlay';
 import { SceneRail } from './SceneRail';
-import { LightningOverlay, type LightningOverlayHandle } from './LightningOverlay';
 import { CinematicDebugPanel } from './CinematicDebugPanel';
 import { CinematicErrorBoundary } from './CinematicErrorBoundary';
 
@@ -60,7 +59,6 @@ function CinematicStage() {
   const sharkRef = useRef<SceneHandle | null>(null);
   const agentRef = useRef<SceneHandle | null>(null);
   const railRef = useRef<SceneHandle | null>(null);
-  const lightningRef = useRef<LightningOverlayHandle | null>(null);
   const frameRef = useRef<number>(0);
   const tickRef = useRef<CinematicTick>({ progress: 0, frame: 0, scene: 'intro' });
   // Garante que markReady só dispara uma vez, mesmo com scroll errático.
@@ -93,7 +91,6 @@ function CinematicStage() {
       sharkRef.current?.apply(tick.frame);
       agentRef.current?.apply(tick.frame);
       railRef.current?.apply(tick.frame);
-      lightningRef.current?.apply(tick.frame);
 
       // O palco apaga sobre a cidade em vez de a cidade acender sobre o palco.
       // Como o último frame do canvas e a imagem de fundo são o mesmo frame
@@ -184,7 +181,6 @@ function CinematicStage() {
           window={CINEMATIC.overlays.aiAgent}
           {...CINEMATIC_COPY.aiAgent}
         />
-        <LightningOverlay ref={lightningRef} />
         <SceneRail ref={railRef} />
       </div>
 
