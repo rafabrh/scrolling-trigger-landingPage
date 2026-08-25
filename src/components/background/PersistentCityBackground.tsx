@@ -1,4 +1,5 @@
-import { CINEMATIC, MOBILE_BREAKPOINT_PX } from '@/lib/cinematic/cinematic.config';
+import { CINEMATIC } from '@/lib/cinematic/cinematic.config';
+import { MOBILE_BREAKPOINT_PX } from '@/lib/env/device';
 import { GrainOverlay } from './GrainOverlay';
 
 /**

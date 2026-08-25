@@ -1,5 +1,10 @@
-export { MOBILE_BREAKPOINT_PX } from '@/lib/cinematic/cinematic.config';
-import { MOBILE_BREAKPOINT_PX } from '@/lib/cinematic/cinematic.config';
+/**
+ * Fronteira entre os conjuntos de frame. Vive aqui, na camada de ambiente,
+ * porque "o que conta como mobile" é uma preocupação de viewport/dispositivo.
+ * Três lugares precisam do mesmo número: a escolha do conjunto em TypeScript
+ * (`resolveFrameSet` abaixo), o `media` do fundo, e o `md` do Tailwind.
+ */
+export const MOBILE_BREAKPOINT_PX = 768;
 
 /** `full` roda o scrub inteiro. `reduced` respeita prefers-reduced-motion. `static` nem baixa a sequência. */
 export type CinematicMode = 'full' | 'reduced' | 'static';

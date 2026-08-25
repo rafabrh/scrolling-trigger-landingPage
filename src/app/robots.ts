@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { shouldIndex } from '@/lib/env/deploy';
 
 // Mesma fonte de verdade do metadataBase em layout.tsx. robots.txt precisa de
 // URL absoluta para o Sitemap, então repetimos o fallback aqui.
@@ -12,6 +13,16 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shkgroup.com.br';
  * e o único noindex do site é o do 404, que o Next injeta na resposta 404.
  */
 export default function robots(): MetadataRoute.Robots {
+  // Num preview da Vercel, bloqueia todo crawling para não indexar o ambiente
+  // nem duplicar conteúdo do domínio de produção. Produção segue liberando '/'.
+  if (!shouldIndex()) {
+    return {
+      rules: { userAgent: '*', disallow: '/' },
+      sitemap: `${SITE_URL}/sitemap.xml`,
+      host: SITE_URL,
+    };
+  }
+
   return {
     rules: { userAgent: '*', allow: '/' },
     sitemap: `${SITE_URL}/sitemap.xml`,

@@ -12,7 +12,18 @@ export function TechnologySection() {
             key={capability}
             className="flex items-start gap-4 border-b border-white/[0.07] py-5 text-[var(--text-body-base)] leading-[1.5] text-[var(--paper-dim)]"
           >
-            <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 bg-[var(--accent)]" />
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              stroke="var(--accent)"
+              strokeWidth="1.4"
+              aria-hidden="true"
+              className="mt-0.5 shrink-0"
+            >
+              <path d="M2.5 7.5l3 3 6-7" />
+            </svg>
             {capability}
           </li>
         ))}

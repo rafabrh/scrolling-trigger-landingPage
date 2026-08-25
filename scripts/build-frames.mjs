@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { mkdir, rm, readdir, rename, writeFile, stat } from 'node:fs/promises';
+import { mkdir, rm, readdir, rename, writeFile, stat, readFile } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';
@@ -14,25 +14,25 @@ const SOURCE = path.join(ROOT, 'context/video/rafa3.mp4');
 const TEMP = path.join(ROOT, '.frames-tmp');
 const OUT = path.join(ROOT, 'public/cinematic');
 
-// Espelha src/lib/cinematic/cinematic.config.ts. O script valida contra o
-// vídeo real e falha alto se algo divergir, então a duplicação não silencia.
-const EXPECTED = { width: 1920, height: 1080, fps: 24, frameCount: 240 };
-const FINAL_FRAME = 239;
+// Fonte única, a mesma que src/lib/cinematic/cinematic.config.ts lê. Os números
+// compartilhados vivem só aqui; `quality` e `crop` são do encoder e ficam neste
+// JSON, não no config de runtime. O script valida EXPECTED contra o vídeo real
+// e falha alto se divergir, e um teste compara o config contra este JSON.
+const framesConfig = JSON.parse(
+  await readFile(path.join(ROOT, 'src/lib/cinematic/frames.config.json'), 'utf8'),
+);
+const EXPECTED = {
+  width: framesConfig.source.width,
+  height: framesConfig.source.height,
+  fps: framesConfig.source.fps,
+  frameCount: framesConfig.source.frameCount,
+};
+const FINAL_FRAME = framesConfig.source.frameCount - 1;
 const DESKTOP_BUDGET_BYTES = 18 * 1024 * 1024;
 
-const SETS = {
-  desktop: { dir: 'desktop', width: 1600, height: 900, frameStep: 1, quality: 74, crop: null },
-  mobile: {
-    dir: 'mobile',
-    width: 864,
-    height: 1080,
-    frameStep: 2,
-    quality: 72,
-    // Corte central 4:5 do quadro 16:9. Sem redimensionar depois, então não
-    // há upscale em lugar nenhum.
-    crop: { left: 528, top: 0, width: 864, height: 1080 },
-  },
-};
+// Corte central 4:5 do quadro 16:9 (mobile). Sem redimensionar depois, então
+// não há upscale em lugar nenhum.
+const SETS = framesConfig.sets;
 
 async function probe() {
   const { stdout } = await run(ffprobeStatic.path, [
@@ -61,7 +61,7 @@ async function probe() {
     if (actual[key] !== EXPECTED[key]) {
       throw new Error(
         `Vídeo divergiu da configuração: ${key} esperado ${EXPECTED[key]}, encontrado ${actual[key]}. ` +
-          'Atualize EXPECTED aqui e CINEMATIC em src/lib/cinematic/cinematic.config.ts juntos.',
+          'Ajuste os números em src/lib/cinematic/frames.config.json (fonte única lida por este script e pelo CINEMATIC).',
       );
     }
   }
@@ -151,9 +151,12 @@ async function main() {
     .webp({ quality: 88, effort: 6 })
     .toFile(path.join(OUT, 'final-city-mobile.webp'));
 
+  // Poster: frame 0 em qualidade alta — é a primeira imagem que o usuário vê
+  // enquanto os bitmaps chegam pela rede. Qualidade baixa aqui degrada o
+  // percebido no LCP.
   await sharp(pngs[0])
     .resize(SETS.desktop.width, SETS.desktop.height, { kernel: 'lanczos3' })
-    .webp({ quality: 70, effort: 6 })
+    .webp({ quality: 82, effort: 6 })
     .toFile(path.join(OUT, 'poster.webp'));
 
   const manifest = {

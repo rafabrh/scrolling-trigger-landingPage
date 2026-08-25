@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T02:21:11.183Z",
+  "generatedAt": "2026-08-21T12:57:12.826Z",
   "source": {
     "path": "context/video/rafa3.mp4",
     "width": 1920,
@@ -23,8 +23,8 @@
       "height": 1080,
       "frameCount": 120,
       "frameStep": 2,
-      "quality": 72,
-      "totalBytes": 6095006
+      "quality": 78,
+      "totalBytes": 7035538
     }
   },
   "finalCity": {

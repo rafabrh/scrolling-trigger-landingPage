@@ -1,0 +1,14 @@
+{
+  "source": { "width": 1920, "height": 1080, "fps": 24, "frameCount": 240 },
+  "sets": {
+    "desktop": { "dir": "desktop", "width": 1600, "height": 900, "frameStep": 1, "quality": 82, "crop": null },
+    "mobile": {
+      "dir": "mobile",
+      "width": 864,
+      "height": 1080,
+      "frameStep": 2,
+      "quality": 78,
+      "crop": { "left": 528, "top": 0, "width": 864, "height": 1080 }
+    }
+  }
+}

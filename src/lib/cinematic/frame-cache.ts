@@ -2,6 +2,7 @@ import {
   buildLoadPriority,
   decodeWindowRadius,
   framesToEvict,
+  isCacheSettled,
   nearestLoadedFrame,
 } from './load-policy';
 import { fileIndexForFrame } from './frame-math';
@@ -49,6 +50,14 @@ export class FrameCache {
   private readonly abandoned = new Set<number>();
   private readonly firstFrameCallbacks: Array<() => void> = [];
 
+  /**
+   * Aborta os fetches em voo quando a instância é descartada. O FrameCache é
+   * de uso único (o hook cria um novo a cada mount e chama dispose no
+   * cleanup), então um único controller criado na construção e abortado uma
+   * vez em dispose basta — sem controllers por fetch.
+   */
+  private readonly abortController = new AbortController();
+
   private playhead = 0;
   private encodedBytes = 0;
   private running = false;
@@ -62,7 +71,18 @@ export class FrameCache {
    */
   private tailUnlocked = false;
 
-  constructor(private readonly options: FrameCacheOptions) {}
+  /**
+   * Número de arquivos distintos da sequência, derivado do mapeamento
+   * frame->arquivo do último frame (mobile step 2 divide por dois). Nunca
+   * hardcode 240: o teto muda com frameCount e frameStep. Memoizado porque o
+   * early-out do pump o lê a cada quadro de scroll.
+   */
+  private readonly totalFiles: number;
+
+  constructor(private readonly options: FrameCacheOptions) {
+    this.totalFiles =
+      options.frameCount <= 0 ? 0 : this.fileFor(options.frameCount - 1) + 1;
+  }
 
   get stats(): { decoded: number; encoded: number; bytes: number } {
     return { decoded: this.decoded.size, encoded: this.encoded.size, bytes: this.encodedBytes };
@@ -138,6 +158,9 @@ export class FrameCache {
   dispose(): void {
     this.disposed = true;
     this.running = false;
+    // Aborta já: cancela qualquer fetch em voo antes de limpar o resto, para a
+    // rede parar de baixar bytes cujo resultado seria descartado.
+    this.abortController.abort();
     for (const bitmap of this.decoded.values()) bitmap.close();
     this.decoded.clear();
     this.encoded.clear();
@@ -166,6 +189,25 @@ export class FrameCache {
 
     const slots = this.options.concurrency - this.inFlight.size;
     if (slots <= 0) return;
+
+    // Early-out no caminho quente do scroll: uma vez que a sequência inteira
+    // está baixada e a janela ao redor do playhead está decodificada, não há
+    // nada a iniciar, e montar/varrer a fila de até `frameCount` posições a
+    // cada quadro é alocação e iteração puras. Predicado puro e testável decide
+    // aqui; qualquer trabalho pendente (fetch faltando, janela deslocando,
+    // bitmap despejado) reprova a condição e o pump segue normal.
+    if (
+      isCacheSettled(
+        this.fileFor(this.playhead),
+        decodeWindowRadius(this.options.maxDecoded),
+        this.totalFiles,
+        this.encoded,
+        this.decoded,
+        this.abandoned,
+      )
+    ) {
+      return;
+    }
 
     // A fila raciocina em espaço de frame de vídeo; os dois níveis do cache são
     // chaveados por arquivo. No mobile um arquivo serve dois frames, então o
@@ -243,7 +285,9 @@ export class FrameCache {
       let blob = this.encoded.get(file);
 
       if (blob === undefined) {
-        const response = await fetch(this.urlForFile(file));
+        const response = await fetch(this.urlForFile(file), {
+          signal: this.abortController.signal,
+        });
         if (!response.ok) throw new Error(`frame file ${file}: HTTP ${response.status}`);
 
         blob = await response.blob();
@@ -268,6 +312,10 @@ export class FrameCache {
       // abandonado para sempre na primeira falha seguinte.
       this.failures.delete(file);
     } catch (error) {
+      // Fetch abortado no dispose não é falha real: a instância está sendo
+      // descartada e o resultado seria jogado fora de qualquer jeito. Sai antes
+      // de mexer em failures/abandoned para não marcar o arquivo como morto.
+      if (this.disposed) return;
       // Um arquivo que falhou não trava a sequência: getNearest cobre o buraco.
       // Ele volta para a fila até esgotar as tentativas, e aí é abandonado.
       const attempts = (this.failures.get(file) ?? 0) + 1;

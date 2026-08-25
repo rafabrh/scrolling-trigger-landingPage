@@ -8,7 +8,11 @@ import { TechnologySection } from '@/components/sections/TechnologySection';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { CasesSection } from '@/components/sections/CasesSection';
 import { ContactSection } from '@/components/sections/ContactSection';
+import { CinematicReadyProvider } from '@/lib/cinematic/cinematic-ready-context';
 import type { Metadata } from 'next';
+import { SITE_URL } from './layout';
+import { INSTAGRAM_URL, WHATSAPP_URL } from '@/lib/content/whatsapp';
+import { shouldIndex } from '@/lib/env/deploy';
 
 /**
  * Metadata ESPECÍFICA da home. Fica aqui, e não no layout, porque o layout
@@ -22,7 +26,9 @@ import type { Metadata } from 'next';
  */
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
-  robots: { index: true, follow: true },
+  // Indexação condicionada ao sinal de deploy: um preview da Vercel vira
+  // noindex/nofollow; produção (e qualquer host não-Vercel) segue indexável.
+  robots: { index: shouldIndex(), follow: shouldIndex() },
   openGraph: { url: '/' },
 };
 
@@ -30,9 +36,38 @@ export const metadata: Metadata = {
  * Server Component. Só o cinematic é cliente, e ele não segura nada: todo o
  * conteúdo institucional está no HTML da primeira resposta.
  */
+/**
+ * JSON-LD Organization: dado estruturado estático para os buscadores associarem
+ * marca, URL, logo e perfis sociais. Objeto tipado, sem input dinâmico/usuário.
+ */
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'SHK Group',
+  url: SITE_URL,
+  logo: `${SITE_URL}/icon.png`,
+  sameAs: [INSTAGRAM_URL, WHATSAPP_URL],
+} as const;
+
 export default function Home() {
   return (
-    <>
+    /*
+      CinematicReadyProvider liga o sinal de "handoff concluído" entre o
+      CinematicExperience (quem dispara) e o SiteHeader (quem anima).
+      É um client component leve sem render além de um context — não afeta
+      o SSR das seções institucionais.
+    */
+    <CinematicReadyProvider>
+      {/*
+        dangerouslySetInnerHTML aqui NÃO é sink de XSS: o conteúdo é um
+        JSON.stringify de `orgJsonLd`, um objeto constante e estático, sem
+        nenhuma interpolação de input dinâmico/usuário. Renderiza server-side no
+        HTML pré-renderizado. É o idioma padrão e seguro de JSON-LD no Next.
+      */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+      />
       <PersistentCityBackground />
       <SiteHeader />
 
@@ -47,6 +82,6 @@ export default function Home() {
       </main>
 
       <SiteFooter />
-    </>
+    </CinematicReadyProvider>
   );
 }

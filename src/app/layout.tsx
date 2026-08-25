@@ -1,18 +1,27 @@
 import type { Metadata, Viewport } from 'next';
-import { Space_Grotesk, Archivo, JetBrains_Mono } from 'next/font/google';
+import { Orbitron, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
-const spaceGrotesk = Space_Grotesk({
+/**
+ * Orbitron: display font com estética cyberpunk/sci-fi. Geométrico, angular,
+ * legível em headlines grandes — exatamente o que a experiência cinematográfica
+ * pede. Self-hosted via Next.js (zero requisição para fonts.google.com).
+ */
+const orbitron = Orbitron({
   subsets: ['latin'],
-  weight: ['500', '600', '700'],
-  variable: '--font-space-grotesk',
+  weight: ['500', '600', '700', '800'],
+  variable: '--font-orbitron',
   display: 'swap',
 });
 
-const archivo = Archivo({
+/**
+ * Inter: corpo limpo, neutral, com excelente legibilidade em tamanhos pequenos.
+ * Contrasta com a agressividade do Orbitron sem competir com ele.
+ */
+const inter = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
-  variable: '--font-archivo',
+  variable: '--font-inter',
   display: 'swap',
 });
 
@@ -23,10 +32,12 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shkgroup.com.br';
+// Exportado para a home (page.tsx) montar o JSON-LD com URL absoluta sem
+// duplicar o fallback do env. Uma task futura consolida o handling de env.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://shkgroup.com.br';
 
 const DESCRIPTION =
-  'AI agents, software and digital products for companies whose sales operation runs slower than their demand.';
+  'Agentes de IA, software e produtos digitais para empresas cuja operação de vendas não acompanha a demanda.';
 
 // Frame final da cidade, já commitado e antes sem uso. É o mesmo quadro em que
 // o cinematic entrega, então o card do link e a primeira tela batem.
@@ -61,6 +72,7 @@ export const metadata: Metadata = {
     title: 'SHK Group',
     description: DESCRIPTION,
     images: [OG_IMAGE],
+    locale: 'pt_BR',
   },
   // O twitter não herda images do openGraph no Next: sem esta linha o card
   // summary_large_image degrada para summary por falta de imagem.
@@ -77,8 +89,8 @@ export const viewport: Viewport = { themeColor: '#050607' };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
-      lang="en"
-      className={`${spaceGrotesk.variable} ${archivo.variable} ${jetbrainsMono.variable}`}
+      lang="pt-BR"
+      className={`${orbitron.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body>
         {/*

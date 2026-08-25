@@ -12,12 +12,14 @@ import {
   type CinematicMode,
   type FrameSetName,
 } from '@/lib/env/device';
-import { SITE_CONTENT } from '@/lib/content/site-content';
+import { CINEMATIC_COPY } from '@/lib/content/cinematic-copy';
+import { useCinematicReady } from '@/lib/cinematic/cinematic-ready-context';
 import { GrainOverlay } from '@/components/background/GrainOverlay';
 import { CtaLink } from '@/components/ui/CtaLink';
 import { CinematicCanvas } from './CinematicCanvas';
 import { CinematicOverlay, type SceneHandle } from './CinematicOverlay';
 import { SceneRail } from './SceneRail';
+import { LightningOverlay, type LightningOverlayHandle } from './LightningOverlay';
 import { CinematicDebugPanel } from './CinematicDebugPanel';
 import { CinematicErrorBoundary } from './CinematicErrorBoundary';
 
@@ -46,18 +48,28 @@ export function CinematicExperience() {
   );
 }
 
+/**
+ * Duração do boot-in do header após o handoff, em milissegundos.
+ * O scroll livre só é liberado após esse tempo.
+ */
+const BOOT_IN_DURATION_MS = 900;
+
 function CinematicStage() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const sharkRef = useRef<SceneHandle | null>(null);
   const agentRef = useRef<SceneHandle | null>(null);
   const railRef = useRef<SceneHandle | null>(null);
+  const lightningRef = useRef<LightningOverlayHandle | null>(null);
   const frameRef = useRef<number>(0);
   const tickRef = useRef<CinematicTick>({ progress: 0, frame: 0, scene: 'intro' });
+  // Garante que markReady só dispara uma vez, mesmo com scroll errático.
+  const handoffFiredRef = useRef(false);
 
   const [mode, setMode] = useState<CinematicMode | null>(null);
   const [frameSet, setFrameSet] = useState<FrameSetName>('desktop');
   const debugEnabled = useCinematicDebugEnabled();
+  const { markReady } = useCinematicReady();
 
   // Os sinais são lidos uma vez depois da montagem. Trocar de conjunto no meio
   // do scroll descartaria o cache inteiro por causa de um resize de barra de
@@ -81,6 +93,7 @@ function CinematicStage() {
       sharkRef.current?.apply(tick.frame);
       agentRef.current?.apply(tick.frame);
       railRef.current?.apply(tick.frame);
+      lightningRef.current?.apply(tick.frame);
 
       // O palco apaga sobre a cidade em vez de a cidade acender sobre o palco.
       // Como o último frame do canvas e a imagem de fundo são o mesmo frame
@@ -96,6 +109,18 @@ function CinematicStage() {
         // tabula para dentro de CTAs invisíveis e o clique morre no palco.
         stage.style.pointerEvents = opacity === 0 ? 'none' : '';
         stage.style.visibility = opacity === 0 ? 'hidden' : '';
+
+        // Quando o palco some completamente, dispara o boot-in do header.
+        // O timeout reflete a duração da animação, após a qual o scroll é liberado.
+        if (opacity === 0 && !handoffFiredRef.current) {
+          handoffFiredRef.current = true;
+          // Bloqueia scroll imediatamente para o boot-in ocorrer sem a página pular.
+          document.documentElement.style.overflow = 'hidden';
+          markReady();
+          setTimeout(() => {
+            document.documentElement.style.overflow = '';
+          }, BOOT_IN_DURATION_MS);
+        }
       }
     },
   });
@@ -116,7 +141,7 @@ function CinematicStage() {
       className="relative z-10"
       style={{ height: `${heightVh}vh` }}
     >
-      <h1 className="sr-only">{SITE_CONTENT.pageHeading}</h1>
+      <h1 className="sr-only">{CINEMATIC_COPY.pageHeading}</h1>
 
       <div ref={stageRef} className="sticky top-0 h-screen w-full overflow-hidden">
         <CinematicCanvas
@@ -152,13 +177,14 @@ function CinematicStage() {
         <CinematicOverlay
           ref={sharkRef}
           window={CINEMATIC.overlays.sharknews}
-          {...SITE_CONTENT.cinematic.sharknews}
+          {...CINEMATIC_COPY.sharknews}
         />
         <CinematicOverlay
           ref={agentRef}
           window={CINEMATIC.overlays.aiAgent}
-          {...SITE_CONTENT.cinematic.aiAgent}
+          {...CINEMATIC_COPY.aiAgent}
         />
+        <LightningOverlay ref={lightningRef} />
         <SceneRail ref={railRef} />
       </div>
 
@@ -183,14 +209,22 @@ interface SceneCopy {
 
 /** Caminho de reduced-motion, save-data e conexão lenta. */
 function StaticCinematic() {
+  const { markReady } = useCinematicReady();
+
+  // No caminho estático não há handoff cinematográfico: o header deve aparecer
+  // imediatamente, sem animação de boot-in e sem bloqueio de scroll.
+  useEffect(() => {
+    markReady();
+  }, [markReady]);
+
   const scenes: readonly SceneCopy[] = [
-    SITE_CONTENT.cinematic.sharknews,
-    SITE_CONTENT.cinematic.aiAgent,
+    CINEMATIC_COPY.sharknews,
+    CINEMATIC_COPY.aiAgent,
   ];
 
   return (
     <section aria-label="SHK Group introduction" className="relative z-10">
-      <h1 className="sr-only">{SITE_CONTENT.pageHeading}</h1>
+      <h1 className="sr-only">{CINEMATIC_COPY.pageHeading}</h1>
       {scenes.map((scene) => (
         <div key={scene.eyebrow} className="flex min-h-screen items-center px-24 max-md:px-6">
           <StaticScene scene={scene} />
