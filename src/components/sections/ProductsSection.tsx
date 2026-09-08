@@ -1,60 +1,44 @@
 import { SITE_CONTENT } from '@/lib/content/site-content';
 import { SectionShell } from '@/components/ui/SectionShell';
 import { CtaLink } from '@/components/ui/CtaLink';
+import { whatsappHref } from '@/lib/content/whatsapp';
 
 export function ProductsSection() {
   const { eyebrow, headline, support, items } = SITE_CONTENT.products;
 
   return (
     <SectionShell id="products" eyebrow={eyebrow} headline={headline} support={support}>
-      <div className="grid grid-cols-2 gap-8 max-lg:grid-cols-1">
-        {items.map((item) => (
-          <article
-            key={item.id}
-            className="flex flex-col gap-[30px] border border-[var(--surface-border)] bg-[var(--surface)] p-12 backdrop-blur-lg max-md:p-7"
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[11px] uppercase tracking-[var(--tracking-wide)] text-[var(--accent)]">
-                {item.eyebrow}
-              </span>
-              {/* Mesmo tracking do eyebrow ao lado: sao dois labels mono paralelos
-                  na mesma linha, nao ha motivo para divergirem (antes 0.28 vs 0.18). */}
-              <span className="font-mono text-[11px] tracking-[var(--tracking-wide)] text-[var(--paper-dim)]">
-                {item.badge}
+      <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
+        {/* Esquerda: lista de serviços */}
+        <div className="flex flex-col" style={{ borderTop: '1px solid var(--surface-border)' }}>
+          {items.map((item) => (
+            <div
+              key={item.id}
+              className="flex flex-col gap-1 py-4"
+              style={{ borderBottom: '1px solid var(--surface-border)' }}
+            >
+              {'href' in item && item.href ? (
+                <a
+                  href={item.href}
+                  className="text-[15px] font-semibold text-[var(--paper)] transition-colors hover:text-[var(--accent)]"
+                >
+                  {item.name}
+                </a>
+              ) : (
+                <span className="text-[15px] font-semibold text-[var(--paper)]">{item.name}</span>
+              )}
+              <span className="text-sm text-[var(--paper-dim)]">{item.tagline}</span>
+              <span className="mt-1 text-[13px] leading-relaxed text-[var(--paper-dim)]" style={{ opacity: 0.75 }}>
+                {item.description}
               </span>
             </div>
+          ))}
+        </div>
 
-            <h3 className="font-display text-[var(--text-display-sm)] font-semibold leading-[1.12] tracking-[var(--tracking-tight)] text-pretty max-md:text-[26px]">
-              {item.headline}
-            </h3>
-
-            <p className="text-base leading-[1.62] text-[var(--paper-dim)]">{item.body}</p>
-
-            <ul className="flex flex-col gap-3.5 border-t border-white/[0.07] pt-6">
-              {item.points.map((point) => (
-                <li key={point} className="flex items-center gap-3 text-[var(--text-body-base)] text-[var(--paper-dim)]">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                    stroke="var(--accent)"
-                    strokeWidth="1.4"
-                    aria-hidden="true"
-                    className="shrink-0"
-                  >
-                    <path d="M2.5 7.5l3 3 6-7" />
-                  </svg>
-                  {point}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-2 self-start">
-              <CtaLink href={item.ctaHref}>{item.ctaLabel}</CtaLink>
-            </div>
-          </article>
-        ))}
+        {/* Direita: CTA */}
+        <div className="flex flex-col justify-center gap-8">
+          <CtaLink href={whatsappHref('products')}>Ativar AI Agent</CtaLink>
+        </div>
       </div>
     </SectionShell>
   );

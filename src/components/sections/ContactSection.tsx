@@ -7,17 +7,30 @@ export function ContactSection() {
     SITE_CONTENT.contact;
 
   return (
-    <SectionShell id="contact" eyebrow={eyebrow} headline={headline} support={body}>
-      <div className="flex items-center gap-8 max-md:flex-col max-md:items-start max-md:gap-5">
-        <CtaLink href={ctaHref}>{ctaLabel}</CtaLink>
-        <a
-          href={instagramHref}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="font-mono text-[13px] tracking-[var(--tracking-snug)] text-[var(--paper-dim)] transition-colors hover:text-[var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]"
+    <SectionShell id="contact" eyebrow={eyebrow} headline={headline}>
+      <div className="flex flex-col gap-8">
+        <p className="max-w-[44ch] text-base leading-relaxed text-[var(--paper-dim)]">{body}</p>
+
+        {/* CTAs */}
+        <div className="flex flex-wrap items-center gap-5">
+          <CtaLink href={ctaHref}>{ctaLabel}</CtaLink>
+          <a
+            href={instagramHref}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="font-mono text-[13px] tracking-[0.14em] text-[var(--paper-dim)] transition-colors hover:text-[var(--accent)]"
+          >
+            {instagramLabel}
+          </a>
+        </div>
+
+        {/* Copyright */}
+        <p
+          className="mt-8 font-mono text-[11px] text-[var(--paper-dim)]"
+          style={{ opacity: 0.4 }}
         >
-          {instagramLabel}
-        </a>
+          {SITE_CONTENT.footer.copyright}
+        </p>
       </div>
     </SectionShell>
   );

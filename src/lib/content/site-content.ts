@@ -33,26 +33,23 @@ export const SITE_CONTENT = {
     { label: 'Produtos', href: '#products' },
     { label: 'Tecnologia', href: '#technology' },
     { label: 'Sobre', href: '#about' },
+    { label: 'Planos', href: '#plans' },
+    { label: 'FAQ', href: '#faq' },
+    { label: 'SharkNews', href: '#sharknews' },
     { label: 'Contato', href: '#contact' },
   ],
 
   cta: { label: 'Ativar AI Agent', href: whatsappHref('header') },
 
+  heroStats: [
+    { value: '24/7', label: 'Operação contínua' },
+    { value: '~10s', label: 'Tempo de resposta' },
+    { value: '100%', label: 'Leads capturados' },
+  ],
+
   // Mesmo objeto que a ilha cliente importa direto de `cinematic-copy`. Fica
   // aqui reexportado para os consumidores de servidor e para os testes.
   cinematic: CINEMATIC_COPY,
-
-  intro: {
-    eyebrow: 'Quem somos',
-    headline: 'Tecnologia que muda como uma empresa vende.',
-    body: 'O SHK Group constrói agentes de IA, software e produtos digitais para empresas cuja operação de vendas não acompanha a demanda. Trabalhamos como parceiros dentro da operação, não como fornecedores na borda dela.',
-    pillars: [
-      { index: '01', label: 'IA & Automação' },
-      { index: '02', label: 'Software' },
-      { index: '03', label: 'Produtos Digitais' },
-    ],
-    meta: 'ATIVAÇÃO EM 48H',
-  },
 
   products: {
     eyebrow: 'Produtos',
@@ -60,30 +57,12 @@ export const SITE_CONTENT = {
     support:
       'Um mantém você à frente do que está acontecendo. O outro mantém cada canal respondendo a qualquer hora.',
     items: [
-      {
-        id: 'sharknews',
-        eyebrow: 'SharkNews',
-        badge: '07:07',
-        headline: 'O briefing de tecnologia que chega antes do seu dia começar.',
-        body: 'Tecnologia, IA e inovação curadas e entregues diariamente. Cinco minutos de leitura, todo dia, sem custo.',
-        points: ['Gratuito, para sempre', 'Sem spam', 'Um clique pra sair'],
-        ctaLabel: 'Receber SharkNews',
-        ctaHref: whatsappHref('product-sharknews'),
-      },
-      {
-        id: 'ai-agent',
-        eyebrow: 'AI Agent',
-        badge: 'ATIVAÇÃO 48H',
-        headline: 'Cada canal respondendo, a qualquer hora.',
-        body: 'Agente de IA no WhatsApp e Instagram que responde, qualifica leads e conduz cada conversa até o fechamento — sem pausa, sem perda de contexto.',
-        points: [
-          'Lê áudios, imagens e comentários',
-          'Links de pagamento, Pix e agendamentos',
-          'Mantém o contexto de cada conversa',
-        ],
-        ctaLabel: 'Conhecer AI Agent',
-        ctaHref: whatsappHref('product-ai-agent'),
-      },
+      { id: 'sharknews', name: 'SharkNews', tagline: 'Notícias filtradas por IA para o seu nicho.', description: 'Tech news globais curadas diariamente às 07h07. Cinco minutos, grátis, um clique pra sair.', href: '#sharknews' },
+      { id: 'ai-agent', name: 'AI Agent', tagline: 'Atendimento humanizado que fecha vendas.', description: 'Automação de atendimento e vendas 24/7 no WhatsApp e Instagram.' },
+      { id: 'trafego', name: 'Tráfego', tagline: 'Campanhas otimizadas com dados reais.', description: 'Campanhas de tráfego pago otimizadas com dados reais de conversão.' },
+      { id: 'sites', name: 'Sites', tagline: 'Presença digital que converte.', description: 'Sites e landing pages construídos para converter visitante em cliente.' },
+      { id: 'integracoes', name: 'Integrações', tagline: 'Seus sistemas conversando entre si.', description: 'Conectamos CRM, ERP, planilhas e APIs para sua operação funcionar sozinha.' },
+      { id: 'identidade', name: 'Identidade', tagline: 'Marca que comunica sem precisar explicar.', description: 'Branding e identidade visual que posiciona sua marca no mercado.' },
     ],
   },
 
@@ -93,49 +72,51 @@ export const SITE_CONTENT = {
     support:
       'Capacidades disponíveis no WhatsApp Business e Instagram, configuradas por operação.',
     capabilities: [
-      'Responde em segundos, a qualquer hora',
-      'Qualifica leads automaticamente',
-      'Conduz a conversa pelo funil inteiro',
-      'Transcreve mensagens de áudio',
-      'Lê e responde comentários no Instagram',
-      'Move threads de comentário para o Direct',
-      'Gera links de pagamento e códigos Pix',
-      'Agenda atendimentos',
-      'Salva contatos em CRM ou planilha',
-      'Mantém o contexto da conversa entre sessões',
-      'Transfere para uma pessoa quando a conversa exige',
+      { label: 'Responde com texto e imagens', detail: 'Envia respostas completas com textos formatados e imagens de produtos ou catálogos.' },
+      { label: 'Entende áudios', detail: 'Transcreve e interpreta mensagens de voz, respondendo com precisão ao conteúdo.' },
+      { label: 'Comentários para Direct', detail: 'No Instagram, interage com comentários e direciona o interessado para conversa privada.' },
+      { label: 'Link de pagamento', detail: 'Gera e envia links de pagamento diretamente na conversa, eliminando etapas manuais.' },
+      { label: 'QR Code Pix', detail: 'Disponibiliza QR Code para facilitar a conversão imediata dentro da conversa.' },
+      { label: 'Agendamentos', detail: 'Agenda consultas, reuniões ou visitas automaticamente com base na disponibilidade.' },
+      { label: 'Salva contatos', detail: 'Registra cada novo lead com nome, número e informações relevantes da conversa.' },
+      { label: 'Organiza em CRM', detail: 'Exporta dados de cada lead para planilha Google ou CRM integrado automaticamente.' },
+      { label: 'Presença humana', detail: 'Exibe "digitando" e "visualizado" para criar experiência natural e humana.' },
+      { label: 'Memória de contexto', detail: 'Lembra de informações anteriores para respostas mais inteligentes e personalizadas.' },
     ],
   },
 
   about: {
-    eyebrow: 'Sobre',
-    headline: 'Um parceiro dentro da operação.',
-    body: 'O SHK Group une inteligência artificial, desenvolvimento de software e produtos digitais. O trabalho começa no canal onde o cliente já está e se expande a partir daí.',
-    notes: [
-      {
-        title: 'Implementação em dias',
-        body: 'Um agente entra em produção em até 48 horas a partir da definição do canal e do funil.',
-      },
-      {
-        title: 'Um stack conectado',
-        body: 'IA, software e marketing construídos pelo mesmo time — nada se perde entre fornecedores.',
-      },
+    eyebrow: 'Quem somos',
+    headline: 'Tecnologia que transforma operações comerciais.',
+    body: 'A SHK GROUP.IA é uma empresa de soluções digitais que une inteligência artificial, marketing estratégico e desenvolvimento de software para empresas que precisam vender mais, atender melhor e operar com mais eficiência. Atuamos como parceiros de crescimento — da automação do atendimento à construção de sistemas completos — sempre com foco em resultado mensurável, velocidade de implantação e escalabilidade.',
+    pillars: [
+      { index: '01', label: 'Implantação ágil', detail: 'Resultados em dias, não meses.' },
+      { index: '02', label: 'Confiança operacional', detail: 'Estruturas robustas e seguras.' },
+      { index: '03', label: 'Ecossistema integrado', detail: 'IA, marketing e software conectados.' },
     ],
-    founder: {
-      name: 'Rafael Alvarenga',
-      role: 'Founder & CTO',
-      linkedin: 'https://www.linkedin.com/in/rafabrh/',
-      github: 'https://github.com/rafabrh',
-    },
+    metrics: [
+      { value: '0+', label: 'Projetos atendidos' },
+      { value: '0+', label: 'Clientes ativos' },
+      { value: '0%', label: 'Uptime de operação' },
+      { value: '0s', label: 'Tempo médio de resposta' },
+      { value: '0h', label: 'Ativação completa' },
+    ],
+    founders: [
+      { name: 'Rafael Alvarenga', role: 'Founder & CTO' },
+      { name: 'Victor Alves', role: 'CEO, Campeão Best Seller Mercado Livre 2026' },
+    ],
   },
 
   cases: {
     eyebrow: 'Cases',
-    headline: 'Resultados, quando puderem ser mostrados.',
-    // Placeholder deliberado. Nenhum caso, cliente ou número entra aqui sem
-    // material verificável.
+    headline: 'Resultados reais de quem já usa.',
     placeholder:
       'Esta seção é reservada para trabalhos com resultados publicados e verificáveis. Nada está listado ainda.',
+  },
+
+  plans: {
+    eyebrow: 'Planos',
+    headline: 'Escolha o plano certo para a sua operação.',
   },
 
   contact: {
@@ -146,6 +127,89 @@ export const SITE_CONTENT = {
     ctaHref: whatsappHref('contact'),
     instagramLabel: '@shkgroup.ia',
     instagramHref: INSTAGRAM_URL,
+  },
+
+  benefits: {
+    eyebrow: 'Por que ativar',
+    headline: 'Benefícios que impactam diretamente seu faturamento.',
+    items: [
+      { title: 'Velocidade no atendimento', body: 'Respostas em até 10 segundos. Nenhum cliente fica sem atenção, independentemente do volume de mensagens.' },
+      { title: 'Mais conversão', body: 'Leads atendidos com rapidez e estratégia convertem mais. O Agente IA conduz cada conversa com foco em resultado.' },
+      { title: 'Menos esforço manual', body: 'Sua equipe deixa de responder perguntas repetitivas e passa a focar em tarefas estratégicas e de alto valor.' },
+      { title: 'Atendimento consistente', body: 'O mesmo padrão de qualidade em cada conversa. Sem variações de humor, sem esquecimentos, sem falhas.' },
+      { title: 'Captação e organização de leads', body: 'Cada contato é registrado, classificado e salvo automaticamente em planilha ou CRM, pronto para acompanhamento.' },
+      { title: 'Escalabilidade operacional', body: 'Atenda 10 ou 10.000 conversas simultâneas sem contratar mais pessoas. O Agente IA escala junto com seu negócio.' },
+    ],
+  },
+
+  process: {
+    eyebrow: 'Processo',
+    headline: 'Da contratação à operação em quatro passos.',
+    steps: [
+      { number: '01', title: 'Escolha do canal', body: 'Defina onde o Agente IA vai operar: WhatsApp Business ou Instagram comercial.' },
+      { number: '02', title: 'Estruturação do funil', body: 'Montamos o fluxo de conversa, os gatilhos de qualificação e o caminho até o fechamento.' },
+      { number: '03', title: 'Integração', body: 'Conectamos o Agente via QR Code (WhatsApp) ou Meta Developers (Instagram).' },
+      { number: '04', title: 'Ativação em até 48h', body: 'Seu Agente IA entra em operação, pronto para atender, qualificar e vender no automático.' },
+    ],
+  },
+
+  integration: {
+    eyebrow: 'Integração',
+    headline: 'Conexão simples, ativação sem burocracia.',
+    channels: [
+      { name: 'WhatsApp Business', method: 'QR Code', detail: 'Ativação rápida por QR Code. Basta escanear com seu WhatsApp Business e o Agente entra em operação imediatamente.', meta: 'QR Code · Ativação instantânea' },
+      { name: 'Instagram Comercial', method: 'Meta API', detail: 'Integração via Meta Developers com orientação completa. Opera no Direct e nos comentários do seu perfil comercial.', meta: 'Meta API · Direct + Comentários' },
+    ],
+  },
+
+  faq: {
+    eyebrow: 'Perguntas Frequentes',
+    headline: 'Tudo o que você precisa saber antes de ativar.',
+    items: [
+      { question: 'Em quais canais o Agente IA funciona?', answer: 'Atualmente, o Agente IA opera no WhatsApp Business e no Instagram comercial. A escolha do canal é definida na contratação do plano, e cada agente é configurado para um canal específico.' },
+      { question: 'Qual é o prazo de ativação?', answer: 'O Agente IA é ativado em até 48 horas após a contratação. Esse prazo inclui a configuração do funil, a integração com o canal escolhido e os testes de operação.' },
+      { question: 'O Agente IA responde sozinho, sem intervenção humana?', answer: 'Sim. O Agente IA opera de forma totalmente autônoma, seguindo o funil de vendas configurado. Ele responde, qualifica, contorna objeções e conduz até o fechamento. Quando necessário, pode direcionar o lead para atendimento humano.' },
+      { question: 'O Agente IA pode enviar links de pagamento?', answer: 'Sim. O Agente pode enviar links de pagamento e QR Codes diretamente na conversa, permitindo que o cliente finalize a compra sem sair do chat.' },
+      { question: 'Preciso de alguma estrutura técnica para usar?', answer: 'Não. Você só precisa de um WhatsApp Business ativo ou um perfil comercial no Instagram. Toda a configuração técnica é feita pela equipe da SHK GROUP.IA.' },
+      { question: 'Posso contratar outros serviços além do Agente IA?', answer: 'Sim. A SHK GROUP.IA oferece um ecossistema completo: tráfego pago, criação de sites, desenvolvimento de software, social media e branding. Todos podem ser contratados separadamente ou combinados.' },
+    ],
+  },
+
+  sharknewsSection: {
+    eyebrow: 'SharkNews',
+    headline: 'Tech news globais, direto no seu e-mail.',
+    support: 'Todo dia às 7:07 da manhã, as notícias mais relevantes de tecnologia, IA e inovação direto na sua caixa de entrada. Comece o dia informado.',
+    features: [
+      'As notícias de tech que realmente importam',
+      'Análises rápidas sobre IA, startups e tendências',
+      'Ferramentas e recursos que ninguém está falando',
+    ],
+    meta: [
+      { label: 'Curadoria diária', detail: 'Só o que importa, todo dia às 7:07' },
+      { label: 'Leitura rápida', detail: '5 minutos antes do café' },
+      { label: 'Zero spam', detail: 'Cancele com um clique, sem complicação' },
+    ],
+    form: {
+      namePlaceholder: 'Como posso te chamar?',
+      emailPlaceholder: 'seuemail@exemplo.com',
+      consentText: 'Aceito receber e-mails da SharkNews e concordo com a',
+      consentLink: { label: 'Política de Privacidade', href: '/privacy' },
+      submitLabel: 'Quero receber grátis',
+      loadingLabel: 'Inscrevendo...',
+      successTitle: 'Inscrição confirmada!',
+      successBody: 'Você vai receber a próxima edição às 7:07.',
+      errorBody: 'Algo deu errado. Tente novamente.',
+      privacy: 'Seus dados estão protegidos. Sem spam, nunca.',
+    },
+  },
+
+  ctaFinal: {
+    headline: 'Sua empresa pode continuar perdendo vendas por atendimento lento. Ou pode evoluir agora.',
+    body: 'Enquanto você responde manualmente, seus concorrentes estão automatizando. O Agente IA da SHK GROUP.IA transforma cada mensagem em uma oportunidade real de venda — 24 horas por dia, 7 dias por semana.',
+    ctas: [
+      { label: 'Ativar meu Agente IA', href: whatsappHref('cta-final-activate') },
+      { label: 'Falar com a equipe', href: whatsappHref('cta-final-team') },
+    ],
   },
 
   footer: {

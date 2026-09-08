@@ -32,8 +32,6 @@ describe('CTAs de WhatsApp no conteúdo', () => {
       SITE_CONTENT.cta.href,
       SITE_CONTENT.cinematic.sharknews.ctaHref,
       SITE_CONTENT.cinematic.aiAgent.ctaHref,
-      SITE_CONTENT.products.items[0].ctaHref,
-      SITE_CONTENT.products.items[1].ctaHref,
       SITE_CONTENT.contact.ctaHref,
       SITE_CONTENT.footer.links[1].href,
     ];

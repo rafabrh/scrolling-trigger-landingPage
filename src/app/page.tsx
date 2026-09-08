@@ -2,12 +2,20 @@ import { PersistentCityBackground } from '@/components/background/PersistentCity
 import { CinematicExperience } from '@/components/cinematic/CinematicExperience';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
-import { InstitutionalIntro } from '@/components/sections/InstitutionalIntro';
+import { HeroStats } from '@/components/sections/HeroStats';
 import { ProductsSection } from '@/components/sections/ProductsSection';
 import { TechnologySection } from '@/components/sections/TechnologySection';
+import { BenefitsSection } from '@/components/sections/BenefitsSection';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { CasesSection } from '@/components/sections/CasesSection';
+import { ProcessSection } from '@/components/sections/ProcessSection';
+import { IntegrationSection } from '@/components/sections/IntegrationSection';
+import { PlansSection } from '@/components/sections/PlansSection';
+import { FAQSection } from '@/components/sections/FAQSection';
+import { SharkNewsSection } from '@/components/sections/SharkNewsSection';
+import { CTAFinalSection } from '@/components/sections/CTAFinalSection';
 import { ContactSection } from '@/components/sections/ContactSection';
+import { ScrollReveal } from '@/components/effects/ScrollReveal';
 import { CinematicReadyProvider } from '@/lib/cinematic/cinematic-ready-context';
 import type { Metadata } from 'next';
 import { SITE_URL } from './layout';
@@ -73,12 +81,19 @@ export default function Home() {
 
       <main id="top">
         <CinematicExperience />
-        <InstitutionalIntro />
-        <ProductsSection />
-        <TechnologySection />
-        <AboutSection />
-        <CasesSection />
-        <ContactSection />
+        <HeroStats />
+        <ScrollReveal><ProductsSection /></ScrollReveal>
+        <ScrollReveal><TechnologySection /></ScrollReveal>
+        <ScrollReveal><BenefitsSection /></ScrollReveal>
+        <ScrollReveal><AboutSection /></ScrollReveal>
+        <ScrollReveal><CasesSection /></ScrollReveal>
+        <ScrollReveal><ProcessSection /></ScrollReveal>
+        <ScrollReveal><IntegrationSection /></ScrollReveal>
+        <ScrollReveal><PlansSection /></ScrollReveal>
+        <ScrollReveal><FAQSection /></ScrollReveal>
+        <ScrollReveal><SharkNewsSection /></ScrollReveal>
+        <ScrollReveal><CTAFinalSection /></ScrollReveal>
+        <ScrollReveal><ContactSection /></ScrollReveal>
       </main>
 
       <SiteFooter />

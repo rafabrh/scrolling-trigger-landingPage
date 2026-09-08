@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --ink-900: #040506;
+  --ink-900: #050607;
   --ink-800: #080B0E;
   --ink-700: #0E1318;
-  --paper: #F0F4F8;
-  --paper-dim: rgba(240, 244, 248, 0.60);
-
-  /* Ciano elétrico: mais saturado e brilhante que o original para o tema cyberpunk */
-  --accent: #00D4FF;
-  --accent-dim: #007A99;
-  --accent-glow: rgba(0, 212, 255, 0.16);
-  --accent-pulse: rgba(0, 212, 255, 0.08);
-
+  --paper: #e0f0ea;
+  --paper-dim: rgba(224, 240, 234, 0.60);
+  --accent: #00d4aa;
+  --accent-dim: #009977;
+  --accent-glow: rgba(0, 212, 170, 0.16);
+  --accent-pulse: rgba(0, 212, 170, 0.08);
   --surface: rgba(4, 8, 12, 0.58);
-  --surface-border: rgba(0, 212, 255, 0.10);
+  --surface-border: rgba(0, 212, 170, 0.12);
+  --tab-inactive: #1a2a25;
+  --pro-accent: #a78bfa;
+  --obsidian-accent: #f59e0b;
 
   /* Type scale. Antes havia 4 tamanhos de display (52/56/58/64) e 4 de corpo
      (15/16/17/18) afinados a mao, mais 8 trackings soltos — assinatura de
@@ -47,15 +47,15 @@
   --color-paper: var(--paper);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
-  --font-display: var(--font-orbitron);
-  --font-body: var(--font-inter);
+  --font-display: var(--font-chakra-petch);
+  --font-body: var(--font-rajdhani);
   --font-mono: var(--font-jetbrains-mono);
 }
 
-/* `smooth` briga com o scrub do ScrollTrigger: o browser interpola a posicao
-   ao mesmo tempo que o GSAP le dela, e o frame oscila. */
+/* `smooth` e' seguro agora que nao usamos scrub — apenas `once: true` no
+   ScrollTrigger, entao o browser e o GSAP nao disputam a posicao. */
 html {
-  scroll-behavior: auto;
+  scroll-behavior: smooth;
 }
 
 /*
@@ -76,4 +76,45 @@ body {
   color: var(--paper);
   font-family: var(--font-body), system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+.font-display-upper {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* ── TRANSITION EFFECTS ── */
+
+@keyframes scanRoll {
+  from { background-position: 0 0; }
+  to   { background-position: 0 100vh; }
+}
+
+/* Scroll reveal — toggled by GSAP ScrollTrigger adding .revealed */
+.scroll-section > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.scroll-section.revealed > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.scroll-section.revealed > *:nth-child(1) { transition-delay: 0s; }
+.scroll-section.revealed > *:nth-child(2) { transition-delay: 0.08s; }
+.scroll-section.revealed > *:nth-child(3) { transition-delay: 0.16s; }
+.scroll-section.revealed > *:nth-child(4) { transition-delay: 0.24s; }
+.scroll-section.revealed > *:nth-child(5) { transition-delay: 0.32s; }
+.scroll-section.revealed > *:nth-child(6) { transition-delay: 0.40s; }
+.scroll-section.revealed > *:nth-child(n+7) { transition-delay: 0.48s; }
+
+/* Headline drift — desloca X antes de entrar */
+.headline-drift {
+  transform: translateX(-8px);
+  transition: transform 0.5s ease;
+}
+.scroll-section.revealed .headline-drift {
+  transform: translateX(0);
 }

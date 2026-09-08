@@ -19,6 +19,8 @@ const CONTENT_SECURITY_POLICY = [
   "img-src 'self' data:",
   // Fontes sao self-hosted no build; nenhum CDN externo.
   "font-src 'self'",
+  // Endpoints externos que o site acessa via fetch(): newsletter e CAPI.
+  "connect-src 'self' https://sharknews-sub.com.br https://n8n.shkgroups.com",
   // frame-ancestors 'none': impede clickjacking. O risco concreto e envelopar
   // a pagina numa casca e trocar o botao de WhatsApp por outro numero (fraude
   // de marca, ja que o funil inteiro e um telefone).
