@@ -10,6 +10,11 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-08-content-population-design.md`
 
+**Notes for implementing agents:**
+- All Portuguese copy MUST use proper accents (e.g., "Noticias" -> "Noticias" is wrong, use "Notícias"). The code blocks in this plan omit accents for encoding safety — always add them when writing actual code.
+- Reuse existing UI components (`CtaLink`, `Eyebrow`, `SectionShell`) whenever applicable.
+- `PlansSection` is NOT currently imported in `page.tsx` — it only gets wired in Task 12.
+
 ---
 
 ### Task 1: CSP — add connect-src for external endpoints
@@ -323,7 +328,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function ScrollReveal({ children, id }: { children: React.ReactNode; id?: string }) {
+export function ScrollReveal({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -341,28 +346,43 @@ export function ScrollReveal({ children, id }: { children: React.ReactNode; id?:
   }, []);
 
   return (
-    <div ref={ref} id={id} className="scroll-section">
+    <div ref={ref} className="scroll-section">
       {children}
     </div>
   );
 }
 ```
 
+**Important:** `ScrollReveal` does NOT take an `id` prop. Each section component owns its own `id` via `SectionShell` or a direct `<section id="...">`. This avoids duplicate IDs in the DOM.
+```
+
 - [ ] **Step 4: Delete fullscreen-nav test**
 
 Remove `tests/fullscreen-nav.test.ts` (tests code that no longer exists).
 
-- [ ] **Step 5: Run tests**
+- [ ] **Step 5: Enable smooth scroll for nav links**
+
+In `src/app/globals.css`, change `scroll-behavior: auto` to `scroll-behavior: smooth`. The original comment said it conflicts with GSAP ScrollTrigger scrub, but we no longer use scrub (only `once: true` triggers), so smooth is safe.
+
+```css
+html {
+  scroll-behavior: smooth;
+}
+```
+
+- [ ] **Step 6: Run tests**
 
 Run: `pnpm vitest run`
 Expected: all remaining tests pass.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
-git add -A
+git add src/hooks/use-fullscreen-nav.ts src/components/sections/SectionScreen.tsx src/components/ui/SectionDots.tsx tests/fullscreen-nav.test.ts src/components/effects/ScrollReveal.tsx src/app/globals.css
 git commit -m "feat: replace scroll hijacking with natural scroll + GSAP ScrollTrigger"
 ```
+
+Note: `git add` on deleted files stages the deletion.
 
 ---
 
@@ -648,9 +668,11 @@ git commit -m "feat: add CTAFinalSection with urgency copy"
 **Files:**
 - Modify: `src/app/page.tsx`
 
-- [ ] **Step 1: Remove InstitutionalIntro import and usage**
+- [ ] **Step 1: Remove InstitutionalIntro completely**
 
-Delete the import and `<InstitutionalIntro />` from the JSX.
+- Delete the import and `<InstitutionalIntro />` from `page.tsx`
+- Delete the file `src/components/sections/InstitutionalIntro.tsx`
+- Remove the `intro` key from `SITE_CONTENT` in `src/lib/content/site-content.ts` (its content has been absorbed into the `about` key in Task 2)
 
 - [ ] **Step 2: Add imports for all new components**
 
@@ -673,19 +695,21 @@ Inside `<main id="top">`, wrap each section in `<ScrollReveal>`:
 ```tsx
 <CinematicExperience />
 <HeroStats />
-<ScrollReveal id="products"><ProductsSection /></ScrollReveal>
-<ScrollReveal id="technology"><TechnologySection /></ScrollReveal>
-<ScrollReveal id="benefits"><BenefitsSection /></ScrollReveal>
-<ScrollReveal id="about"><AboutSection /></ScrollReveal>
-<ScrollReveal id="cases"><CasesSection /></ScrollReveal>
-<ScrollReveal id="process"><ProcessSection /></ScrollReveal>
-<ScrollReveal id="integration"><IntegrationSection /></ScrollReveal>
-<ScrollReveal id="plans"><PlansSection /></ScrollReveal>
-<ScrollReveal id="faq"><FAQSection /></ScrollReveal>
-<ScrollReveal id="sharknews"><SharkNewsSection /></ScrollReveal>
-<ScrollReveal id="cta-final"><CTAFinalSection /></ScrollReveal>
-<ScrollReveal id="contact"><ContactSection /></ScrollReveal>
+<ScrollReveal><ProductsSection /></ScrollReveal>
+<ScrollReveal><TechnologySection /></ScrollReveal>
+<ScrollReveal><BenefitsSection /></ScrollReveal>
+<ScrollReveal><AboutSection /></ScrollReveal>
+<ScrollReveal><CasesSection /></ScrollReveal>
+<ScrollReveal><ProcessSection /></ScrollReveal>
+<ScrollReveal><IntegrationSection /></ScrollReveal>
+<ScrollReveal><PlansSection /></ScrollReveal>
+<ScrollReveal><FAQSection /></ScrollReveal>
+<ScrollReveal><SharkNewsSection /></ScrollReveal>
+<ScrollReveal><CTAFinalSection /></ScrollReveal>
+<ScrollReveal><ContactSection /></ScrollReveal>
 ```
+
+Each section component owns its `id` via `SectionShell` or direct `<section id="...">`. `ScrollReveal` is just a reveal animation wrapper.
 
 - [ ] **Step 4: Run typecheck + dev server**
 
