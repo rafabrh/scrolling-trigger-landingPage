@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 describe('scroll reveal CSS contract', () => {
@@ -31,9 +31,8 @@ describe('scroll reveal CSS contract', () => {
 });
 
 describe('scroll hijacking removal', () => {
-  it('use-fullscreen-nav.ts no longer exists', async () => {
-    await expect(async () => {
-      await import('../src/hooks/use-fullscreen-nav');
-    }).rejects.toThrow();
+  it('use-fullscreen-nav.ts no longer exists', () => {
+    const hookPath = resolve('src/hooks/use-fullscreen-nav.ts');
+    expect(existsSync(hookPath)).toBe(false);
   });
 });

@@ -51,18 +51,6 @@ export const SITE_CONTENT = {
   // aqui reexportado para os consumidores de servidor e para os testes.
   cinematic: CINEMATIC_COPY,
 
-  intro: {
-    eyebrow: 'Quem somos',
-    headline: 'Tecnologia que muda como uma empresa vende.',
-    body: 'O SHK Group constrói agentes de IA, software e produtos digitais para empresas cuja operação de vendas não acompanha a demanda. Trabalhamos como parceiros dentro da operação, não como fornecedores na borda dela.',
-    pillars: [
-      { index: '01', label: 'IA & Automação' },
-      { index: '02', label: 'Software' },
-      { index: '03', label: 'Produtos Digitais' },
-    ],
-    meta: 'ATIVAÇÃO EM 48H',
-  },
-
   products: {
     eyebrow: 'Produtos',
     headline: 'Dois produtos. Uma operação.',
