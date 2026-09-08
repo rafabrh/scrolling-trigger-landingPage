@@ -38,11 +38,13 @@ O site novo (Next.js 16, App Router, fullscreen cyberpunk) tem estrutura visual 
 ### 0. Cinematic Hero (manter estrutura, enriquecer)
 - Manter animacao cinematica existente
 - Adicionar stats bar apos o cinematic: `24/7 Operacao continua`, `~10s Tempo de resposta`, `100% Leads capturados`
-- Stats bar vive no `site-content.ts`
+- Stats bar e um novo server component `HeroStats.tsx`, renderizado em `page.tsx` logo apos `CinematicExperience` e antes das secoes de conteudo
+- Dados vivem em `SITE_CONTENT.heroStats`
 
 ### 1. Products Section (expandir)
 - Manter os 6 servicos atuais (SharkNews, AI Agent, Trafego, Sites, Integracoes, Identidade)
 - Expandir cada item com descricao curta do site ao vivo
+- Item SharkNews ganha link ancora `#sharknews` para o usuario navegar ate a secao dedicada
 - Adicionar taglines do ecossistema completo
 
 Content de referencia (site ao vivo):
@@ -67,11 +69,18 @@ Content de referencia (site ao vivo):
   9. Presenca humana (digitando/visualizado)
   10. Memoria de contexto
 
-### 3. About Section (expandir)
+### 3. About Section (expandir + absorver InstitutionalIntro)
+- **Remover `InstitutionalIntro` da page.tsx** — seu conteudo e absorvido pelo About
+- O eyebrow "Quem somos", headline e body do InstitutionalIntro migram para o About como abertura
 - Texto principal: copiar descricao completa do "Quem Somos" do site ao vivo
 - Manter founders (Rafael Alvarenga, Victor Alves)
 - Substituir `notes` atuais pelos 3 pilares: Implantacao agil, Confianca operacional, Ecossistema integrado
-- Adicionar metricas de resultados (projetos atendidos, clientes ativos, uptime, tempo de resposta, ativacao)
+- Metricas de resultados com valores placeholder "0+" (sem numeros inventados):
+  - `0+` Projetos atendidos
+  - `0+` Clientes ativos
+  - `0%` Uptime de operacao (placeholder, sem metrica real)
+  - `0s` Tempo medio de resposta (placeholder)
+  - `0h` Ativacao completa (placeholder)
 
 ### 4. Cases Section (manter placeholder)
 - Atualizar copy do placeholder para alinhar com tom do site ao vivo
@@ -79,11 +88,58 @@ Content de referencia (site ao vivo):
 
 ### 5. Plans Section (ativar + enriquecer)
 - **Adicionar `PlansSection` na `page.tsx`** (atualmente importada mas nao renderizada)
-- Enriquecer cards com features detalhadas do site ao vivo:
-  - Start: 12 features completas + "Ativacao em 48h, cancela quando quiser"
-  - Pro: tudo do Start + 8 extras + bonus script de abordagem
-  - Obsidian: tudo do Pro sem teto + 10 extras + 4 bonus exclusivos + selo OBSIDIAN MEMBER
 - Nota de rodape: "Valores base; midia, hospedagem, licencas e terceiros a parte"
+- Features detalhadas por tier (extraidas do site ao vivo):
+
+**Start (R$99,90/mês):**
+1. 1 canal ativo (WhatsApp ou Instagram)
+2. 1 funil de atendimento estruturado
+3. 1 integracao configurada
+4. Le audios e responde com naturalidade
+5. Atende com texto, imagem e video
+6. Responde comentarios e puxa pro direct
+7. Envia link de pagamento no momento certo
+8. Agendamentos automaticos
+9. Base de clientes sempre crescendo
+10. Planilha CRM (origem, status, funil)
+11. Comportamento humanizado (digitando/visualizando)
+12. Memoria + Anthropic para respostas de alto nivel
+- Tagline: "A porta de entrada para a automacao inteligente."
+- Subtag: "Ativacao em 48h - cancela quando quiser"
+
+**Pro (R$197,90/mês):**
+Tudo do Start +
+1. 2 canais simultaneos (WhatsApp + Instagram)
+2. 2 funis (vendas e suporte ao mesmo tempo)
+3. 3 integracoes (CRM, Google Agenda, planilhas e mais)
+4. Fluxo de reativacao automatica de leads frios
+5. Relatorio semanal de desempenho no WhatsApp
+6. Sequencia de follow-up automatico configurada
+7. Suporte prioritario (resposta em ate 4h)
+8. 1 otimizacao de fluxo por mes incluida
+- Bonus: Script de abordagem ativa personalizado para o nicho
+- Badge: "MAIS ESCOLHIDO"
+- Subtag: "Ativacao em 48h - cancela quando quiser"
+
+**Obsidian (R$547,90/mês):**
+Tudo do Pro, sem teto +
+1. Canais ilimitados (WhatsApp, Instagram, Site, E-mail)
+2. Funis ilimitados (vendas, suporte, onboarding, cobranca, retencao)
+3. Integracoes avancadas (ERP, APIs externas, webhooks, CRM proprio)
+4. Base de conhecimento (documentos, tabelas, historico completo)
+5. IA treinada com a linguagem e persona da marca
+6. Dashboard de metricas em tempo real
+7. Campanha de reativacao mensal configurada pela equipe
+8. Reuniao mensal de estrategia e otimizacao
+9. Suporte VIP dedicado (resposta em ate 1h)
+10. 3 otimizacoes de fluxo por mes incluidas
+- Bonus exclusivos:
+  1. Persona digital da marca criada do zero
+  2. Mapeamento completo do funil de vendas no onboarding
+  3. Acesso antecipado a novos recursos
+  4. Selo OBSIDIAN MEMBER (cliente prioritario)
+- Badge: "MEMBER"
+- Tag: "EXCLUSIVO - VAGAS LIMITADAS"
 
 ### 6. Contact Section (enriquecer com urgencia)
 - Adicionar copy de urgencia do site ao vivo: "Sua empresa pode continuar perdendo vendas por atendimento lento. Ou pode evoluir agora."
@@ -177,24 +233,43 @@ Chaves existentes atualizadas:
 - `about` — texto expandido + metricas + pilares atualizados
 - `plans` (em `plans-content.ts`) — features detalhadas por tier
 
+## Arquitetura de Scroll
+
+O scroll hijacking fullscreen (`useFullscreenNav` + `SectionScreen`) foi projetado para 6 secoes.
+Com 13 secoes (InstitutionalIntro removido), scroll hijacking se torna inviavel:
+- 13 dots na lateral e visualmente ruim
+- ~10.4s de scrolls consecutivos para chegar ao fim (800ms debounce x 13)
+
+**Decisao: scroll natural com animacoes GSAP ScrollTrigger.**
+- Remover `useFullscreenNav` e `SectionScreen` como wrappers obrigatorios
+- Cada secao ocupa a altura natural do conteudo (min-height: 100vh para secoes curtas)
+- Animacoes de entrada via GSAP ScrollTrigger (fade-in + stagger dos filhos)
+- TransitionFX (scanlines, flicker) disparam na entrada de cada secao via ScrollTrigger
+- SectionDots removidos (nao fazem sentido com scroll natural)
+- Nav links usam scroll suave (`scroll-behavior: smooth` ou GSAP scrollTo)
+
 ## Ordem das Secoes na page.tsx
 
 ```
-CinematicExperience (hero + stats bar)
-InstitutionalIntro
+CinematicExperience (hero)
+HeroStats              (novo, server component)
 ProductsSection
 TechnologySection
 BenefitsSection        (nova)
-AboutSection
+AboutSection           (absorve InstitutionalIntro)
+CasesSection
 ProcessSection         (nova)
 IntegrationSection     (nova)
 PlansSection           (ativada)
-CasesSection
 FAQSection             (nova)
 SharkNewsSection       (nova)
 CTAFinalSection        (nova)
 ContactSection
 ```
+
+Notas sobre a ordem:
+- CasesSection fica apos About (antes de Process/Plans) para nao quebrar o fluxo entre pricing e FAQ
+- InstitutionalIntro removido (conteudo absorvido pelo About)
 
 ## Nav atualizada
 
@@ -217,10 +292,16 @@ Removido "Cases" do nav (placeholder, nao e destino util). Adicionados FAQ e Sha
 - Toda copy em pt-BR
 - Nenhuma metrica inventada — manter "0+" como no site ao vivo para numeros nao confirmados
 - Formulario de newsletter e client component isolado (nao arrasta bundle pro server)
-- CSP existente (`next.config.ts`) nao permite `unsafe-eval` — fetch direto, sem libs externas
+- **Newsletter usa `fetch()` para submit, NAO native form action** — a CSP tem `form-action 'self'` que bloquearia POST externo via form action
+- **CSP precisa de `connect-src`** — a CSP atual tem `default-src 'self'` sem `connect-src` explicito. Fetch para dominios externos sera bloqueado. Adicionar:
+  ```
+  connect-src 'self' https://sharknews-sub.com.br https://n8n.shkgroups.com
+  ```
+- CSP nao permite `unsafe-eval` — fetch direto, sem libs externas
 - Endpoints de newsletter via env vars com fallback hardcoded
 - Estilo segue paleta teal cyberpunk (Chakra Petch headlines, Rajdhani body, accent #00d4aa)
-- Componentes seguem padrao `SectionScreen` fullscreen
+- Secoes usam scroll natural com GSAP ScrollTrigger (nao mais SectionScreen fullscreen)
+- **CAPI webhook e fire-and-forget** — se o subscribe da newsletter der sucesso mas o CAPI falhar, o usuario ve sucesso. Erro no CAPI e silencioso (log no console apenas)
 
 ## Fora de escopo
 
