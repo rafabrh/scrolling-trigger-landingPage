@@ -1,54 +1,36 @@
-import { PLANS } from '@/lib/content/plans-content';
+import { PLANS, PLANS_FOOTER } from '@/lib/content/plans-content';
 import { SITE_CONTENT } from '@/lib/content/site-content';
+import { SectionShell } from '@/components/ui/SectionShell';
 
 export function PlansSection() {
   const { eyebrow, headline } = SITE_CONTENT.plans;
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Cabeçalho */}
-      <div className="mb-2">
-        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--accent)]">
-          {eyebrow}
-        </p>
-        <h2
-          className="font-display-upper headline-drift mt-2 text-[var(--paper)]"
-          style={{ fontSize: 'clamp(1.75rem, 4vw, 3rem)', lineHeight: '1' }}
-        >
-          {headline}
-        </h2>
-      </div>
-
-      {/* Tier rows */}
-      <div className="flex flex-col" style={{ borderTop: '1px solid var(--surface-border)' }}>
+    <SectionShell id="plans" eyebrow={eyebrow} headline={headline}>
+      {/* 3 cards side-by-side */}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {PLANS.map((plan) => {
-          // Propriedades opcionais — presentes apenas em pro e obsidian
-          const badge = ('badge' in plan ? plan.badge : undefined) as string | undefined;
-          const vagas = ('vagas' in plan ? plan.vagas : undefined) as string | undefined;
+          const badge = 'badge' in plan ? (plan.badge as string) : undefined;
+          const vagas = 'vagas' in plan ? (plan.vagas as string) : undefined;
+          const bonuses = 'bonuses' in plan ? (plan.bonuses as readonly string[]) : undefined;
 
           return (
             <div
               key={plan.id}
-              className="grid items-center gap-0 py-4"
-              style={{
-                gridTemplateColumns: '200px 1fr 180px',
-                borderBottom: '1px solid var(--surface-border)',
-              }}
+              className="flex flex-col gap-6 p-6"
+              style={{ border: '1px solid var(--surface-border)' }}
             >
-              {/* Nome do plano */}
-              <div
-                className="flex flex-col pr-8"
-                style={{ borderRight: '1px solid var(--surface-border)' }}
-              >
+              {/* Header: nome + badge + vagas */}
+              <div className="flex flex-col gap-2">
                 <span
-                  className="font-display-upper"
-                  style={{ fontSize: 'clamp(1.75rem, 3vw, 2.75rem)', color: plan.accent }}
+                  className="font-display-upper text-3xl"
+                  style={{ color: plan.accent }}
                 >
                   {plan.name}
                 </span>
                 {badge && (
                   <span
-                    className="mt-2 w-fit px-2 py-1 font-mono text-[8px] uppercase tracking-[0.18em]"
+                    className="w-fit px-2 py-1 font-mono text-[8px] uppercase tracking-[0.18em]"
                     style={{
                       background: plan.id === 'pro' ? 'var(--pro-accent)' : 'var(--obsidian-accent)',
                       color: plan.id === 'pro' ? '#0a0714' : '#0a0700',
@@ -59,7 +41,7 @@ export function PlansSection() {
                 )}
                 {vagas && (
                   <span
-                    className="mt-1 font-mono text-[9px] uppercase tracking-[0.1em]"
+                    className="font-mono text-[9px] uppercase tracking-[0.1em]"
                     style={{ color: 'var(--obsidian-accent)', opacity: 0.7 }}
                   >
                     {vagas}
@@ -67,15 +49,26 @@ export function PlansSection() {
                 )}
               </div>
 
+              {/* Tagline */}
+              <p className="text-sm leading-relaxed text-[var(--paper-dim)]">{plan.tagline}</p>
+
+              {/* Price + subtag */}
+              <div className="flex flex-col gap-1">
+                <div>
+                  <span className="text-[28px] font-bold text-[var(--paper)]">{plan.price}</span>
+                  <span className="ml-1 font-mono text-[11px] text-[var(--paper-dim)]">{plan.period}</span>
+                </div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--paper-dim)]" style={{ opacity: 0.6 }}>
+                  {plan.subtag}
+                </span>
+              </div>
+
               {/* Features */}
-              <div
-                className="flex flex-col gap-[7px] px-8"
-                style={{ borderRight: '1px solid var(--surface-border)' }}
-              >
+              <div className="flex flex-1 flex-col gap-[7px]" style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '16px' }}>
                 {plan.features.map((feat) => (
-                  <div key={feat} className="flex items-center gap-2 text-[11px] text-[var(--paper-dim)]">
+                  <div key={feat} className="flex items-start gap-2 text-[11px] text-[var(--paper-dim)]">
                     <span
-                      className="inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[var(--accent)]"
+                      className="mt-[6px] inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[var(--accent)]"
                       style={{ opacity: 0.5 }}
                     />
                     {feat}
@@ -83,28 +76,45 @@ export function PlansSection() {
                 ))}
               </div>
 
-              {/* Preço + CTA */}
-              <div className="flex flex-col gap-3 pl-8">
-                <div>
-                  <span className="block text-[22px] font-bold text-[var(--paper)]">
-                    {plan.price}
-                  </span>
-                  <span className="font-mono text-[11px] text-[var(--paper-dim)]">{plan.period}</span>
-                </div>
-                <a
-                  href={plan.cta.href}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="inline-flex w-fit items-center gap-2 px-4 py-2 text-[9px] font-bold uppercase tracking-[0.18em] transition-opacity hover:opacity-80"
-                  style={{ background: plan.accent, color: 'var(--ink-900)' }}
+              {/* Bonuses */}
+              {bonuses && bonuses.length > 0 && (
+                <div
+                  className="flex flex-col gap-2 p-4"
+                  style={{ background: 'var(--accent-glow)', border: '1px solid var(--surface-border)' }}
                 >
-                  {plan.cta.label} →
-                </a>
-              </div>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--accent)]">
+                    Bônus inclusos
+                  </span>
+                  {bonuses.map((bonus) => (
+                    <span key={bonus} className="text-[11px] leading-relaxed text-[var(--paper-dim)]">
+                      {bonus}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* CTA */}
+              <a
+                href={plan.cta.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="mt-auto inline-flex w-full items-center justify-center gap-2 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.18em] transition-opacity hover:opacity-80"
+                style={{ background: plan.accent, color: 'var(--ink-900)' }}
+              >
+                {plan.cta.label}
+              </a>
             </div>
           );
         })}
       </div>
-    </div>
+
+      {/* Footer note */}
+      <p
+        className="mt-8 text-center font-mono text-[11px] text-[var(--paper-dim)]"
+        style={{ opacity: 0.5 }}
+      >
+        {PLANS_FOOTER}
+      </p>
+    </SectionShell>
   );
 }
