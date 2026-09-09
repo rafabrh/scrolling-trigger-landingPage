@@ -52,17 +52,17 @@ export const SITE_CONTENT = {
   cinematic: CINEMATIC_COPY,
 
   products: {
-    eyebrow: 'Produtos',
-    headline: 'Dois produtos. Uma operação.',
+    eyebrow: 'O que fazemos',
+    headline: 'Tráfego traz o lead. O agente fecha a venda.',
     support:
-      'Um mantém você à frente do que está acontecendo. O outro mantém cada canal respondendo a qualquer hora.',
+      'Campanhas de tráfego pago jogam leads quentes direto no WhatsApp. O Agente IA atende em segundos, qualifica e conduz até o fechamento — sem a sua equipe precisar levantar da cadeira.',
     items: [
-      { id: 'sharknews', name: 'SharkNews', tagline: 'Notícias filtradas por IA para o seu nicho.', description: 'Tech news globais curadas diariamente às 07h07. Cinco minutos, grátis, um clique pra sair.', href: '#sharknews' },
-      { id: 'ai-agent', name: 'AI Agent', tagline: 'Atendimento humanizado que fecha vendas.', description: 'Automação de atendimento e vendas 24/7 no WhatsApp e Instagram.' },
-      { id: 'trafego', name: 'Tráfego', tagline: 'Campanhas otimizadas com dados reais.', description: 'Campanhas de tráfego pago otimizadas com dados reais de conversão.' },
-      { id: 'sites', name: 'Sites', tagline: 'Presença digital que converte.', description: 'Sites e landing pages construídos para converter visitante em cliente.' },
-      { id: 'integracoes', name: 'Integrações', tagline: 'Seus sistemas conversando entre si.', description: 'Conectamos CRM, ERP, planilhas e APIs para sua operação funcionar sozinha.' },
+      { id: 'trafego', name: 'Tráfego Pago', tagline: 'Campanhas que geram leads de verdade.', description: 'Meta Ads, Google Ads e estratégias de mídia paga focadas em trazer gente pronta pra comprar direto pro seu WhatsApp.' },
+      { id: 'ai-agent', name: 'Agente IA', tagline: 'Atende, qualifica e fecha no WhatsApp.', description: 'Cada lead novo é atendido em segundos, 24/7. O agente responde, contorna objeções e conduz até o pagamento — sem intervenção humana.' },
+      { id: 'sites', name: 'Sites', tagline: 'Presença digital que converte.', description: 'Landing pages e sites construídos pra converter visitante em lead qualificado.' },
+      { id: 'integracoes', name: 'Integrações', tagline: 'Seus sistemas conversando entre si.', description: 'Conectamos CRM, ERP, planilhas e APIs pra sua operação funcionar sozinha.' },
       { id: 'identidade', name: 'Identidade', tagline: 'Marca que comunica sem precisar explicar.', description: 'Branding e identidade visual que posiciona sua marca no mercado.' },
+      { id: 'sharknews', name: 'SharkNews', tagline: 'Newsletter de tech, arquitetura e IA.', description: 'Toda segunda e sexta: arquitetura de software, Claude Code, oficina de agentes e as notícias mais quentes do mercado.', href: '#sharknews' },
     ],
   },
 
