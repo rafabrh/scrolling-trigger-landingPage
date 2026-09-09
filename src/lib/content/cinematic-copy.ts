@@ -21,7 +21,7 @@ export const CINEMATIC_COPY = {
     headline: ['A newsletter de quem', 'constrói com tecnologia.'],
     support:
       'Arquitetura de software, oficina de agentes de IA com Claude Code e as notícias que movem o mercado tech. Toda segunda e sexta na sua caixa de entrada.',
-    meta: 'SEGUNDAS & SEXTAS  ·  LEITURA DE 5 MIN',
+    meta: 'SEGUNDAS & SEXTAS  ·  GRÁTIS PRA SEMPRE',
   },
   aiAgent: {
     eyebrow: 'AI Agent',
