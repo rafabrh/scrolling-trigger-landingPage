@@ -1,7 +1,7 @@
-import Image from 'next/image';
 import { SITE_CONTENT } from '@/lib/content/site-content';
 import { SectionShell } from '@/components/ui/SectionShell';
 import { CtaLink } from '@/components/ui/CtaLink';
+import { PhoneMockup } from '@/components/ui/PhoneMockup';
 import { whatsappHref } from '@/lib/content/whatsapp';
 
 export function ProductsSection() {
@@ -40,16 +40,9 @@ export function ProductsSection() {
           </div>
         </div>
 
-        {/* Direita: mockup do celular com chat do Agente IA */}
+        {/* Direita: mockup animado do celular com chat do Agente IA */}
         <div className="flex items-center justify-center lg:justify-end">
-          <Image
-            src="/brand/phone-mockup.png"
-            alt="Mockup do Agente IA atendendo no WhatsApp"
-            width={380}
-            height={480}
-            className="drop-shadow-[0_0_40px_rgba(0,212,170,0.15)]"
-            priority={false}
-          />
+          <PhoneMockup />
         </div>
       </div>
     </SectionShell>
