@@ -20,12 +20,12 @@ export const CINEMATIC_COPY = {
 
   sharknews: {
     eyebrow: 'SharkNews',
-    headline: ['O que importa em tecnologia,', 'antes do seu dia começar.'],
+    headline: ['Arquitetura, agentes de IA', 'e o que move o mercado tech.'],
     support:
-      'Tecnologia, IA e inovação, curadas diariamente às 07h07. Cinco minutos, grátis, um clique pra sair.',
+      'Toda segunda e sexta: soluções de arquitetura de software, oficina com Claude Code e as notícias mais quentes do mercado tech.',
     ctaLabel: 'Receber SharkNews',
     ctaHref: '#sharknews',
-    meta: 'DIÁRIO 07:07',
+    meta: 'SEGUNDAS & SEXTAS',
   },
   aiAgent: {
     eyebrow: 'AI Agent',

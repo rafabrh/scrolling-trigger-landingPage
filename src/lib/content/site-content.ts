@@ -177,15 +177,16 @@ export const SITE_CONTENT = {
 
   sharknewsSection: {
     eyebrow: 'SharkNews',
-    headline: 'Tech news globais, direto no seu e-mail.',
-    support: 'Todo dia às 7:07 da manhã, as notícias mais relevantes de tecnologia, IA e inovação direto na sua caixa de entrada. Comece o dia informado.',
+    headline: 'Arquitetura, IA e o que move o mercado tech.',
+    support: 'Toda segunda e sexta na sua caixa de entrada. Soluções de arquitetura de software, oficina de agentes com Claude Code e as notícias mais quentes do mercado tech.',
     features: [
-      'As notícias de tech que realmente importam',
-      'Análises rápidas sobre IA, startups e tendências',
-      'Ferramentas e recursos que ninguém está falando',
+      'Arquitetura de software aplicada a problemas reais',
+      'Ensinamentos práticos com Claude Code',
+      'Oficina de agentes de IA — do conceito à produção',
+      'As notícias mais quentes do mercado tech',
     ],
     meta: [
-      { label: 'Curadoria diária', detail: 'Só o que importa, todo dia às 7:07' },
+      { label: 'Segundas e sextas', detail: 'Duas edições por semana, direto no e-mail' },
       { label: 'Leitura rápida', detail: '5 minutos antes do café' },
       { label: 'Zero spam', detail: 'Cancele com um clique, sem complicação' },
     ],
@@ -197,7 +198,7 @@ export const SITE_CONTENT = {
       submitLabel: 'Quero receber grátis',
       loadingLabel: 'Inscrevendo...',
       successTitle: 'Inscrição confirmada!',
-      successBody: 'Você vai receber a próxima edição às 7:07.',
+      successBody: 'Você vai receber a próxima edição na segunda ou sexta.',
       errorBody: 'Algo deu errado. Tente novamente.',
       privacy: 'Seus dados estão protegidos. Sem spam, nunca.',
     },
