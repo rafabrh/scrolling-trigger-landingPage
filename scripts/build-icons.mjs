@@ -6,8 +6,8 @@ import sharp from 'sharp';
 import path from 'node:path';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
-// Usa a variante teal para os favicons: contrasta no fundo --ink-900.
-const SOURCE = path.join(ROOT, 'public/brand/logo-teal.png');
+// Versão paper (branca) do logo: contrasta no fundo --ink-900.
+const SOURCE = path.join(ROOT, 'public/brand/logo.png');
 
 // Fundo igual ao --bg do site, para o ícone não brilhar branco na aba.
 const BACKGROUND = { r: 5, g: 6, b: 7, alpha: 1 };
