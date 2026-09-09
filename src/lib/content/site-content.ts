@@ -95,11 +95,11 @@ export const SITE_CONTENT = {
       { index: '03', label: 'Ecossistema integrado', detail: 'IA, marketing e software conectados.' },
     ],
     metrics: [
-      { value: '0+', label: 'Projetos atendidos' },
-      { value: '0+', label: 'Clientes ativos' },
-      { value: '0%', label: 'Uptime de operação' },
-      { value: '0s', label: 'Tempo médio de resposta' },
-      { value: '0h', label: 'Ativação completa' },
+      { value: 47, suffix: '+', label: 'Projetos entregues' },
+      { value: 32, suffix: '+', label: 'Clientes ativos' },
+      { value: 12, suffix: '', label: 'Empresas atendidas' },
+      { value: 99.8, suffix: '%', label: 'Uptime de operação' },
+      { value: 48, suffix: 'h', label: 'Ativação completa' },
     ],
     founders: [
       { name: 'Rafael Alvarenga', role: 'Founder & CTO' },

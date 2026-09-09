@@ -7,7 +7,6 @@ import { ProductsSection } from '@/components/sections/ProductsSection';
 import { TechnologySection } from '@/components/sections/TechnologySection';
 import { BenefitsSection } from '@/components/sections/BenefitsSection';
 import { AboutSection } from '@/components/sections/AboutSection';
-import { CasesSection } from '@/components/sections/CasesSection';
 import { ProcessSection } from '@/components/sections/ProcessSection';
 import { IntegrationSection } from '@/components/sections/IntegrationSection';
 import { PlansSection } from '@/components/sections/PlansSection';
@@ -87,7 +86,6 @@ export default function Home() {
         <ScrollReveal><TechnologySection /></ScrollReveal>
         <ScrollReveal><BenefitsSection /></ScrollReveal>
         <ScrollReveal><AboutSection /></ScrollReveal>
-        <ScrollReveal><CasesSection /></ScrollReveal>
         <ScrollReveal><ProcessSection /></ScrollReveal>
         <ScrollReveal><IntegrationSection /></ScrollReveal>
         <ScrollReveal><PlansSection /></ScrollReveal>

@@ -1,5 +1,6 @@
 import { SITE_CONTENT } from '@/lib/content/site-content';
 import { SectionShell } from '@/components/ui/SectionShell';
+import { CountUp } from '@/components/ui/CountUp';
 
 export function AboutSection() {
   const { eyebrow, headline, body, pillars, metrics, founders } = SITE_CONTENT.about;
@@ -34,11 +35,13 @@ export function AboutSection() {
           </div>
 
           {/* Metrics */}
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-wrap gap-8">
             {metrics.map((m) => (
               <div key={m.label} className="flex flex-col gap-1">
-                <span className="font-display-upper text-2xl text-[var(--accent)]">{m.value}</span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--paper-dim)]">
+                <span className="font-display-upper text-3xl text-[var(--accent)]">
+                  <CountUp end={m.value} suffix={m.suffix} />
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--paper)]" style={{ opacity: 0.7 }}>
                   {m.label}
                 </span>
               </div>
