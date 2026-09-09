@@ -2,7 +2,7 @@ import { PersistentCityBackground } from '@/components/background/PersistentCity
 import { CinematicExperience } from '@/components/cinematic/CinematicExperience';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
-import { HeroStats } from '@/components/sections/HeroStats';
+import { HeroDivider3D } from '@/components/effects/HeroDivider3D';
 import { ProductsSection } from '@/components/sections/ProductsSection';
 import { TechnologySection } from '@/components/sections/TechnologySection';
 import { BenefitsSection } from '@/components/sections/BenefitsSection';
@@ -81,7 +81,7 @@ export default function Home() {
 
       <main id="top">
         <CinematicExperience />
-        <HeroStats />
+        <HeroDivider3D />
         <ScrollReveal><ProductsSection /></ScrollReveal>
         <ScrollReveal><TechnologySection /></ScrollReveal>
         <ScrollReveal><BenefitsSection /></ScrollReveal>
