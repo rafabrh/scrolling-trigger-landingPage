@@ -28,19 +28,21 @@ describe('whatsappHref', () => {
 
 describe('CTAs de WhatsApp no conteúdo', () => {
   it('cada CTA leva a etiqueta via: da sua posição', () => {
-    const hrefs = [
+    const whatsappHrefs = [
       SITE_CONTENT.cta.href,
-      SITE_CONTENT.cinematic.sharknews.ctaHref,
       SITE_CONTENT.cinematic.aiAgent.ctaHref,
       SITE_CONTENT.contact.ctaHref,
       SITE_CONTENT.footer.links[1].href,
     ];
-    for (const href of hrefs) {
+    for (const href of whatsappHrefs) {
       const text = new URL(href).searchParams.get('text');
       expect(text).toContain('[via: ');
     }
     // Nenhuma âncora ficou sem posição: todos os text são únicos.
-    const texts = hrefs.map((h) => new URL(h).searchParams.get('text'));
-    expect(new Set(texts).size).toBe(hrefs.length);
+    const texts = whatsappHrefs.map((h) => new URL(h).searchParams.get('text'));
+    expect(new Set(texts).size).toBe(whatsappHrefs.length);
+
+    // SharkNews cinematic CTA aponta pra secao dedicada, nao pro WhatsApp
+    expect(SITE_CONTENT.cinematic.sharknews.ctaHref).toBe('#sharknews');
   });
 });

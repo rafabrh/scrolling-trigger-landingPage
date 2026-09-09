@@ -24,7 +24,7 @@ export const CINEMATIC_COPY = {
     support:
       'Tecnologia, IA e inovação, curadas diariamente às 07h07. Cinco minutos, grátis, um clique pra sair.',
     ctaLabel: 'Receber SharkNews',
-    ctaHref: whatsappHref('cinematic-sharknews'),
+    ctaHref: '#sharknews',
     meta: 'DIÁRIO 07:07',
   },
   aiAgent: {
