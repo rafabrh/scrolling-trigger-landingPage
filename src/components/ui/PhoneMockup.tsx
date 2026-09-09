@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 
 /* ------------------------------------------------------------------ */
 /*  Data: conversa que roda no mockup                                  */
@@ -180,10 +181,10 @@ export function PhoneMockup() {
           style={{ borderBottom: '1px solid var(--surface-border)' }}
         >
           <div
-            className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold"
-            style={{ backgroundColor: 'var(--accent)', color: 'var(--ink-900)' }}
+            className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full"
+            style={{ backgroundColor: 'var(--ink-700)' }}
           >
-            IA
+            <Image src="/brand/logo-teal.png" alt="" width={28} height={28} className="h-7 w-7 object-contain" />
           </div>
           <div className="flex flex-col">
             <span className="text-[13px] font-semibold" style={{ color: 'var(--paper)' }}>
