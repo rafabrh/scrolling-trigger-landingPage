@@ -75,21 +75,7 @@ export function AboutSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`LinkedIn de ${founder.name}`}
-                    className="group flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-300 hover:scale-110"
-                    style={{
-                      border: '1px solid var(--surface-border)',
-                      backgroundColor: 'transparent',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--accent)';
-                      e.currentTarget.style.backgroundColor = 'var(--accent-glow)';
-                      e.currentTarget.style.boxShadow = '0 0 20px var(--accent-pulse)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--surface-border)';
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
+                    className="group flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--surface-border)] bg-transparent transition-all duration-300 hover:scale-110 hover:border-[var(--accent)] hover:bg-[var(--accent-glow)] hover:shadow-[0_0_20px_var(--accent-pulse)]"
                   >
                     <svg
                       width="18"
