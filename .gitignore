@@ -26,3 +26,6 @@ design-canvas/shk-group-site.html
 # Gerados pelo `next dev`. Desligados via agentRules no next.config.ts.
 AGENTS.md
 CLAUDE.md
+
+# Sessoes de brainstorming visual (superpowers visual companion).
+.superpowers/

@@ -24,7 +24,7 @@ export function SectionShell({
         <div className="flex items-end justify-between gap-16 max-lg:flex-col max-lg:items-start max-lg:gap-8">
           <div className="flex max-w-[620px] flex-col gap-6">
             <Eyebrow>{eyebrow}</Eyebrow>
-            <h2 className="font-display text-[var(--text-display-md)] font-semibold leading-[1.06] tracking-[var(--tracking-tight)] text-pretty max-md:text-[32px]">
+            <h2 className="font-display text-[var(--text-display-md)] font-bold leading-[1.06] tracking-[var(--tracking-tight)] text-pretty max-md:text-[32px]">
               {headline}
             </h2>
           </div>

@@ -1,6 +1,7 @@
 import { SITE_CONTENT } from '@/lib/content/site-content';
 import { SectionShell } from '@/components/ui/SectionShell';
 import { CtaLink } from '@/components/ui/CtaLink';
+import { PhoneMockup } from '@/components/ui/PhoneMockup';
 import { whatsappHref } from '@/lib/content/whatsapp';
 
 export function ProductsSection() {
@@ -33,11 +34,15 @@ export function ProductsSection() {
               </span>
             </div>
           ))}
+
+          <div className="mt-6">
+            <CtaLink href={whatsappHref('products')}>Ativar AI Agent</CtaLink>
+          </div>
         </div>
 
-        {/* Direita: CTA */}
-        <div className="flex flex-col justify-center gap-8">
-          <CtaLink href={whatsappHref('products')}>Ativar AI Agent</CtaLink>
+        {/* Direita: mockup animado do celular com chat do Agente IA */}
+        <div className="flex items-center justify-center lg:justify-end">
+          <PhoneMockup />
         </div>
       </div>
     </SectionShell>

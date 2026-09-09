@@ -2,12 +2,11 @@ import { PersistentCityBackground } from '@/components/background/PersistentCity
 import { CinematicExperience } from '@/components/cinematic/CinematicExperience';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
-import { HeroStats } from '@/components/sections/HeroStats';
+import { HeroDivider3D } from '@/components/effects/HeroDivider3D';
 import { ProductsSection } from '@/components/sections/ProductsSection';
 import { TechnologySection } from '@/components/sections/TechnologySection';
 import { BenefitsSection } from '@/components/sections/BenefitsSection';
 import { AboutSection } from '@/components/sections/AboutSection';
-import { CasesSection } from '@/components/sections/CasesSection';
 import { ProcessSection } from '@/components/sections/ProcessSection';
 import { IntegrationSection } from '@/components/sections/IntegrationSection';
 import { PlansSection } from '@/components/sections/PlansSection';
@@ -16,6 +15,7 @@ import { SharkNewsSection } from '@/components/sections/SharkNewsSection';
 import { CTAFinalSection } from '@/components/sections/CTAFinalSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 import { ScrollReveal } from '@/components/effects/ScrollReveal';
+import { TrackingEvents } from '@/components/tracking/TrackingEvents';
 import { CinematicReadyProvider } from '@/lib/cinematic/cinematic-ready-context';
 import type { Metadata } from 'next';
 import { SITE_URL } from './layout';
@@ -81,12 +81,11 @@ export default function Home() {
 
       <main id="top">
         <CinematicExperience />
-        <HeroStats />
+        <HeroDivider3D />
         <ScrollReveal><ProductsSection /></ScrollReveal>
         <ScrollReveal><TechnologySection /></ScrollReveal>
         <ScrollReveal><BenefitsSection /></ScrollReveal>
         <ScrollReveal><AboutSection /></ScrollReveal>
-        <ScrollReveal><CasesSection /></ScrollReveal>
         <ScrollReveal><ProcessSection /></ScrollReveal>
         <ScrollReveal><IntegrationSection /></ScrollReveal>
         <ScrollReveal><PlansSection /></ScrollReveal>
@@ -96,6 +95,7 @@ export default function Home() {
         <ScrollReveal><ContactSection /></ScrollReveal>
       </main>
 
+      <TrackingEvents />
       <SiteFooter />
     </CinematicReadyProvider>
   );

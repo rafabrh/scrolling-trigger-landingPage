@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Chakra_Petch, Rajdhani, JetBrains_Mono } from 'next/font/google';
+import { FacebookPixel } from '@/components/tracking/FacebookPixel';
+import { GoogleTagManager, GoogleTagManagerNoScript } from '@/components/tracking/GoogleTagManager';
 import './globals.css';
 
 const chakraPetch = Chakra_Petch({
@@ -85,6 +87,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${chakraPetch.variable} ${rajdhani.variable} ${jetbrainsMono.variable}`}
     >
       <body>
+        <GoogleTagManagerNoScript />
+        <FacebookPixel />
+        <GoogleTagManager />
         {/*
           A ordem de tabulacao comeca no header e atravessa 500vh de cinematic
           decorativo antes de chegar em qualquer secao com conteudo.

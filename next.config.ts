@@ -11,16 +11,21 @@ const CONTENT_SECURITY_POLICY = [
   // no HTML. Um nonce exigiria render dinamico por request e mataria o
   // prerender estatico desta landing. Como nao ha entrada de usuario nem sink
   // de XSS, o inline aqui e aceitavel.
-  "script-src 'self' 'unsafe-inline'",
+  // Facebook Pixel (connect.facebook.net) e GTM (googletagmanager.com) precisam
+  // carregar scripts externos; ambos sao injetados via next/script afterInteractive.
+  "script-src 'self' 'unsafe-inline' https://connect.facebook.net https://www.googletagmanager.com",
   // 'unsafe-inline' no style-src: styled/inline styles do build.
   "style-src 'self' 'unsafe-inline'",
   // data: obrigatorio: o grao do GrainOverlay usa um data URI; sem isto a
-  // textura some.
-  "img-src 'self' data:",
+  // textura some. facebook.com e para o pixel noscript img tracker.
+  "img-src 'self' data: https://www.facebook.com",
   // Fontes sao self-hosted no build; nenhum CDN externo.
   "font-src 'self'",
-  // Endpoints externos que o site acessa via fetch(): newsletter e CAPI.
-  "connect-src 'self' https://sharknews-sub.com.br https://n8n.shkgroups.com",
+  // Endpoints externos que o site acessa via fetch(): newsletter, CAPI, Pixel e
+  // Analytics. O Pixel faz beacons para facebook.com; o GTM para google-analytics.
+  "connect-src 'self' https://sharknews-sub.com.br https://n8n.shkgroups.com https://connect.facebook.net https://www.facebook.com https://www.google-analytics.com https://www.googletagmanager.com",
+  // GTM noscript iframe precisa de frame-src para carregar o ns.html.
+  "frame-src https://www.googletagmanager.com",
   // frame-ancestors 'none': impede clickjacking. O risco concreto e envelopar
   // a pagina numa casca e trocar o botao de WhatsApp por outro numero (fraude
   // de marca, ja que o funil inteiro e um telefone).

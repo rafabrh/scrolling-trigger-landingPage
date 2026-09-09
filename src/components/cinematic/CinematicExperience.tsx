@@ -15,7 +15,6 @@ import {
 import { CINEMATIC_COPY } from '@/lib/content/cinematic-copy';
 import { useCinematicReady } from '@/lib/cinematic/cinematic-ready-context';
 import { GrainOverlay } from '@/components/background/GrainOverlay';
-import { CtaLink } from '@/components/ui/CtaLink';
 import { CinematicCanvas } from './CinematicCanvas';
 import { CinematicOverlay, type SceneHandle } from './CinematicOverlay';
 import { SceneRail } from './SceneRail';
@@ -198,8 +197,6 @@ interface SceneCopy {
   readonly eyebrow: string;
   readonly headline: readonly string[];
   readonly support: string;
-  readonly ctaLabel: string;
-  readonly ctaHref: string;
   readonly meta: string;
 }
 
@@ -239,20 +236,15 @@ function StaticScene({ scene }: { scene: SceneCopy }) {
           {scene.eyebrow}
         </span>
       </div>
-      <h2 className="font-display text-[var(--text-display-md)] font-semibold leading-[1.04] tracking-[var(--tracking-tight)] text-pretty max-md:text-[32px]">
+      <h2 className="font-display text-[var(--text-display-md)] font-bold leading-[1.04] tracking-[var(--tracking-tight)] text-pretty max-md:text-[32px]">
         {scene.headline.join(' ')}
       </h2>
-      <p className="max-w-[460px] text-[var(--text-body-lg)] leading-[1.62] text-[var(--paper-dim)]">
+      <p className="max-w-[460px] text-[var(--text-body-lg)] leading-[1.62] text-[var(--paper)]" style={{ opacity: 0.85 }}>
         {scene.support}
       </p>
-      {/*
-        Mesmo CtaLink do caminho principal, em vez de um <a> escrito à mão. O
-        caminho estático era uma cópia dessincronizada: perdia o ícone de seta e
-        todo o feedback de hover, e quem cai aqui é justamente quem pediu menos
-        movimento ou está em conexão medida. Um componente só mantém os dois
-        caminhos em passo.
-      */}
-      <CtaLink href={scene.ctaHref}>{scene.ctaLabel}</CtaLink>
+      <span className="font-mono text-[11px] tracking-[var(--tracking-snug)] text-[var(--accent)]" style={{ opacity: 0.7 }}>
+        {scene.meta}
+      </span>
     </div>
   );
 }
