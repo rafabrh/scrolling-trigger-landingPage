@@ -57,12 +57,24 @@ export function AboutSection() {
               className="p-6"
               style={{ border: '1px solid var(--surface-border)' }}
             >
-              <p
-                className="font-display-upper text-2xl text-[var(--paper)]"
-                style={{ letterSpacing: '0.02em' }}
-              >
-                {founder.name}
-              </p>
+              {'linkedin' in founder && founder.linkedin ? (
+                <a
+                  href={founder.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-display-upper text-2xl text-[var(--paper)] transition-colors hover:text-[var(--accent)]"
+                  style={{ letterSpacing: '0.02em' }}
+                >
+                  {founder.name}
+                </a>
+              ) : (
+                <p
+                  className="font-display-upper text-2xl text-[var(--paper)]"
+                  style={{ letterSpacing: '0.02em' }}
+                >
+                  {founder.name}
+                </p>
+              )}
               <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">
                 {founder.role}
               </p>

@@ -102,7 +102,7 @@ export const SITE_CONTENT = {
       { value: 48, suffix: 'h', label: 'Ativação completa' },
     ],
     founders: [
-      { name: 'Rafael Alvarenga', role: 'Founder & CTO' },
+      { name: 'Rafael Alvarenga', role: 'Founder & CTO', linkedin: 'https://www.linkedin.com/in/rafabrh/' },
       { name: 'Victor Alves', role: 'CEO, Campeão Best Seller Mercado Livre 2026' },
     ],
   },
