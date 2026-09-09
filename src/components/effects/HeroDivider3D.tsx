@@ -1,73 +1,147 @@
 'use client';
 
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-const PARTICLE_COUNT = 800;
-const GRID_WIDTH = 16;
-const GRID_DEPTH = 4;
+// Grid de caracteres flutuando como ondas
+const COLS = 64;
+const ROWS = 20;
+const COUNT = COLS * ROWS;
+const SPREAD_X = 18;
+const SPREAD_Z = 6;
 
-function ParticleField() {
-  const meshRef = useRef<THREE.Points>(null);
+// Caracteres estilo Matrix/código
+const CHARS = '01{}[]<>/;:=+-%$#@!?&|~^アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+
+function CodeOcean() {
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+
+  // Gerar texturas de caracteres num canvas 2D
+  const charTextures = useMemo(() => {
+    const size = 64;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return [];
+
+    const textures: THREE.CanvasTexture[] = [];
+    const subset = CHARS.split('').filter((_, i) => i % 3 === 0); // Pega um a cada 3
+
+    for (const char of subset) {
+      ctx.clearRect(0, 0, size, size);
+      ctx.fillStyle = '#00d4aa';
+      ctx.font = `bold ${size * 0.7}px monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(char, size / 2, size / 2);
+      const tex = new THREE.CanvasTexture(ctx.getImageData(0, 0, size, size) as unknown as HTMLCanvasElement);
+      // Na verdade, precisamos clonar o canvas para cada textura
+      const cloned = document.createElement('canvas');
+      cloned.width = size;
+      cloned.height = size;
+      const clonedCtx = cloned.getContext('2d');
+      clonedCtx?.drawImage(canvas, 0, 0);
+      textures.push(new THREE.CanvasTexture(cloned));
+    }
+    return textures;
+  }, []);
+
+  // Posições base no grid
+  const gridData = useMemo(() => {
+    const data: { x: number; z: number; phase: number; speed: number; charIdx: number }[] = [];
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        data.push({
+          x: (c / (COLS - 1) - 0.5) * SPREAD_X,
+          z: (r / (ROWS - 1) - 0.5) * SPREAD_Z,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.3 + Math.random() * 0.4,
+          charIdx: Math.floor(Math.random() * Math.max(1, charTextures.length)),
+        });
+      }
+    }
+    return data;
+  }, [charTextures.length]);
+
+  const updateInstances = useCallback((time: number) => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
+
+    for (let i = 0; i < COUNT; i++) {
+      const d = gridData[i];
+      if (!d) continue;
+
+      // Onda composta: duas senoides cruzadas
+      const wave1 = Math.sin(time * d.speed + d.x * 0.4 + d.phase) * 0.35;
+      const wave2 = Math.cos(time * 0.3 + d.z * 0.6 + d.phase * 0.5) * 0.2;
+      const y = wave1 + wave2;
+
+      dummy.position.set(d.x, y, d.z);
+      // Caracteres olham pra câmera (billboard manual no eixo Y)
+      dummy.rotation.set(-0.8, 0, 0);
+      // Escala baseada na altura da onda — mais alto = mais visível
+      const scale = 0.08 + Math.abs(y) * 0.12;
+      dummy.scale.setScalar(scale);
+      dummy.updateMatrix();
+      mesh.setMatrixAt(i, dummy.matrix);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+  }, [dummy, gridData]);
+
+  useFrame(({ clock }) => {
+    updateInstances(clock.getElapsedTime());
+  });
+
+  return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, COUNT]}>
+      <planeGeometry args={[1, 1]} />
+      <meshBasicMaterial
+        color="#00d4aa"
+        transparent
+        opacity={0.5}
+        side={THREE.DoubleSide}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </instancedMesh>
+  );
+}
+
+// Pontos de brilho espalhados que pulsam
+function GlowDots() {
+  const ref = useRef<THREE.Points>(null);
 
   const positions = useMemo(() => {
-    const pos = new Float32Array(PARTICLE_COUNT * 3);
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * GRID_WIDTH;
+    const count = 200;
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * SPREAD_X;
       pos[i * 3 + 1] = (Math.random() - 0.5) * 1.2;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * GRID_DEPTH;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * SPREAD_Z;
     }
     return pos;
   }, []);
 
-  const speeds = useMemo(() => {
-    const s = new Float32Array(PARTICLE_COUNT);
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      s[i] = 0.2 + Math.random() * 0.6;
-    }
-    return s;
-  }, []);
-
   useFrame(({ clock }) => {
-    const mesh = meshRef.current;
+    const mesh = ref.current;
     if (!mesh) return;
-    const geo = mesh.geometry;
-    const pos = geo.attributes.position as THREE.BufferAttribute;
-    const arr = pos.array as Float32Array;
-    const time = clock.getElapsedTime();
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const ix = i * 3;
-      const speed = speeds[i] ?? 0.3;
-      // Drift horizontal
-      arr[ix] = (arr[ix] ?? 0) + speed * 0.003;
-      // Wrap around
-      if ((arr[ix] ?? 0) > GRID_WIDTH / 2) {
-        arr[ix] = -GRID_WIDTH / 2;
-      }
-      // Subtle wave
-      arr[ix + 1] =
-        Math.sin(time * 0.4 + (arr[ix] ?? 0) * 0.5) * 0.15 +
-        Math.cos(time * 0.3 + i * 0.01) * 0.08;
-    }
-    pos.needsUpdate = true;
+    const mat = mesh.material as THREE.PointsMaterial;
+    mat.opacity = 0.3 + Math.sin(clock.getElapsedTime() * 0.8) * 0.15;
   });
 
   return (
-    <points ref={meshRef}>
+    <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-          count={PARTICLE_COUNT}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} count={200} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.02}
+        size={0.03}
         color="#00d4aa"
         transparent
-        opacity={0.6}
+        opacity={0.3}
         sizeAttenuation
         depthWrite={false}
         blending={THREE.AdditiveBlending}
@@ -76,74 +150,19 @@ function ParticleField() {
   );
 }
 
-function GridLines() {
-  const ref = useRef<THREE.Group>(null);
-
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      ref.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.1) * 0.02;
-    }
-  });
-
-  const lines = useMemo(() => {
-    const geo = new THREE.BufferGeometry();
-    const vertices: number[] = [];
-
-    // Horizontal lines
-    for (let z = -GRID_DEPTH / 2; z <= GRID_DEPTH / 2; z += 0.8) {
-      vertices.push(-GRID_WIDTH / 2, 0, z, GRID_WIDTH / 2, 0, z);
-    }
-    // Vertical lines (along X)
-    for (let x = -GRID_WIDTH / 2; x <= GRID_WIDTH / 2; x += 0.8) {
-      vertices.push(x, 0, -GRID_DEPTH / 2, x, 0, GRID_DEPTH / 2);
-    }
-
-    geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-    return geo;
-  }, []);
-
-  return (
-    <group ref={ref}>
-      <lineSegments geometry={lines}>
-        <lineBasicMaterial color="#00d4aa" transparent opacity={0.06} />
-      </lineSegments>
-    </group>
-  );
-}
-
-function CenterGlow() {
-  const ref = useRef<THREE.Mesh>(null);
-
-  useFrame(({ clock }) => {
-    if (ref.current) {
-      const mat = ref.current.material as THREE.MeshBasicMaterial;
-      mat.opacity = 0.04 + Math.sin(clock.getElapsedTime() * 0.5) * 0.02;
-    }
-  });
-
-  return (
-    <mesh ref={ref} position={[0, 0, 0]}>
-      <sphereGeometry args={[2, 32, 32]} />
-      <meshBasicMaterial color="#00d4aa" transparent opacity={0.04} />
-    </mesh>
-  );
-}
-
 export function HeroDivider3D() {
   return (
-    <div className="relative z-10 h-[120px] w-full overflow-hidden">
-      {/* Top/bottom fade edges */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-gradient-to-b from-[var(--ink-900)] to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-[var(--ink-900)] to-transparent" />
+    <div className="relative z-10 h-[140px] w-full overflow-hidden">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-10 bg-gradient-to-b from-[var(--ink-900)] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-10 bg-gradient-to-t from-[var(--ink-900)] to-transparent" />
       <Canvas
-        camera={{ position: [0, 1.8, 3], fov: 50 }}
+        camera={{ position: [0, 3, 5], fov: 45 }}
         gl={{ alpha: true, antialias: false, powerPreference: 'low-power' }}
         style={{ background: 'transparent' }}
         dpr={[1, 1.5]}
       >
-        <GridLines />
-        <ParticleField />
-        <CenterGlow />
+        <CodeOcean />
+        <GlowDots />
       </Canvas>
     </div>
   );
