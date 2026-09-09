@@ -16,6 +16,7 @@ import { SharkNewsSection } from '@/components/sections/SharkNewsSection';
 import { CTAFinalSection } from '@/components/sections/CTAFinalSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 import { ScrollReveal } from '@/components/effects/ScrollReveal';
+import { TrackingEvents } from '@/components/tracking/TrackingEvents';
 import { CinematicReadyProvider } from '@/lib/cinematic/cinematic-ready-context';
 import type { Metadata } from 'next';
 import { SITE_URL } from './layout';
@@ -96,6 +97,7 @@ export default function Home() {
         <ScrollReveal><ContactSection /></ScrollReveal>
       </main>
 
+      <TrackingEvents />
       <SiteFooter />
     </CinematicReadyProvider>
   );
