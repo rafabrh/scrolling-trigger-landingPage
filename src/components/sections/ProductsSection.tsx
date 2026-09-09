@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { SITE_CONTENT } from '@/lib/content/site-content';
 import { SectionShell } from '@/components/ui/SectionShell';
 import { CtaLink } from '@/components/ui/CtaLink';
@@ -33,11 +34,22 @@ export function ProductsSection() {
               </span>
             </div>
           ))}
+
+          <div className="mt-6">
+            <CtaLink href={whatsappHref('products')}>Ativar AI Agent</CtaLink>
+          </div>
         </div>
 
-        {/* Direita: CTA */}
-        <div className="flex flex-col justify-center gap-8">
-          <CtaLink href={whatsappHref('products')}>Ativar AI Agent</CtaLink>
+        {/* Direita: mockup do celular com chat do Agente IA */}
+        <div className="flex items-center justify-center lg:justify-end">
+          <Image
+            src="/brand/phone-mockup.png"
+            alt="Mockup do Agente IA atendendo no WhatsApp"
+            width={380}
+            height={480}
+            className="drop-shadow-[0_0_40px_rgba(0,212,170,0.15)]"
+            priority={false}
+          />
         </div>
       </div>
     </SectionShell>
