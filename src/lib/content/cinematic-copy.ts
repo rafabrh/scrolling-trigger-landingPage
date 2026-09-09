@@ -1,5 +1,3 @@
-import { whatsappHref } from './whatsapp';
-
 /**
  * A fatia de copy que a ilha cinematic (client component) precisa, isolada do
  * resto do deck. Antes, `CinematicExperience` importava `SITE_CONTENT` inteiro:
@@ -20,20 +18,16 @@ export const CINEMATIC_COPY = {
 
   sharknews: {
     eyebrow: 'SharkNews',
-    headline: ['Arquitetura, agentes de IA', 'e o que move o mercado tech.'],
+    headline: ['A newsletter de quem', 'constrói com tecnologia.'],
     support:
-      'Toda segunda e sexta: soluções de arquitetura de software, oficina com Claude Code e as notícias mais quentes do mercado tech.',
-    ctaLabel: 'Receber SharkNews',
-    ctaHref: '#sharknews',
-    meta: 'SEGUNDAS & SEXTAS',
+      'Arquitetura de software, oficina de agentes de IA com Claude Code e as notícias que movem o mercado tech. Toda segunda e sexta na sua caixa de entrada.',
+    meta: 'SEGUNDAS & SEXTAS  ·  LEITURA DE 5 MIN',
   },
   aiAgent: {
     eyebrow: 'AI Agent',
-    headline: ['Cada canal responde,', 'a qualquer hora.'],
+    headline: ['Seu próximo vendedor', 'nunca dorme.'],
     support:
-      'Agente de IA no WhatsApp e Instagram que responde, qualifica e conduz cada oportunidade até o fechamento.',
-    ctaLabel: 'Conhecer AI Agent',
-    ctaHref: whatsappHref('cinematic-aiagent'),
-    meta: 'WHATSAPP + INSTAGRAM',
+      'Um agente de IA no WhatsApp e Instagram que atende cada lead em segundos, qualifica, contorna objeções e conduz até o fechamento. 24 horas por dia, 7 dias por semana.',
+    meta: 'WHATSAPP + INSTAGRAM  ·  ATIVAÇÃO EM 48H',
   },
 } as const;

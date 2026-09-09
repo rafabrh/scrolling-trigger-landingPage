@@ -30,7 +30,6 @@ describe('CTAs de WhatsApp no conteúdo', () => {
   it('cada CTA leva a etiqueta via: da sua posição', () => {
     const whatsappHrefs = [
       SITE_CONTENT.cta.href,
-      SITE_CONTENT.cinematic.aiAgent.ctaHref,
       SITE_CONTENT.contact.ctaHref,
       SITE_CONTENT.footer.links[1].href,
     ];
@@ -41,8 +40,5 @@ describe('CTAs de WhatsApp no conteúdo', () => {
     // Nenhuma âncora ficou sem posição: todos os text são únicos.
     const texts = whatsappHrefs.map((h) => new URL(h).searchParams.get('text'));
     expect(new Set(texts).size).toBe(whatsappHrefs.length);
-
-    // SharkNews cinematic CTA aponta pra secao dedicada, nao pro WhatsApp
-    expect(SITE_CONTENT.cinematic.sharknews.ctaHref).toBe('#sharknews');
   });
 });
