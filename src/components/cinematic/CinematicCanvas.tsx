@@ -4,7 +4,9 @@ import { useEffect, useRef } from 'react';
 import { drawCoverImage } from '@/lib/cinematic/draw-cover';
 import type { FrameCache } from '@/lib/cinematic/frame-cache';
 
-const MAX_DEVICE_PIXEL_RATIO = 2;
+const MAX_DPR_DESKTOP = 2;
+const MAX_DPR_MOBILE = 1;
+const MOBILE_BREAKPOINT = 768;
 
 export interface CinematicCanvasProps {
   readonly cache: FrameCache | null;
@@ -64,7 +66,8 @@ export function CinematicCanvas({
 
     const resize = (): void => {
       const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DEVICE_PIXEL_RATIO);
+      const maxDpr = rect.width < MOBILE_BREAKPOINT ? MAX_DPR_MOBILE : MAX_DPR_DESKTOP;
+      const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
 
       canvas.width = Math.max(1, Math.round(rect.width * dpr));
       canvas.height = Math.max(1, Math.round(rect.height * dpr));
@@ -103,11 +106,18 @@ export function CinematicCanvas({
 
     let rafId = 0;
     let running = true;
+    let lastPlayhead = -1;
 
     const tick = (): void => {
       if (!running) return;
       const frame = frameRef.current;
-      cache.setPlayhead(frame);
+      // setPlayhead dispara evict + pump — só chamar quando o frame realmente muda.
+      // No mobile isso evita dezenas de iterações de evict/pump por segundo
+      // quando o scroll está parado mas o rAF continua rodando.
+      if (frame !== lastPlayhead) {
+        cache.setPlayhead(frame);
+        lastPlayhead = frame;
+      }
       paint(frame, false);
       rafId = window.requestAnimationFrame(tick);
     };

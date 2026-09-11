@@ -19,6 +19,7 @@ export interface CinematicTimelineOptions {
   readonly frameRef: React.RefObject<number>;
   readonly onTick: (tick: CinematicTick) => void;
   readonly enabled: boolean;
+  readonly frameSet: 'desktop' | 'mobile';
 }
 
 /**
@@ -34,6 +35,7 @@ export function useCinematicTimeline({
   frameRef,
   onTick,
   enabled,
+  frameSet,
 }: CinematicTimelineOptions): void {
   const onTickRef = useRef(onTick);
   onTickRef.current = onTick;
@@ -58,7 +60,7 @@ export function useCinematicTimeline({
           trigger: section,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: CINEMATIC.scrub,
+          scrub: CINEMATIC.scrub[frameSet],
           invalidateOnRefresh: true,
         },
         onUpdate: () => {
@@ -78,5 +80,5 @@ export function useCinematicTimeline({
     onTickRef.current({ progress: 0, frame: 0, scene: 'intro' });
 
     return () => context.revert();
-  }, [sectionRef, frameRef, enabled, segments]);
+  }, [sectionRef, frameRef, enabled, segments, frameSet]);
 }

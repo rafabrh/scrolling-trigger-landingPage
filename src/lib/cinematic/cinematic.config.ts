@@ -61,8 +61,8 @@ export const CINEMATIC = {
   sourceWidth: framesConfig.source.width,
   sourceHeight: framesConfig.source.height,
 
-  scrub: 0.3,
-  scrollHeightVh: { desktop: 500, mobile: 350 },
+  scrub: { desktop: 0.3, mobile: 0.15 },
+  scrollHeightVh: { desktop: 500, mobile: 280 },
 
   /**
    * O `as` alarga os quatro literais para `SceneRange`. Sem ele, `as const`
@@ -116,9 +116,9 @@ export const CINEMATIC = {
 
   cache: {
     /** Teto de ImageBitmap decodificados residentes por conjunto. */
-    maxDecoded: { desktop: 90, mobile: 40 },
+    maxDecoded: { desktop: 90, mobile: 20 },
     /** Requisições de rede simultâneas. */
-    concurrency: 6,
+    concurrency: { desktop: 6, mobile: 3 },
     /**
      * Teto de requisições simultâneas dedicadas à cauda, uma vez liberada.
      * Menor que `concurrency` de propósito: a cauda não pode saturar o downlink
@@ -126,7 +126,7 @@ export const CINEMATIC = {
      */
     tailConcurrency: 2,
     /** Raio da janela de pré-carga ao redor do playhead. */
-    lookAround: 24,
+    lookAround: { desktop: 24, mobile: 10 },
   },
 
   assets: {

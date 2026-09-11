@@ -89,6 +89,7 @@ function CinematicStage() {
     sectionRef,
     frameRef,
     enabled: active,
+    frameSet,
     onTick: (tick) => {
       tickRef.current = tick;
       sharkRef.current?.apply(tick.frame);
@@ -169,9 +170,12 @@ function CinematicStage() {
           />
         )}
 
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(100deg,rgba(5,6,7,0.94)_0%,rgba(5,6,7,0.72)_34%,rgba(5,6,7,0.16)_68%,rgba(5,6,7,0.42)_100%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(5,6,7,0.86)_0%,rgba(5,6,7,0)_42%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_45%,rgba(5,6,7,0)_38%,rgba(5,6,7,0.72)_100%)]" />
+        {/* Desktop: 3 camadas separadas para controle fino. Mobile: 1 camada
+            combinada para reduzir compositing layers de 3 para 1 no GPU. */}
+        <div className="pointer-events-none absolute inset-0 max-md:hidden bg-[linear-gradient(100deg,rgba(5,6,7,0.94)_0%,rgba(5,6,7,0.72)_34%,rgba(5,6,7,0.16)_68%,rgba(5,6,7,0.42)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 max-md:hidden bg-[linear-gradient(to_top,rgba(5,6,7,0.86)_0%,rgba(5,6,7,0)_42%)]" />
+        <div className="pointer-events-none absolute inset-0 max-md:hidden bg-[radial-gradient(120%_90%_at_50%_45%,rgba(5,6,7,0)_38%,rgba(5,6,7,0.72)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 md:hidden bg-[linear-gradient(to_top,rgba(5,6,7,0.88)_0%,rgba(5,6,7,0.4)_40%,rgba(5,6,7,0.7)_100%)]" />
         <GrainOverlay />
 
         <CinematicOverlay
