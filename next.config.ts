@@ -72,6 +72,12 @@ const nextConfig: NextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains',
           },
+          // Permissions-Policy: restringe APIs do browser que o site nao usa.
+          // Reduz superficie de ataque e sinaliza conformidade em auditorias.
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), payment=()',
+          },
           // CSP em modo enforcing. Passou pelo ciclo de observacao (Report-Only)
           // sem violacoes registradas; agora bloqueia de fato.
           {

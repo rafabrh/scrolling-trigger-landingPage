@@ -19,6 +19,8 @@ export function TrackingEvents() {
     function trackOnce(event: string, params: Record<string, unknown>) {
       if (fired.has(event)) return;
       fired.add(event);
+      // Respeita o consent mode: só dispara se o Pixel tiver consentimento ativo.
+      // Sem banner de consentimento, fbq opera com 'revoke' e os eventos ficam no-op.
       if (typeof window.fbq === 'function') {
         window.fbq('trackCustom', event, params);
       }

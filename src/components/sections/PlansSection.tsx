@@ -58,7 +58,7 @@ export function PlansSection() {
                   <span className="text-[28px] font-bold text-[var(--paper)]">{plan.price}</span>
                   <span className="ml-1 font-mono text-[11px] text-[var(--paper-dim)]">{plan.period}</span>
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--paper-dim)]" style={{ opacity: 0.7 }}>
+                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--accent-muted)]">
                   {plan.subtag}
                 </span>
               </div>
@@ -82,14 +82,16 @@ export function PlansSection() {
                   className="flex flex-col gap-2 p-4"
                   style={{ background: 'var(--accent-glow)', border: '1px solid var(--surface-border)' }}
                 >
-                  <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--accent)]">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">
                     Bônus inclusos
                   </span>
-                  {bonuses.map((bonus) => (
-                    <span key={bonus} className="text-[11px] leading-relaxed text-[var(--paper-dim)]">
-                      {bonus}
-                    </span>
-                  ))}
+                  <ul className="flex flex-col gap-1 list-none m-0 p-0">
+                    {bonuses.map((bonus) => (
+                      <li key={bonus} className="text-[11px] leading-relaxed text-[var(--paper-dim)]">
+                        {bonus}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
 
@@ -99,7 +101,7 @@ export function PlansSection() {
                 target="_blank"
                 rel="noreferrer noopener"
                 aria-label={`Ativar plano ${plan.name}`}
-                className="mt-auto inline-flex w-full items-center justify-center gap-2 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.18em] transition-opacity hover:opacity-80"
+                className="mt-auto inline-flex w-full items-center justify-center gap-2 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.18em] transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
                 style={{ background: plan.accent, color: 'var(--ink-900)' }}
               >
                 {plan.cta.label}
@@ -111,8 +113,7 @@ export function PlansSection() {
 
       {/* Footer note */}
       <p
-        className="mt-8 text-center font-mono text-[11px] text-[var(--paper-dim)]"
-        style={{ opacity: 0.6 }}
+        className="mt-8 text-center font-mono text-[11px] text-[var(--paper-muted)]"
       >
         {PLANS_FOOTER}
       </p>

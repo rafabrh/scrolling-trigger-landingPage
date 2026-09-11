@@ -27,7 +27,7 @@ export function IntegrationSection() {
             <p className="text-[13px] leading-relaxed text-[var(--paper-dim)]">
               {channel.detail}
             </p>
-            <span className="mt-auto font-mono text-[11px] tracking-[var(--tracking-snug)] text-[var(--paper-dim)]" style={{ opacity: 0.7 }}>
+            <span className="mt-auto font-mono text-[11px] tracking-[var(--tracking-snug)] text-[var(--accent-muted)]">
               {channel.meta}
             </span>
           </div>
