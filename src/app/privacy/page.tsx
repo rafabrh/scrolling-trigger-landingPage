@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
-import { WHATSAPP_URL, INSTAGRAM_URL } from '@/lib/content/site-content';
+import { WHATSAPP_URL, INSTAGRAM_URL } from '@/lib/content/whatsapp';
 
 export const metadata: Metadata = {
   title: 'Privacidade',

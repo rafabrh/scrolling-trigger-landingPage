@@ -58,6 +58,7 @@ export function GoogleTagManagerNoScript() {
         width="0"
         style={{ display: 'none', visibility: 'hidden' }}
         title="Google Tag Manager"
+        aria-hidden="true"
       />
     </noscript>
   );

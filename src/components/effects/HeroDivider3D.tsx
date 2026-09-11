@@ -399,7 +399,7 @@ export function HeroDivider3D() {
       {/* Brain trigger button */}
       <button
         onClick={handleTrigger}
-        aria-label="Ativar visualizacao do cerebro"
+        aria-label="Ativar visualização do cérebro"
         className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 flex h-16 w-16 cursor-pointer items-center justify-center rounded-full border border-[var(--accent)]/40 bg-[var(--ink-900)]/60 text-[var(--accent)] backdrop-blur-sm transition-all duration-700 hover:scale-110 hover:border-[var(--accent)]/80 hover:shadow-[0_0_24px_rgba(0,212,170,0.3)] sm:h-20 sm:w-20"
         style={{
           opacity: showButton ? 1 : 0,
