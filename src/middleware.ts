@@ -15,6 +15,7 @@ export function middleware(request: NextRequest) {
   if (host === 'shkgroup.com.br') {
     const url = request.nextUrl.clone();
     url.host = 'www.shkgroup.com.br';
+    url.port = '';
     return NextResponse.redirect(url, 301);
   }
 
