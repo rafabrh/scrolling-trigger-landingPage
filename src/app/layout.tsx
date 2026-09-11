@@ -39,7 +39,7 @@ const OG_IMAGE = {
   url: '/cinematic/final-city.webp',
   width: 1920,
   height: 1080,
-  alt: 'SHK Group',
+  alt: 'SHK Group — Agentes de IA para vendas',
 } as const;
 
 /**
