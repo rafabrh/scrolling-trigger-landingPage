@@ -69,7 +69,8 @@ describe('cache: o config bate com a política', () => {
     // a decodificar e o scroll rápido mostra frame velho.
     for (const [name, set] of Object.entries(CINEMATIC.frameSets)) {
       const radius = decodeWindowRadius(CINEMATIC.cache.maxDecoded[name as 'desktop' | 'mobile']);
-      const lookAroundInFiles = Math.ceil(CINEMATIC.cache.lookAround / set.frameStep);
+      const setName = name as 'desktop' | 'mobile';
+      const lookAroundInFiles = Math.ceil(CINEMATIC.cache.lookAround[setName] / set.frameStep);
       expect(radius, name).toBeGreaterThanOrEqual(lookAroundInFiles);
     }
   });

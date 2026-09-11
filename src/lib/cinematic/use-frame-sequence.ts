@@ -26,9 +26,9 @@ export function useFrameSequence(
       frameCount: CINEMATIC.frameCount,
       frameStep: set.frameStep,
       maxDecoded: CINEMATIC.cache.maxDecoded[setName],
-      concurrency: CINEMATIC.cache.concurrency,
+      concurrency: CINEMATIC.cache.concurrency[setName],
       tailConcurrency: CINEMATIC.cache.tailConcurrency,
-      lookAround: CINEMATIC.cache.lookAround,
+      lookAround: CINEMATIC.cache.lookAround[setName],
       finalFrame: CINEMATIC.finalFrame,
     });
 
