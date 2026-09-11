@@ -30,7 +30,7 @@ export function PlansSection() {
                 </span>
                 {badge && (
                   <span
-                    className="w-fit px-2 py-1 font-mono text-[8px] uppercase tracking-[0.18em]"
+                    className="w-fit px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
                     style={{
                       background: plan.id === 'pro' ? 'var(--pro-accent)' : 'var(--obsidian-accent)',
                       color: plan.id === 'pro' ? '#0a0714' : '#0a0700',
@@ -41,8 +41,8 @@ export function PlansSection() {
                 )}
                 {vagas && (
                   <span
-                    className="font-mono text-[9px] uppercase tracking-[0.1em]"
-                    style={{ color: 'var(--obsidian-accent)', opacity: 0.7 }}
+                    className="font-mono text-[10px] uppercase tracking-[0.1em]"
+                    style={{ color: 'var(--obsidian-accent)' }}
                   >
                     {vagas}
                   </span>
@@ -58,23 +58,23 @@ export function PlansSection() {
                   <span className="text-[28px] font-bold text-[var(--paper)]">{plan.price}</span>
                   <span className="ml-1 font-mono text-[11px] text-[var(--paper-dim)]">{plan.period}</span>
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--paper-dim)]" style={{ opacity: 0.6 }}>
+                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--paper-dim)]" style={{ opacity: 0.7 }}>
                   {plan.subtag}
                 </span>
               </div>
 
               {/* Features */}
-              <div className="flex flex-1 flex-col gap-[7px]" style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '16px' }}>
+              <ul className="flex flex-1 flex-col gap-[7px] list-none m-0 p-0" style={{ borderTop: '1px solid var(--surface-border)', paddingTop: '16px' }}>
                 {plan.features.map((feat) => (
-                  <div key={feat} className="flex items-start gap-2 text-[11px] text-[var(--paper-dim)]">
+                  <li key={feat} className="flex items-start gap-2 text-[11px] text-[var(--paper-dim)]">
                     <span
                       className="mt-[6px] inline-block h-[3px] w-[3px] shrink-0 rounded-full bg-[var(--accent)]"
                       style={{ opacity: 0.5 }}
                     />
                     {feat}
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
 
               {/* Bonuses */}
               {bonuses && bonuses.length > 0 && (
@@ -98,6 +98,7 @@ export function PlansSection() {
                 href={plan.cta.href}
                 target="_blank"
                 rel="noreferrer noopener"
+                aria-label={`Ativar plano ${plan.name}`}
                 className="mt-auto inline-flex w-full items-center justify-center gap-2 px-4 py-3 text-[11px] font-bold uppercase tracking-[0.18em] transition-opacity hover:opacity-80"
                 style={{ background: plan.accent, color: 'var(--ink-900)' }}
               >
@@ -111,7 +112,7 @@ export function PlansSection() {
       {/* Footer note */}
       <p
         className="mt-8 text-center font-mono text-[11px] text-[var(--paper-dim)]"
-        style={{ opacity: 0.5 }}
+        style={{ opacity: 0.6 }}
       >
         {PLANS_FOOTER}
       </p>

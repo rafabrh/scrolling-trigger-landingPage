@@ -94,20 +94,46 @@ export function CinematicCanvas({
   }, [cache, frameRef, sourceWidth, sourceHeight]);
 
   // Loop de desenho. Uma iteração por quadro do browser, independente de
-  // quantas vezes a timeline escreveu no ref nesse intervalo.
+  // quantas vezes a timeline escreveu no ref nesse intervalo. Para quando o
+  // canvas sai da tela (handoff) para não queimar CPU em elemento invisível.
   useEffect(() => {
     if (!cache) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
     let rafId = 0;
+    let running = true;
+
     const tick = (): void => {
+      if (!running) return;
       const frame = frameRef.current;
       cache.setPlayhead(frame);
       paint(frame, false);
       rafId = window.requestAnimationFrame(tick);
     };
 
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          if (!running) {
+            running = true;
+            rafId = window.requestAnimationFrame(tick);
+          }
+        } else {
+          running = false;
+          window.cancelAnimationFrame(rafId);
+        }
+      },
+      { threshold: 0 },
+    );
+    observer.observe(canvas);
+
     rafId = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(rafId);
+    return () => {
+      running = false;
+      window.cancelAnimationFrame(rafId);
+      observer.disconnect();
+    };
   }, [cache, frameRef]);
 
   // Redesenha assim que o primeiro bitmap chega, sem esperar movimento.

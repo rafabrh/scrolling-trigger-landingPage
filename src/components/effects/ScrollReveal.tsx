@@ -1,15 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 /**
  * Wrapper that reveals children with a stagger animation when scrolled into view.
- * Uses GSAP ScrollTrigger to add the .revealed class once the element enters viewport.
- * Does NOT take an id prop — each section component owns its own id via SectionShell.
+ * Uses IntersectionObserver (native, zero library) to add the .revealed class once.
+ * The actual animation is pure CSS in globals.css (.scroll-section / .revealed).
  */
 export function ScrollReveal({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -18,14 +14,19 @@ export function ScrollReveal({ children }: { children: React.ReactNode }) {
     const el = ref.current;
     if (!el) return;
 
-    const trigger = ScrollTrigger.create({
-      trigger: el,
-      start: 'top 85%',
-      onEnter: () => el.classList.add('revealed'),
-      once: true,
-    });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          el.classList.add('revealed');
+          observer.disconnect();
+        }
+      },
+      { threshold: 0, rootMargin: '-15% 0px' },
+    );
 
-    return () => trigger.kill();
+    observer.observe(el);
+
+    return () => observer.disconnect();
   }, []);
 
   return (

@@ -165,7 +165,7 @@ export function SharkNewsSection() {
 
                 {/* Error */}
                 {status === 'error' && errorMsg && (
-                  <p className="text-[13px] text-red-400">{errorMsg}</p>
+                  <p className="text-[13px] text-red-400" role="alert" aria-live="assertive">{errorMsg}</p>
                 )}
 
                 {/* Submit */}
@@ -178,7 +178,7 @@ export function SharkNewsSection() {
                 </button>
 
                 {/* Privacy note */}
-                <p className="font-mono text-[11px] text-[var(--paper-dim)]" style={{ opacity: 0.5 }}>
+                <p className="font-mono text-[11px] text-[var(--paper-dim)]" style={{ opacity: 0.6 }}>
                   {form.privacy}
                 </p>
               </form>

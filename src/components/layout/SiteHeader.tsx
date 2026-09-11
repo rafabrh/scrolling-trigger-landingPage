@@ -75,7 +75,7 @@ export function SiteHeader() {
               Menu
             </summary>
             <nav
-              aria-label="Navegação principal"
+              aria-label="Menu de navegação"
               className="absolute right-0 top-full mt-3 flex min-w-[220px] flex-col gap-5 border border-[var(--surface-border)] bg-[rgba(5,8,12,0.94)] p-6 backdrop-blur-md"
             >
               {SITE_CONTENT.nav.map((item) => (

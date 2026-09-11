@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
 import { CtaLink } from '@/components/ui/CtaLink';
-import { whatsappHref } from '@/lib/content/site-content';
+import { whatsappHref } from '@/lib/content/whatsapp';
 
 /**
  * O 404. Renderiza DENTRO do root layout (herda <html>/<body>, as fontes e o

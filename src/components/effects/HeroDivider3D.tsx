@@ -2,16 +2,31 @@
 
 import { useRef, useMemo, useEffect, useState, type MutableRefObject } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { Color, AdditiveBlending, type Points, type BufferAttribute } from 'three';
 
 /* ================================================================== *
  *  Constants                                                          *
  * ================================================================== */
 
-const P = 65_000;
+const P_DESKTOP = 30_000;
+const P_MOBILE  = 15_000;
 const C = 1024;
 const WORLD_SPAN = 4.0;
 const PHASE_DUR = 4.0;    // seconds for one morph direction
+
+/** Read viewport width once at module level (SSR-safe). */
+const P =
+  typeof window !== 'undefined' && window.innerWidth < 768
+    ? P_MOBILE
+    : P_DESKTOP;
+
+/* ================================================================== *
+ *  Detect prefers-reduced-motion once at module level                  *
+ * ================================================================== */
+
+const prefersReducedMotion =
+  typeof window !== 'undefined' &&
+  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 /* ================================================================== *
  *  Image-based pixel sampling                                         *
@@ -85,8 +100,8 @@ function sampleFromImage(img: HTMLImageElement): ShapeData {
     const n = pick.b / 255;
     positions[i * 3 + 2] = (n - 0.5) * 0.05 + (Math.random() - 0.5) * 0.02;
 
-    // Small sharp particles: thin traces (0.15) ↔ junction nodes (1.2)
-    // Linear curve keeps everything tight — no blob blow-out
+    // Small sharp particles: thin traces (0.15) <-> junction nodes (1.2)
+    // Linear curve keeps everything tight -- no blob blow-out
     sizes[i] = 0.15 + n * 1.05;
   }
 
@@ -150,20 +165,32 @@ const fragmentShader = /* glsl */ `
 /* ================================================================== *
  *  MorphingParticles                                                  *
  *  Stays as ocean until triggeredRef flips to true, then starts       *
- *  cosine boomerang: ocean ↔ brain forever.                           *
+ *  cosine boomerang: ocean <-> brain forever.                         *
  * ================================================================== */
 
-function MorphingParticles({ triggeredRef }: { triggeredRef: MutableRefObject<boolean> }) {
-  const meshRef = useRef<THREE.Points>(null);
+function MorphingParticles({
+  triggeredRef,
+  visibleRef,
+}: {
+  triggeredRef: MutableRefObject<boolean>;
+  visibleRef: MutableRefObject<boolean>;
+}) {
+  const meshRef = useRef<Points>(null);
 
   const oceanData = useMemo(() => ocean(), []);
   const brainRef = useRef<ShapeData>(oceanData);
 
   useEffect(() => {
+    let cancelled = false;
     const img = new Image();
     img.crossOrigin = 'anonymous';
-    img.onload = () => { brainRef.current = sampleFromImage(img); };
+    img.onload = () => {
+      if (!cancelled) {
+        brainRef.current = sampleFromImage(img);
+      }
+    };
     img.src = '/shapes/brain.png';
+    return () => { cancelled = true; };
   }, []);
 
   const pos = useMemo(() => new Float32Array(P * 3), []);
@@ -175,16 +202,42 @@ function MorphingParticles({ triggeredRef }: { triggeredRef: MutableRefObject<bo
   }, []);
 
   const uniforms = useRef({
-    uColor: { value: new THREE.Color('#00d4aa') },
+    uColor: { value: new Color('#00d4aa') },
     uOpacity: { value: 0.4 },
   });
 
   // Captures the R3F clock time on the first frame after trigger
   const morphStartRef = useRef(-1);
 
+  // For reduced-motion: write ocean positions once and stop
+  const staticWritten = useRef(false);
+
   useFrame(({ clock }) => {
     const mesh = meshRef.current;
     if (!mesh) return;
+
+    // --- prefers-reduced-motion: write static ocean once, then bail ---
+    if (prefersReducedMotion) {
+      if (!staticWritten.current) {
+        staticWritten.current = true;
+        const oP = oceanData.positions;
+        const oS = oceanData.sizes;
+        pos.set(oP);
+        sizeArr.set(oS);
+
+        const posAttr = mesh.geometry.attributes.position as BufferAttribute;
+        (posAttr.array as Float32Array).set(pos);
+        posAttr.needsUpdate = true;
+
+        const sizeAttr = mesh.geometry.attributes.aSize as BufferAttribute;
+        (sizeAttr.array as Float32Array).set(sizeArr);
+        sizeAttr.needsUpdate = true;
+      }
+      return;
+    }
+
+    // --- IntersectionObserver gate: skip heavy math when offscreen ---
+    if (!visibleRef.current) return;
 
     const brain = brainRef.current;
     const time = clock.getElapsedTime();
@@ -251,11 +304,11 @@ function MorphingParticles({ triggeredRef }: { triggeredRef: MutableRefObject<bo
       sizeArr[i] = size;
     }
 
-    const posAttr = mesh.geometry.attributes.position as THREE.BufferAttribute;
+    const posAttr = mesh.geometry.attributes.position as BufferAttribute;
     (posAttr.array as Float32Array).set(pos);
     posAttr.needsUpdate = true;
 
-    const sizeAttr = mesh.geometry.attributes.aSize as THREE.BufferAttribute;
+    const sizeAttr = mesh.geometry.attributes.aSize as BufferAttribute;
     (sizeAttr.array as Float32Array).set(sizeArr);
     sizeAttr.needsUpdate = true;
   });
@@ -272,7 +325,7 @@ function MorphingParticles({ triggeredRef }: { triggeredRef: MutableRefObject<bo
         uniforms={uniforms.current}
         transparent
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={AdditiveBlending}
       />
     </points>
   );
@@ -311,7 +364,24 @@ function BrainIcon({ className }: { className?: string }) {
 
 export function HeroDivider3D() {
   const triggeredRef = useRef(false);
+  const visibleRef = useRef(true);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [showButton, setShowButton] = useState(true);
+
+  // IntersectionObserver: pause the render loop when scrolled offscreen
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visibleRef.current = !!entry?.isIntersecting;
+      },
+      { threshold: 0 },
+    );
+    observer.observe(el);
+    return () => { observer.disconnect(); };
+  }, []);
 
   const handleTrigger = () => {
     triggeredRef.current = true;
@@ -319,14 +389,17 @@ export function HeroDivider3D() {
   };
 
   return (
-    <div className="relative z-10 h-[420px] w-full overflow-hidden sm:h-[520px]">
+    <div
+      ref={containerRef}
+      className="relative z-10 h-[420px] w-full overflow-hidden sm:h-[520px]"
+    >
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-[var(--ink-900)] to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-16 bg-gradient-to-t from-[var(--ink-900)] to-transparent" />
 
       {/* Brain trigger button */}
       <button
         onClick={handleTrigger}
-        aria-label="Ativar visualização do cérebro"
+        aria-label="Ativar visualizacao do cerebro"
         className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 flex h-16 w-16 cursor-pointer items-center justify-center rounded-full border border-[var(--accent)]/40 bg-[var(--ink-900)]/60 text-[var(--accent)] backdrop-blur-sm transition-all duration-700 hover:scale-110 hover:border-[var(--accent)]/80 hover:shadow-[0_0_24px_rgba(0,212,170,0.3)] sm:h-20 sm:w-20"
         style={{
           opacity: showButton ? 1 : 0,
@@ -345,7 +418,7 @@ export function HeroDivider3D() {
         style={{ background: 'transparent' }}
         dpr={[1, 1.5]}
       >
-        <MorphingParticles triggeredRef={triggeredRef} />
+        <MorphingParticles triggeredRef={triggeredRef} visibleRef={visibleRef} />
       </Canvas>
     </div>
   );

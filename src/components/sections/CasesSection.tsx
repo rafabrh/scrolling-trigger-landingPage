@@ -27,7 +27,7 @@ export function CasesSection() {
               className="flex h-[72px] items-center px-5"
               style={{
                 border: '1px dashed var(--surface-border)',
-                opacity: 0.35,
+                opacity: 0.55,
               }}
             >
               <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--paper-dim)]">

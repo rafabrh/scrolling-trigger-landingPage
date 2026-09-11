@@ -10,6 +10,8 @@
   --accent-dim: #009977;
   --accent-glow: rgba(0, 212, 170, 0.16);
   --accent-pulse: rgba(0, 212, 170, 0.08);
+  --paper-muted: rgba(224, 240, 234, 0.55);
+  --accent-muted: rgba(0, 212, 170, 0.55);
   --surface: rgba(4, 8, 12, 0.58);
   --surface-border: rgba(0, 212, 170, 0.12);
   --tab-inactive: #1a2a25;
@@ -52,11 +54,10 @@
   --font-mono: var(--font-jetbrains-mono);
 }
 
-/* `smooth` e' seguro agora que nao usamos scrub — apenas `once: true` no
-   ScrollTrigger, entao o browser e o GSAP nao disputam a posicao. */
-html {
-  scroll-behavior: smooth;
-}
+/* Sem scroll-behavior: smooth global. O GSAP ScrollTrigger do cinematic usa
+   scrub: 0.3, e smooth-scroll interfere com a leitura de scrollY em Chromium,
+   causando jitter no playhead. Clicks de ancora usam o smooth do browser via
+   atributo nos proprios links quando necessario. */
 
 /*
   Fallback sem JavaScript: os itens do header têm opacity:0 inline para o
@@ -87,12 +88,7 @@ body {
 
 /* ── TRANSITION EFFECTS ── */
 
-@keyframes scanRoll {
-  from { background-position: 0 0; }
-  to   { background-position: 0 100vh; }
-}
-
-/* Scroll reveal — toggled by GSAP ScrollTrigger adding .revealed */
+/* Scroll reveal — toggled by IntersectionObserver adding .revealed */
 .scroll-section > * {
   opacity: 0;
   transform: translateY(20px);

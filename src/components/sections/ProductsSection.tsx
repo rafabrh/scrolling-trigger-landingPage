@@ -11,9 +11,9 @@ export function ProductsSection() {
     <SectionShell id="products" eyebrow={eyebrow} headline={headline} support={support}>
       <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
         {/* Esquerda: lista de serviços */}
-        <div className="flex flex-col" style={{ borderTop: '1px solid var(--surface-border)' }}>
+        <ul className="flex flex-col list-none m-0 p-0" style={{ borderTop: '1px solid var(--surface-border)' }}>
           {items.map((item) => (
-            <div
+            <li
               key={item.id}
               className="flex flex-col gap-1 py-4"
               style={{ borderBottom: '1px solid var(--surface-border)' }}
@@ -29,16 +29,16 @@ export function ProductsSection() {
                 <span className="text-[15px] font-semibold text-[var(--paper)]">{item.name}</span>
               )}
               <span className="text-sm text-[var(--paper-dim)]">{item.tagline}</span>
-              <span className="mt-1 text-[13px] leading-relaxed text-[var(--paper-dim)]" style={{ opacity: 0.75 }}>
+              <span className="mt-1 text-[13px] leading-relaxed text-[var(--paper-dim)]">
                 {item.description}
               </span>
-            </div>
+            </li>
           ))}
 
           <div className="mt-6">
             <CtaLink href={whatsappHref('products')}>Ativar AI Agent</CtaLink>
           </div>
-        </div>
+        </ul>
 
         {/* Direita: mockup animado do celular com chat do Agente IA */}
         <div className="flex items-center justify-center lg:justify-end">

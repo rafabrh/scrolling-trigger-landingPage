@@ -13,16 +13,16 @@ export function AboutSection() {
           <p className="max-w-[48ch] text-base leading-relaxed text-[var(--paper-dim)]">{body}</p>
 
           {/* Pilares */}
-          <div className="flex flex-col" style={{ borderTop: '1px solid var(--surface-border)' }}>
+          <ol className="flex flex-col list-none m-0 p-0" style={{ borderTop: '1px solid var(--surface-border)' }}>
             {pillars.map((pillar) => (
-              <div
+              <li
                 key={pillar.index}
                 className="flex items-start gap-4 py-5"
                 style={{ borderBottom: '1px solid var(--surface-border)' }}
               >
                 <span
                   className="mt-0.5 w-7 shrink-0 font-mono text-[10px]"
-                  style={{ color: 'var(--accent)', opacity: 0.6 }}
+                  style={{ color: 'var(--accent-muted)' }}
                 >
                   {pillar.index}
                 </span>
@@ -30,9 +30,9 @@ export function AboutSection() {
                   <p className="text-[14px] font-semibold text-[var(--paper)]">{pillar.label}</p>
                   <p className="text-sm leading-relaxed text-[var(--paper-dim)]">{pillar.detail}</p>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
 
           {/* Metrics */}
           <div className="flex flex-wrap gap-8">
@@ -41,7 +41,7 @@ export function AboutSection() {
                 <span className="font-display-upper text-3xl text-[var(--accent)]">
                   <CountUp end={m.value} suffix={m.suffix} />
                 </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--paper)]" style={{ opacity: 0.7 }}>
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--paper)]">
                   {m.label}
                 </span>
               </div>

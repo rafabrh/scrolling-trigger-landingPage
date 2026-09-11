@@ -4,12 +4,30 @@ import { SectionShell } from '@/components/ui/SectionShell';
 /**
  * Accordion nativo com <details>/<summary> — zero JS, acessível por padrão.
  * O marker padrão é removido e substituído por um indicador "+" customizado.
+ * Inclui JSON-LD FAQPage para rich results nos buscadores.
  */
 export function FAQSection() {
   const { eyebrow, headline, items } = SITE_CONTENT.faq;
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+
   return (
     <SectionShell id="faq" eyebrow={eyebrow} headline={headline}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <div className="flex flex-col" style={{ borderTop: '1px solid var(--surface-border)' }}>
         {items.map((item) => (
           <details

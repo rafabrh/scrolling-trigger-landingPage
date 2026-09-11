@@ -27,7 +27,7 @@ export function ContactSection() {
         {/* Copyright */}
         <p
           className="mt-8 font-mono text-[11px] text-[var(--paper-dim)]"
-          style={{ opacity: 0.4 }}
+          style={{ opacity: 0.55 }}
         >
           {SITE_CONTENT.footer.copyright}
         </p>
