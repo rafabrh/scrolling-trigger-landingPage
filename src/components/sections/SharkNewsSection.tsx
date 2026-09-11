@@ -178,7 +178,7 @@ export function SharkNewsSection() {
                 </button>
 
                 {/* Privacy note */}
-                <p className="font-mono text-[11px] text-[var(--paper-dim)]" style={{ opacity: 0.6 }}>
+                <p className="font-mono text-[11px] text-[var(--paper-muted)]">
                   {form.privacy}
                 </p>
               </form>
