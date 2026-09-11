@@ -2,7 +2,11 @@ import { PersistentCityBackground } from '@/components/background/PersistentCity
 import { CinematicExperience } from '@/components/cinematic/CinematicExperience';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
-import { HeroDivider3D } from '@/components/effects/HeroDivider3D';
+import dynamic from 'next/dynamic';
+
+const HeroDivider3D = dynamic(
+  () => import('@/components/effects/HeroDivider3D').then((m) => m.HeroDivider3D),
+);
 import { ProductsSection } from '@/components/sections/ProductsSection';
 import { TechnologySection } from '@/components/sections/TechnologySection';
 import { BenefitsSection } from '@/components/sections/BenefitsSection';

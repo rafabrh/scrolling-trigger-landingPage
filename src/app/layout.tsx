@@ -95,10 +95,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           decorativo antes de chegar em qualquer secao com conteudo.
         */}
         <a
-          href="#intro"
+          href="#top"
           className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-50 focus:border focus:border-[var(--accent)] focus:bg-[var(--ink-900)] focus:px-4 focus:py-2"
         >
-          Skip to content
+          Pular para o conteúdo
         </a>
         {children}
       </body>

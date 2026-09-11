@@ -9,7 +9,7 @@ import { SITE_URL } from '@/lib/env/deploy';
  * a constante é a escolha mais previsível. Atualize esta data quando o
  * conteúdo real das rotas mudar.
  */
-const LAST_MODIFIED = '2025-08-20';
+const LAST_MODIFIED = '2026-09-10';
 
 /**
  * URLs reais e indexáveis do site. As âncoras da home (#products, #technology

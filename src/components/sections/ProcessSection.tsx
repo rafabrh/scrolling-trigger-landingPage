@@ -10,9 +10,9 @@ export function ProcessSection() {
 
   return (
     <SectionShell id="process" eyebrow={eyebrow} headline={headline}>
-      <div className="flex flex-col" style={{ borderTop: '1px solid var(--surface-border)' }}>
+      <ol className="flex flex-col list-none m-0 p-0" style={{ borderTop: '1px solid var(--surface-border)' }}>
         {steps.map((step) => (
-          <div
+          <li
             key={step.number}
             className="flex items-start gap-6 py-6"
             style={{ borderBottom: '1px solid var(--surface-border)' }}
@@ -28,9 +28,9 @@ export function ProcessSection() {
                 {step.body}
               </p>
             </div>
-          </div>
+          </li>
         ))}
-      </div>
+      </ol>
     </SectionShell>
   );
 }

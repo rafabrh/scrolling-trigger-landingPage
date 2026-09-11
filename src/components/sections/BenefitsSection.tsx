@@ -10,9 +10,9 @@ export function BenefitsSection() {
 
   return (
     <SectionShell id="benefits" eyebrow={eyebrow} headline={headline}>
-      <div className="grid grid-cols-1 gap-x-16 gap-y-0 lg:grid-cols-2">
+      <ul className="grid grid-cols-1 gap-x-16 gap-y-0 lg:grid-cols-2 list-none m-0 p-0">
         {items.map((item) => (
-          <div
+          <li
             key={item.title}
             className="flex flex-col gap-2 py-6"
             style={{ borderBottom: '1px solid var(--surface-border)' }}
@@ -23,9 +23,9 @@ export function BenefitsSection() {
             <p className="text-[13px] leading-relaxed text-[var(--paper-dim)]">
               {item.body}
             </p>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </SectionShell>
   );
 }

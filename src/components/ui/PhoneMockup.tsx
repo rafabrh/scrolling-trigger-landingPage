@@ -110,10 +110,17 @@ export function PhoneMockup() {
   const [showTyping, setShowTyping] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const hasStarted = useRef(false);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      setVisibleCount(CONVERSATION.length);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -127,27 +134,34 @@ export function PhoneMockup() {
     );
     observer.observe(el);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function runSequence() {
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+
     let delay = 500;
     for (let i = 0; i < CONVERSATION.length; i++) {
       const typingDelay = delay;
-      setTimeout(() => setShowTyping(true), typingDelay);
+      timersRef.current.push(setTimeout(() => setShowTyping(true), typingDelay));
       delay += TYPING_DELAY;
 
       const msgDelay = delay;
       const msgIndex = i + 1;
-      setTimeout(() => {
+      timersRef.current.push(setTimeout(() => {
         setShowTyping(false);
         setVisibleCount(msgIndex);
-      }, msgDelay);
+      }, msgDelay));
       delay += MESSAGE_DELAY;
     }
 
-    setTimeout(() => {
+    timersRef.current.push(setTimeout(() => {
       setVisibleCount(0);
       hasStarted.current = false;
       const el = containerRef.current;
@@ -158,11 +172,11 @@ export function PhoneMockup() {
           runSequence();
         }
       }
-    }, delay + 3000);
+    }, delay + 3000));
   }
 
   return (
-    <div ref={containerRef} className="flex items-center justify-center">
+    <div ref={containerRef} className="flex items-center justify-center" aria-hidden="true">
       {/* Frame do celular */}
       <div
         className="relative w-[300px] overflow-hidden rounded-[36px] shadow-2xl sm:w-[320px]"
@@ -237,7 +251,7 @@ export function PhoneMockup() {
             className="flex h-8 w-8 items-center justify-center rounded-full"
             style={{ backgroundColor: 'var(--accent)' }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M22 2L11 13" stroke="var(--ink-900)" />
               <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="var(--ink-900)" />
             </svg>

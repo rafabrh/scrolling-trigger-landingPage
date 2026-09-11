@@ -18,7 +18,11 @@ import { GrainOverlay } from '@/components/background/GrainOverlay';
 import { CinematicCanvas } from './CinematicCanvas';
 import { CinematicOverlay, type SceneHandle } from './CinematicOverlay';
 import { SceneRail } from './SceneRail';
-import { CinematicDebugPanel } from './CinematicDebugPanel';
+import dynamic from 'next/dynamic';
+
+const CinematicDebugPanel = dynamic(() =>
+  import('./CinematicDebugPanel').then((m) => m.CinematicDebugPanel),
+);
 import { CinematicErrorBoundary } from './CinematicErrorBoundary';
 
 /**
